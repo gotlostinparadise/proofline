@@ -1,0 +1,169 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.7-candidates",
+  "objective": "Add candidate trace and scoring scaffolding for CIPH optimization.",
+  "deliverables": [
+    {
+      "id": "candidate-command",
+      "requirement": "Add scripts/init_candidate.py to create candidate records.",
+      "artifact_paths": [
+        "scripts/init_candidate.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.7-candidates/artifacts/checks/focused-candidate-tests.txt"
+      ]
+    },
+    {
+      "id": "candidate-summary",
+      "requirement": "Add scripts/candidate_summary.py to summarize scores and Pareto status.",
+      "artifact_paths": [
+        "scripts/candidate_summary.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.7-candidates/artifacts/checks/focused-summary-tests.txt"
+      ]
+    },
+    {
+      "id": "candidate-tests",
+      "requirement": "Add tests for candidate creation and score summary behavior.",
+      "artifact_paths": [
+        "tests/test_init_candidate.py",
+        "tests/test_candidate_summary.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.7-candidates/artifacts/checks/full-unit-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-flow",
+      "requirement": "Document candidate creation and summary commands.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.7-candidates/artifacts/checks/full-unit-tests.txt"
+      ]
+    },
+    {
+      "id": "dogfood-candidates",
+      "requirement": "Create scored dogfood candidates and a summary report.",
+      "artifact_paths": [
+        "runs/ciph-v0.7-candidates/candidates/baseline/score.json",
+        "runs/ciph-v0.7-candidates/candidates/weaker/score.json",
+        "runs/ciph-v0.7-candidates/artifacts/candidate-summary.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.7-candidates/artifacts/checks/summary-help.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/init_candidate.py",
+      "description": "Candidate record initializer.",
+      "required": true
+    },
+    {
+      "path": "scripts/candidate_summary.py",
+      "description": "Candidate score summary renderer.",
+      "required": true
+    },
+    {
+      "path": "tests/test_init_candidate.py",
+      "description": "Candidate initializer tests.",
+      "required": true
+    },
+    {
+      "path": "tests/test_candidate_summary.py",
+      "description": "Candidate summary tests.",
+      "required": true
+    },
+    {
+      "path": "README.md",
+      "description": "Quick-start documentation including candidates.",
+      "required": true
+    },
+    {
+      "path": "harness/CIPH.md",
+      "description": "Harness procedure including candidates.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.7-candidates/TASK.md",
+      "description": "Dogfood task for v0.7.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.7-candidates/MANIFEST.json",
+      "description": "Dogfood manifest for v0.7.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.7-candidates/candidates/baseline/score.json",
+      "description": "Scored baseline candidate.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.7-candidates/candidates/weaker/score.json",
+      "description": "Scored dominated candidate.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.7-candidates/artifacts/candidate-summary.md",
+      "description": "Generated candidate score summary.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.7-candidates/artifacts/checks/focused-candidate-tests.txt",
+      "description": "Runner-produced candidate initializer test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.7-candidates/artifacts/checks/focused-summary-tests.txt",
+      "description": "Runner-produced candidate summary test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.7-candidates/artifacts/checks/full-unit-tests.txt",
+      "description": "Runner-produced full unit test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.7-candidates/artifacts/checks/summary-help.txt",
+      "description": "Runner-produced candidate summary CLI help evidence.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "focused-candidate-tests",
+      "command": "python3 -m unittest tests.test_init_candidate",
+      "required": true,
+      "evidence": "runs/ciph-v0.7-candidates/artifacts/checks/focused-candidate-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "focused-summary-tests",
+      "command": "python3 -m unittest tests.test_candidate_summary",
+      "required": true,
+      "evidence": "runs/ciph-v0.7-candidates/artifacts/checks/focused-summary-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.7-candidates/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "summary-help",
+      "command": "python3 scripts/candidate_summary.py --help",
+      "required": true,
+      "evidence": "runs/ciph-v0.7-candidates/artifacts/checks/summary-help.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": []
+}

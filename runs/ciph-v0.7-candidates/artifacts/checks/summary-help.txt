@@ -1,0 +1,19 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "summary-help", "command": "python3 scripts/candidate_summary.py --help", "exit_code": 0, "finished_at_utc": "2026-05-16T12:00:40+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T12:00:40+00:00", "status": "PASS"}
+
+## STDOUT
+
+usage: candidate_summary.py [-h] [--output OUTPUT] run_dir
+
+Summarize CIPH candidate scores.
+
+positional arguments:
+  run_dir          Path to run directory
+
+options:
+  -h, --help       show this help message and exit
+  --output OUTPUT  Write summary to this path
+
+## STDERR
+
+<empty>

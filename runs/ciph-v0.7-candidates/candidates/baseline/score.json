@@ -1,0 +1,20 @@
+{
+  "candidate_id": "baseline",
+  "parent_ids": [],
+  "changed_modules": [
+    "candidate-scaffold"
+  ],
+  "search_scores": {
+    "task_success": 0.9,
+    "audit_completeness": 0.9,
+    "cost_tokens": 100,
+    "wall_minutes": 2,
+    "defect_escape_rate": 0.0
+  },
+  "trace_paths": [
+    "runs/ciph-v0.7-candidates/candidates/baseline/trace/prompts.jsonl",
+    "runs/ciph-v0.7-candidates/candidates/baseline/trace/tools.jsonl",
+    "runs/ciph-v0.7-candidates/candidates/baseline/trace/failures.md"
+  ],
+  "pareto_status": "frontier"
+}

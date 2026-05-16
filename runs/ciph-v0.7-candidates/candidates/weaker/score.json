@@ -1,0 +1,22 @@
+{
+  "candidate_id": "weaker",
+  "parent_ids": [
+    "baseline"
+  ],
+  "changed_modules": [
+    "candidate-scaffold"
+  ],
+  "search_scores": {
+    "task_success": 0.6,
+    "audit_completeness": 0.7,
+    "cost_tokens": 200,
+    "wall_minutes": 5,
+    "defect_escape_rate": 0.2
+  },
+  "trace_paths": [
+    "runs/ciph-v0.7-candidates/candidates/weaker/trace/prompts.jsonl",
+    "runs/ciph-v0.7-candidates/candidates/weaker/trace/tools.jsonl",
+    "runs/ciph-v0.7-candidates/candidates/weaker/trace/failures.md"
+  ],
+  "pareto_status": "dominated"
+}

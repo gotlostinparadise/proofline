@@ -86,6 +86,13 @@ Create a bounded child task packet:
 python3 scripts/init_child_task.py runs/<run-id>/MANIFEST.json <child-id> --owner <role> --write-scope <path>
 ```
 
+Create and summarize candidates:
+
+```bash
+python3 scripts/init_candidate.py runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
+python3 scripts/candidate_summary.py runs/<run-id> --output runs/<run-id>/artifacts/candidate-summary.md
+```
+
 ## Minimal Run Layout
 
 ```text
