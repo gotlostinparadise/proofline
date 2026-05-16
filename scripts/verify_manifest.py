@@ -12,6 +12,8 @@ from typing import Any
 
 
 SCHEMA_VERSION = "ciph.manifest.v1"
+RUN_CHECKS_EVIDENCE_MARKER = "CIPH-CHECK-EVIDENCE v1"
+RUN_CHECKS_GENERATED_BY = "scripts/run_checks.py"
 
 
 @dataclass
@@ -164,10 +166,49 @@ def _validate_checks(manifest: dict[str, Any], root: Path, result: ValidationRes
                 result.errors.append(f"Required check {name} must include evidence")
             elif not path_exists(root, evidence):
                 result.errors.append(f"Missing required check evidence for {name}: {evidence}")
+            elif check.get("evidence_producer") == "run_checks":
+                _validate_run_checks_evidence(root / evidence, evidence, name, check.get("command"), result)
 
 
 def _is_external_reference(reference: str) -> bool:
     return reference.startswith(("http://", "https://", "source:"))
+
+
+def _validate_run_checks_evidence(
+    evidence_path: Path,
+    evidence_reference: str,
+    check_name: str,
+    command: Any,
+    result: ValidationResult,
+) -> None:
+    try:
+        lines = evidence_path.read_text(encoding="utf-8").splitlines()
+    except OSError as exc:
+        result.errors.append(f"Unable to read run_checks evidence for {check_name}: {evidence_reference}: {exc}")
+        return
+
+    if len(lines) < 2 or lines[0] != RUN_CHECKS_EVIDENCE_MARKER:
+        result.errors.append(f"Malformed run_checks evidence for {check_name}: {evidence_reference}")
+        return
+
+    try:
+        metadata = json.loads(lines[1])
+    except json.JSONDecodeError:
+        result.errors.append(f"Malformed run_checks metadata for {check_name}: {evidence_reference}")
+        return
+
+    if not isinstance(metadata, dict):
+        result.errors.append(f"Malformed run_checks metadata for {check_name}: {evidence_reference}")
+        return
+
+    if metadata.get("generated_by") != RUN_CHECKS_GENERATED_BY:
+        result.errors.append(f"run_checks evidence for {check_name} has wrong generator: {evidence_reference}")
+    if metadata.get("check_name") != check_name:
+        result.errors.append(f"run_checks evidence for {check_name} has wrong check name: {evidence_reference}")
+    if metadata.get("command") != command:
+        result.errors.append(f"run_checks evidence for {check_name} does not match manifest command: {evidence_reference}")
+    if metadata.get("exit_code") != 0 or metadata.get("status") != "PASS":
+        result.errors.append(f"run_checks evidence for {check_name} did not pass: {evidence_reference}")
 
 
 def _non_empty_string(value: Any) -> bool:

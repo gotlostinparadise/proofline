@@ -45,6 +45,14 @@ Create a run:
 python3 scripts/init_run.py <run-id> --objective "Describe the coding task."
 ```
 
+Run executable checks:
+
+```bash
+python3 scripts/run_checks.py runs/<run-id>/MANIFEST.json --root .
+```
+
+Run checks before manifest validation when checks use `evidence_producer: "run_checks"`.
+
 Validate a run manifest:
 
 ```bash
@@ -64,7 +72,8 @@ runs/<run-id>/
   TASK.md
   MANIFEST.json
   artifacts/
-    verification.md
+    checks/
+      <check-name>.txt
 ```
 
 Use `templates/TASK.md` and `templates/MANIFEST.json` as starting points.

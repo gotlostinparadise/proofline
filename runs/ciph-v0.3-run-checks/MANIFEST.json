@@ -1,0 +1,147 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.3-run-checks",
+  "objective": "Add run_checks to execute manifest checks and write structured evidence for CIPH v0.3.",
+  "deliverables": [
+    {
+      "id": "run-checks-command",
+      "requirement": "Add scripts/run_checks.py to execute manifest checks and write structured evidence.",
+      "artifact_paths": [
+        "scripts/run_checks.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.3-run-checks/artifacts/checks/focused-run-checks-tests.txt"
+      ]
+    },
+    {
+      "id": "strict-evidence-validation",
+      "requirement": "Make verify_manifest.py reject malformed, failed, or stale run_checks evidence.",
+      "artifact_paths": [
+        "scripts/verify_manifest.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.3-run-checks/artifacts/checks/focused-run-checks-tests.txt"
+      ]
+    },
+    {
+      "id": "runner-tests",
+      "requirement": "Add tests for passing checks, failing checks, stale evidence rejection, and direct CLI execution.",
+      "artifact_paths": [
+        "tests/test_run_checks.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.3-run-checks/artifacts/checks/focused-run-checks-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-templates",
+      "requirement": "Document the new run-checks flow and update generated manifest evidence paths.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "templates/MANIFEST.json",
+        "templates/TASK.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.3-run-checks/artifacts/checks/full-unit-tests.txt"
+      ]
+    },
+    {
+      "id": "dogfood-run",
+      "requirement": "Dogfood v0.3 with this generated run and runner-produced evidence.",
+      "artifact_paths": [
+        "runs/ciph-v0.3-run-checks/TASK.md",
+        "runs/ciph-v0.3-run-checks/MANIFEST.json"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.3-run-checks/artifacts/checks/run-checks-help.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/run_checks.py",
+      "description": "Executable check runner that writes structured evidence.",
+      "required": true
+    },
+    {
+      "path": "scripts/verify_manifest.py",
+      "description": "Manifest verifier with strict run_checks evidence validation.",
+      "required": true
+    },
+    {
+      "path": "tests/test_run_checks.py",
+      "description": "Tests for executable check runner behavior.",
+      "required": true
+    },
+    {
+      "path": "README.md",
+      "description": "Quick-start documentation including run_checks.",
+      "required": true
+    },
+    {
+      "path": "harness/CIPH.md",
+      "description": "Harness procedure documenting run_checks.",
+      "required": true
+    },
+    {
+      "path": "templates/MANIFEST.json",
+      "description": "Manifest template with run_checks evidence paths.",
+      "required": true
+    },
+    {
+      "path": "templates/TASK.md",
+      "description": "Task template with run_checks in closeout commands.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.3-run-checks/TASK.md",
+      "description": "Dogfood task for v0.3.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.3-run-checks/MANIFEST.json",
+      "description": "Dogfood manifest for v0.3.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.3-run-checks/artifacts/checks/focused-run-checks-tests.txt",
+      "description": "Runner-produced focused test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.3-run-checks/artifacts/checks/full-unit-tests.txt",
+      "description": "Runner-produced full unit test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.3-run-checks/artifacts/checks/run-checks-help.txt",
+      "description": "Runner-produced CLI help evidence.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "focused-run-checks-tests",
+      "command": "python3 -m unittest tests.test_run_checks",
+      "required": true,
+      "evidence": "runs/ciph-v0.3-run-checks/artifacts/checks/focused-run-checks-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.3-run-checks/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "run-checks-help",
+      "command": "python3 scripts/run_checks.py --help",
+      "required": true,
+      "evidence": "runs/ciph-v0.3-run-checks/artifacts/checks/run-checks-help.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": []
+}

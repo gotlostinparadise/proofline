@@ -26,7 +26,8 @@
       "name": "replace-with-check-name",
       "command": "replace with exact command",
       "required": true,
-      "evidence": "runs/<run-id>/artifacts/verification.md"
+      "evidence": "runs/<run-id>/artifacts/checks/replace-with-check-name.txt",
+      "evidence_producer": "run_checks"
     }
   ],
   "risks": []

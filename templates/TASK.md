@@ -33,6 +33,7 @@ List API shapes, CLI flags, config keys, pricing, product limits, schemas, requi
 ## Closeout Commands
 
 ```bash
+python3 scripts/run_checks.py runs/<run-id>/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/<run-id>/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root .
 ```
