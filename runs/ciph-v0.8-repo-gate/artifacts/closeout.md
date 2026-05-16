@@ -10,15 +10,15 @@ Root: .
 - [COVERED] repo-gate-command: Add scripts/check_repo.py as a deterministic repo health gate.
   - Artifacts: scripts/check_repo.py
   - Evidence: runs/ciph-v0.8-repo-gate/artifacts/checks/focused-repo-gate-tests.txt
-- [COVERED] repo-gate-tests: Add tests for clean pass, missing closeout failure, and direct CLI execution.
+- [COVERED] repo-gate-tests: Add tests for clean pass, unit-test failure propagation, missing closeout failure, skip-diff behavior, and direct CLI execution.
   - Artifacts: tests/test_check_repo.py
   - Evidence: runs/ciph-v0.8-repo-gate/artifacts/checks/focused-repo-gate-tests.txt
 - [COVERED] docs-flow: Document the repo gate as the default development check.
   - Artifacts: README.md, harness/CIPH.md
   - Evidence: runs/ciph-v0.8-repo-gate/artifacts/checks/full-unit-tests.txt
-- [MISSING] dogfood-gate: Run the gate against this checkout and record evidence.
+- [COVERED] dogfood-gate: Run the gate against this checkout and record evidence.
   - Artifacts: runs/ciph-v0.8-repo-gate/artifacts/status.md, runs/ciph-v0.8-repo-gate/artifacts/closeout.md
-  - Evidence: runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-help.txt
+  - Evidence: runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-check.txt
 ## Required Checks
 
 - [COVERED] focused-repo-gate-tests
@@ -27,9 +27,9 @@ Root: .
 - [COVERED] full-unit-tests
   - Command: python3 -m unittest discover
   - Evidence: runs/ciph-v0.8-repo-gate/artifacts/checks/full-unit-tests.txt
-- [COVERED] repo-gate-help
-  - Command: python3 scripts/check_repo.py --help
-  - Evidence: runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-help.txt
+- [COVERED] repo-gate-check
+  - Command: python3 scripts/check_repo.py --skip-diff-check
+  - Evidence: runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-check.txt
 
 ## Risks
 
@@ -37,5 +37,4 @@ Root: .
 
 ## Manifest Validation
 
-- MISSING: Missing deliverable artifact for dogfood-gate: runs/ciph-v0.8-repo-gate/artifacts/closeout.md
-- MISSING: Missing required artifact: runs/ciph-v0.8-repo-gate/artifacts/closeout.md
+- COVERED: manifest validation passed.

@@ -34,6 +34,33 @@ class CheckRepoTests(unittest.TestCase):
             self.assertFalse(result.ok)
             self.assertIn("FAIL closeout runs/sample/MANIFEST.json has missing coverage", result.failures)
 
+    def test_check_repo_reports_unit_test_failures(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _write_test_file(root, passing=False)
+            _write_clean_run(root, "sample")
+
+            result = check_repo(root, include_diff_check=False)
+
+            self.assertFalse(result.ok)
+            self.assertIn("FAIL tests", result.failures)
+            self.assertTrue(any("FAILED" in failure for failure in result.failures), result.failures)
+
+    def test_check_repo_skips_diff_check_when_disabled(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _write_test_file(root, passing=True)
+            _write_clean_run(root, "sample")
+            _create_dirty_git_diff(root)
+
+            skipped = check_repo(root, include_diff_check=False)
+            included = check_repo(root, include_diff_check=True)
+
+            self.assertTrue(skipped.ok, skipped.failures)
+            self.assertNotIn("PASS git diff --check", skipped.messages)
+            self.assertFalse(included.ok)
+            self.assertIn("FAIL git diff --check", included.failures)
+
     def test_check_repo_script_runs_when_executed_by_file_path(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -69,6 +96,14 @@ def _write_test_file(root: Path, passing: bool) -> None:
         f"    def test_sample(self):\n        self.assertTrue({passing!r})\n",
         encoding="utf-8",
     )
+
+
+def _create_dirty_git_diff(root: Path) -> None:
+    subprocess.run(["git", "init"], cwd=root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+    tracked = root / "tracked.txt"
+    tracked.write_text("clean\n", encoding="utf-8")
+    subprocess.run(["git", "add", "tracked.txt"], cwd=root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+    tracked.write_text("trailing whitespace \n", encoding="utf-8")
 
 
 def _write_clean_run(root: Path, run_id: str, create_artifact: bool = True) -> None:

@@ -15,7 +15,7 @@
     },
     {
       "id": "repo-gate-tests",
-      "requirement": "Add tests for clean pass, missing closeout failure, and direct CLI execution.",
+      "requirement": "Add tests for clean pass, unit-test failure propagation, missing closeout failure, skip-diff behavior, and direct CLI execution.",
       "artifact_paths": [
         "tests/test_check_repo.py"
       ],
@@ -42,7 +42,7 @@
         "runs/ciph-v0.8-repo-gate/artifacts/closeout.md"
       ],
       "evidence_paths": [
-        "runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-help.txt"
+        "runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-check.txt"
       ]
     }
   ],
@@ -98,8 +98,8 @@
       "required": true
     },
     {
-      "path": "runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-help.txt",
-      "description": "Runner-produced repo gate CLI help evidence.",
+      "path": "runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-check.txt",
+      "description": "Runner-produced repo gate execution evidence.",
       "required": true
     }
   ],
@@ -119,10 +119,10 @@
       "evidence_producer": "run_checks"
     },
     {
-      "name": "repo-gate-help",
-      "command": "python3 scripts/check_repo.py --help",
+      "name": "repo-gate-check",
+      "command": "python3 scripts/check_repo.py --skip-diff-check",
       "required": true,
-      "evidence": "runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-help.txt",
+      "evidence": "runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-check.txt",
       "evidence_producer": "run_checks"
     }
   ],

@@ -1,5 +1,5 @@
 CIPH-CHECK-EVIDENCE v1
-{"check_name": "focused-repo-gate-tests", "command": "python3 -m unittest tests.test_check_repo", "exit_code": 0, "finished_at_utc": "2026-05-16T16:14:14+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T16:14:14+00:00", "status": "PASS"}
+{"check_name": "focused-repo-gate-tests", "command": "python3 -m unittest tests.test_check_repo", "exit_code": 0, "finished_at_utc": "2026-05-16T16:27:12+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T16:27:12+00:00", "status": "PASS"}
 
 ## STDOUT
 
@@ -7,8 +7,8 @@ CIPH-CHECK-EVIDENCE v1
 
 ## STDERR
 
-...
+.....
 ----------------------------------------------------------------------
-Ran 3 tests in 0.155s
+Ran 5 tests in 0.273s
 
 OK

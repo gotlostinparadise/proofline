@@ -25,9 +25,9 @@ No external API, pricing, product-limit, or schema fact is required. The feature
 | ID | Requirement | Artifact paths | Evidence paths |
 | --- | --- | --- | --- |
 | repo-gate-command | Add `scripts/check_repo.py` as a deterministic repo health gate. | `scripts/check_repo.py` | `runs/ciph-v0.8-repo-gate/artifacts/checks/focused-repo-gate-tests.txt` |
-| repo-gate-tests | Add tests for clean pass, missing closeout failure, and direct CLI execution. | `tests/test_check_repo.py` | `runs/ciph-v0.8-repo-gate/artifacts/checks/focused-repo-gate-tests.txt` |
+| repo-gate-tests | Add tests for clean pass, unit-test failure propagation, missing closeout failure, skip-diff behavior, and direct CLI execution. | `tests/test_check_repo.py` | `runs/ciph-v0.8-repo-gate/artifacts/checks/focused-repo-gate-tests.txt` |
 | docs-flow | Document the repo gate as the default development check. | `README.md`, `harness/CIPH.md` | `runs/ciph-v0.8-repo-gate/artifacts/checks/full-unit-tests.txt` |
-| dogfood-gate | Run the gate against this checkout and record evidence. | `runs/ciph-v0.8-repo-gate/artifacts/status.md`, `runs/ciph-v0.8-repo-gate/artifacts/closeout.md` | `runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-help.txt` |
+| dogfood-gate | Run the gate against this checkout and record evidence. | `runs/ciph-v0.8-repo-gate/artifacts/status.md`, `runs/ciph-v0.8-repo-gate/artifacts/closeout.md` | `runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-check.txt` |
 
 ## Risks And Blockers
 

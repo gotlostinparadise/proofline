@@ -16,4 +16,4 @@ Root: .
 
 - focused-repo-gate-tests: PASS (runs/ciph-v0.8-repo-gate/artifacts/checks/focused-repo-gate-tests.txt)
 - full-unit-tests: PASS (runs/ciph-v0.8-repo-gate/artifacts/checks/full-unit-tests.txt)
-- repo-gate-help: PASS (runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-help.txt)
+- repo-gate-check: PASS (runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-check.txt)

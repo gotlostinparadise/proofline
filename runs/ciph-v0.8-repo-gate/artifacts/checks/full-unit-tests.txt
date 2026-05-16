@@ -1,5 +1,5 @@
 CIPH-CHECK-EVIDENCE v1
-{"check_name": "full-unit-tests", "command": "python3 -m unittest discover", "exit_code": 0, "finished_at_utc": "2026-05-16T16:14:15+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T16:14:14+00:00", "status": "PASS"}
+{"check_name": "full-unit-tests", "command": "python3 -m unittest discover", "exit_code": 0, "finished_at_utc": "2026-05-16T16:27:13+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T16:27:12+00:00", "status": "PASS"}
 
 ## STDOUT
 
@@ -7,8 +7,8 @@ CIPH-CHECK-EVIDENCE v1
 
 ## STDERR
 
-.......................................
+.........................................
 ----------------------------------------------------------------------
-Ran 39 tests in 0.532s
+Ran 41 tests in 0.660s
 
 OK
