@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "html-parse", "command": "python3 - <<'PY'\nfrom html.parser import HTMLParser\nfrom pathlib import Path\nparser = HTMLParser()\nparser.feed(Path('index.html').read_text(encoding='utf-8'))\nparser.close()\nprint('HTML parse ok')\nPY", "exit_code": 0, "finished_at_utc": "2026-05-16T11:42:51+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T11:42:51+00:00", "status": "PASS"}
+
+## STDOUT
+
+HTML parse ok
+
+## STDERR
+
+<empty>

@@ -1,0 +1,23 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "init-run-help", "command": "python3 scripts/init_run.py --help", "exit_code": 0, "finished_at_utc": "2026-05-16T11:42:51+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T11:42:51+00:00", "status": "PASS"}
+
+## STDOUT
+
+usage: init_run.py [-h] [--root ROOT] [--objective OBJECTIVE] [--force] run_id
+
+Initialize a CIPH run directory.
+
+positional arguments:
+  run_id                Run id using letters, numbers, dots, underscores, or
+                        hyphens
+
+options:
+  -h, --help            show this help message and exit
+  --root ROOT           Repository root
+  --objective OBJECTIVE
+                        Original user objective for TASK.md and MANIFEST.json
+  --force               Overwrite generated files for an existing run
+
+## STDERR
+
+<empty>

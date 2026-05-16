@@ -45,6 +45,14 @@ Create a run:
 python3 scripts/init_run.py <run-id> --objective "Describe the coding task."
 ```
 
+Lint the manifest:
+
+```bash
+python3 scripts/lint_manifest.py runs/<run-id>/MANIFEST.json --root .
+```
+
+Lint manifests before running checks so placeholders, missing evidence links, and weak required-check evidence paths fail early.
+
 Run executable checks:
 
 ```bash

@@ -1,0 +1,13 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "lint-all-manifests", "command": "python3 scripts/lint_manifest.py runs/example-harness-design/MANIFEST.json --root . && python3 scripts/lint_manifest.py runs/ciph-v0.2-init-run/MANIFEST.json --root . && python3 scripts/lint_manifest.py runs/ciph-v0.3-run-checks/MANIFEST.json --root . && python3 scripts/lint_manifest.py runs/ciph-v0.4-manifest-lint/MANIFEST.json --root .", "exit_code": 0, "finished_at_utc": "2026-05-16T11:46:19+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T11:46:19+00:00", "status": "PASS"}
+
+## STDOUT
+
+CIPH manifest lint clean: runs/example-harness-design/MANIFEST.json
+CIPH manifest lint clean: runs/ciph-v0.2-init-run/MANIFEST.json
+CIPH manifest lint clean: runs/ciph-v0.3-run-checks/MANIFEST.json
+CIPH manifest lint clean: runs/ciph-v0.4-manifest-lint/MANIFEST.json
+
+## STDERR
+
+<empty>

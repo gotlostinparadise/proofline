@@ -30,7 +30,8 @@
         "index.html"
       ],
       "evidence_paths": [
-        "runs/example-harness-design/artifacts/verification.md"
+        "runs/example-harness-design/artifacts/checks/html-parse.txt",
+        "runs/example-harness-design/artifacts/checks/source-and-section-markers.txt"
       ]
     },
     {
@@ -40,7 +41,7 @@
         "index.html"
       ],
       "evidence_paths": [
-        "runs/example-harness-design/artifacts/verification.md"
+        "runs/example-harness-design/artifacts/checks/source-and-section-markers.txt"
       ]
     }
   ],
@@ -54,6 +55,16 @@
       "path": "runs/example-harness-design/artifacts/verification.md",
       "description": "Local verification evidence for the structured HTML artifact.",
       "required": true
+    },
+    {
+      "path": "runs/example-harness-design/artifacts/checks/html-parse.txt",
+      "description": "Runner-produced HTML parse evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/example-harness-design/artifacts/checks/source-and-section-markers.txt",
+      "description": "Runner-produced source and section marker evidence.",
+      "required": true
     }
   ],
   "checks": [
@@ -61,13 +72,15 @@
       "name": "html-parse",
       "command": "python3 - <<'PY'\nfrom html.parser import HTMLParser\nfrom pathlib import Path\nparser = HTMLParser()\nparser.feed(Path('index.html').read_text(encoding='utf-8'))\nparser.close()\nprint('HTML parse ok')\nPY",
       "required": true,
-      "evidence": "runs/example-harness-design/artifacts/verification.md"
+      "evidence": "runs/example-harness-design/artifacts/checks/html-parse.txt",
+      "evidence_producer": "run_checks"
     },
     {
       "name": "source-and-section-markers",
       "command": "rg -n \"2603\\.28052|2603\\.25723|Invented Harness: CIPH|Verification Matrix|Minimum Viable Harness\" index.html",
       "required": true,
-      "evidence": "runs/example-harness-design/artifacts/verification.md"
+      "evidence": "runs/example-harness-design/artifacts/checks/source-and-section-markers.txt",
+      "evidence_producer": "run_checks"
     }
   ],
   "risks": []

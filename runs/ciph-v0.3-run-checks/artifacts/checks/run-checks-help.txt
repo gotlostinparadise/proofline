@@ -1,5 +1,5 @@
 CIPH-CHECK-EVIDENCE v1
-{"check_name": "run-checks-help", "command": "python3 scripts/run_checks.py --help", "exit_code": 0, "finished_at_utc": "2026-05-16T11:35:39+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T11:35:39+00:00", "status": "PASS"}
+{"check_name": "run-checks-help", "command": "python3 scripts/run_checks.py --help", "exit_code": 0, "finished_at_utc": "2026-05-16T11:42:51+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T11:42:51+00:00", "status": "PASS"}
 
 ## STDOUT
 

@@ -10,7 +10,7 @@
         "README.md"
       ],
       "evidence_paths": [
-        "runs/ciph-v0.2-init-run/artifacts/verification.md"
+        "runs/ciph-v0.2-init-run/artifacts/checks/full-unit-tests.txt"
       ]
     },
     {
@@ -20,7 +20,7 @@
         "scripts/init_run.py"
       ],
       "evidence_paths": [
-        "runs/ciph-v0.2-init-run/artifacts/verification.md"
+        "runs/ciph-v0.2-init-run/artifacts/checks/focused-init-run-tests.txt"
       ]
     },
     {
@@ -30,7 +30,7 @@
         "tests/test_init_run.py"
       ],
       "evidence_paths": [
-        "runs/ciph-v0.2-init-run/artifacts/verification.md"
+        "runs/ciph-v0.2-init-run/artifacts/checks/focused-init-run-tests.txt"
       ]
     },
     {
@@ -41,7 +41,7 @@
         "runs/ciph-v0.2-init-run/MANIFEST.json"
       ],
       "evidence_paths": [
-        "runs/ciph-v0.2-init-run/artifacts/verification.md"
+        "runs/ciph-v0.2-init-run/artifacts/checks/init-run-help.txt"
       ]
     }
   ],
@@ -75,26 +75,44 @@
       "path": "runs/ciph-v0.2-init-run/artifacts/verification.md",
       "description": "Verification evidence for the v0.2 initializer task.",
       "required": true
+    },
+    {
+      "path": "runs/ciph-v0.2-init-run/artifacts/checks/focused-init-run-tests.txt",
+      "description": "Runner-produced focused initializer test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.2-init-run/artifacts/checks/full-unit-tests.txt",
+      "description": "Runner-produced full unit test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.2-init-run/artifacts/checks/init-run-help.txt",
+      "description": "Runner-produced initializer CLI help evidence.",
+      "required": true
     }
   ],
   "checks": [
     {
-      "name": "unit-tests",
+      "name": "focused-init-run-tests",
+      "command": "python3 -m unittest tests.test_init_run",
+      "required": true,
+      "evidence": "runs/ciph-v0.2-init-run/artifacts/checks/focused-init-run-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
       "command": "python3 -m unittest discover",
       "required": true,
-      "evidence": "runs/ciph-v0.2-init-run/artifacts/verification.md"
+      "evidence": "runs/ciph-v0.2-init-run/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
     },
     {
-      "name": "v0.2-manifest-validation",
-      "command": "python3 scripts/verify_manifest.py runs/ciph-v0.2-init-run/MANIFEST.json --root .",
+      "name": "init-run-help",
+      "command": "python3 scripts/init_run.py --help",
       "required": true,
-      "evidence": "runs/ciph-v0.2-init-run/artifacts/verification.md"
-    },
-    {
-      "name": "v0.2-closeout",
-      "command": "python3 scripts/closeout_check.py runs/ciph-v0.2-init-run/MANIFEST.json --root .",
-      "required": true,
-      "evidence": "runs/ciph-v0.2-init-run/artifacts/verification.md"
+      "evidence": "runs/ciph-v0.2-init-run/artifacts/checks/init-run-help.txt",
+      "evidence_producer": "run_checks"
     }
   ],
   "risks": []

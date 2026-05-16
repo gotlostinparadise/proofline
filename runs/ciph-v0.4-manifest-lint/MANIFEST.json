@@ -1,0 +1,165 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.4-manifest-lint",
+  "objective": "Add manifest linting to catch placeholders, weak evidence, and required-check evidence path issues.",
+  "deliverables": [
+    {
+      "id": "lint-command",
+      "requirement": "Add scripts/lint_manifest.py for manifest quality checks.",
+      "artifact_paths": [
+        "scripts/lint_manifest.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.4-manifest-lint/artifacts/checks/focused-lint-tests.txt"
+      ]
+    },
+    {
+      "id": "lint-tests",
+      "requirement": "Add tests for placeholders, missing links, weak checks, bad evidence paths, duplicates, and direct CLI execution.",
+      "artifact_paths": [
+        "tests/test_lint_manifest.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.4-manifest-lint/artifacts/checks/focused-lint-tests.txt"
+      ]
+    },
+    {
+      "id": "migrated-manifests",
+      "requirement": "Migrate existing manifests so lint and verify both pass.",
+      "artifact_paths": [
+        "runs/example-harness-design/MANIFEST.json",
+        "runs/ciph-v0.2-init-run/MANIFEST.json",
+        "runs/ciph-v0.3-run-checks/MANIFEST.json"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.4-manifest-lint/artifacts/checks/lint-all-manifests.txt"
+      ]
+    },
+    {
+      "id": "docs-flow",
+      "requirement": "Add linting to README, CIPH, and task template flow.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "templates/TASK.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.4-manifest-lint/artifacts/checks/full-unit-tests.txt"
+      ]
+    },
+    {
+      "id": "dogfood-run",
+      "requirement": "Dogfood v0.4 with this generated run and runner evidence.",
+      "artifact_paths": [
+        "runs/ciph-v0.4-manifest-lint/TASK.md",
+        "runs/ciph-v0.4-manifest-lint/MANIFEST.json"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.4-manifest-lint/artifacts/checks/lint-help.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/lint_manifest.py",
+      "description": "Manifest quality linter.",
+      "required": true
+    },
+    {
+      "path": "tests/test_lint_manifest.py",
+      "description": "Focused lint tests.",
+      "required": true
+    },
+    {
+      "path": "README.md",
+      "description": "Quick-start documentation including manifest linting.",
+      "required": true
+    },
+    {
+      "path": "harness/CIPH.md",
+      "description": "Harness procedure including manifest linting.",
+      "required": true
+    },
+    {
+      "path": "templates/TASK.md",
+      "description": "Task template including manifest linting in closeout commands.",
+      "required": true
+    },
+    {
+      "path": "runs/example-harness-design/MANIFEST.json",
+      "description": "Migrated example research manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.2-init-run/MANIFEST.json",
+      "description": "Migrated v0.2 manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.3-run-checks/MANIFEST.json",
+      "description": "v0.3 manifest that already uses runner evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.4-manifest-lint/TASK.md",
+      "description": "Dogfood task for v0.4.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.4-manifest-lint/MANIFEST.json",
+      "description": "Dogfood manifest for v0.4.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.4-manifest-lint/artifacts/checks/focused-lint-tests.txt",
+      "description": "Runner-produced lint test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.4-manifest-lint/artifacts/checks/lint-all-manifests.txt",
+      "description": "Runner-produced all-manifest lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.4-manifest-lint/artifacts/checks/full-unit-tests.txt",
+      "description": "Runner-produced full unit test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.4-manifest-lint/artifacts/checks/lint-help.txt",
+      "description": "Runner-produced lint CLI help evidence.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "focused-lint-tests",
+      "command": "python3 -m unittest tests.test_lint_manifest",
+      "required": true,
+      "evidence": "runs/ciph-v0.4-manifest-lint/artifacts/checks/focused-lint-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "lint-all-manifests",
+      "command": "python3 scripts/lint_manifest.py runs/example-harness-design/MANIFEST.json --root . && python3 scripts/lint_manifest.py runs/ciph-v0.2-init-run/MANIFEST.json --root . && python3 scripts/lint_manifest.py runs/ciph-v0.3-run-checks/MANIFEST.json --root . && python3 scripts/lint_manifest.py runs/ciph-v0.4-manifest-lint/MANIFEST.json --root .",
+      "required": true,
+      "evidence": "runs/ciph-v0.4-manifest-lint/artifacts/checks/lint-all-manifests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.4-manifest-lint/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "lint-help",
+      "command": "python3 scripts/lint_manifest.py --help",
+      "required": true,
+      "evidence": "runs/ciph-v0.4-manifest-lint/artifacts/checks/lint-help.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": []
+}

@@ -1,0 +1,16 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "source-and-section-markers", "command": "rg -n \"2603\\.28052|2603\\.25723|Invented Harness: CIPH|Verification Matrix|Minimum Viable Harness\" index.html", "exit_code": 0, "finished_at_utc": "2026-05-16T11:42:51+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T11:42:51+00:00", "status": "PASS"}
+
+## STDOUT
+
+309:        <a href="https://arxiv.org/pdf/2603.28052v1">
+311:          Lee, Nair, Zhang, Lee, Khattab, Finn. arXiv:2603.28052v1.
+313:        <a href="https://arxiv.org/pdf/2603.25723">
+315:          Pan, Zou, Guo, Ni, Zheng. arXiv:2603.25723.
+416:        <h2>Invented Harness: CIPH</h2>
+644:        <h2>Verification Matrix</h2>
+689:        <h2>Minimum Viable Harness</h2>
+
+## STDERR
+
+<empty>
