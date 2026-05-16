@@ -1,0 +1,4 @@
+interface:
+  display_name: "Proofline"
+  short_description: "Evidence-backed agent work"
+  default_prompt: "Use $proofline to start this task with a Proofline run contract before implementation."

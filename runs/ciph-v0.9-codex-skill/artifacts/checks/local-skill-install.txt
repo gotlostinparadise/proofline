@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "local-skill-install", "command": "test -f /home/bm/.codex/skills/proofline/SKILL.md && test -x /home/bm/.codex/skills/proofline/scripts/install_proofline.py", "exit_code": 0, "finished_at_utc": "2026-05-16T16:49:26+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T16:49:26+00:00", "status": "PASS"}
+
+## STDOUT
+
+<empty>
+
+## STDERR
+
+<empty>

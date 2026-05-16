@@ -1,0 +1,34 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "<run-id>",
+  "objective": "<original objective>",
+  "deliverables": [
+    {
+      "id": "example",
+      "requirement": "Replace this with a concrete requirement from the prompt.",
+      "artifact_paths": [
+        "path/to/artifact"
+      ],
+      "evidence_paths": [
+        "runs/<run-id>/artifacts/verification.md"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "path/to/artifact",
+      "description": "Replace this with the artifact purpose.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "replace-with-check-name",
+      "command": "replace with exact command",
+      "required": true,
+      "evidence": "runs/<run-id>/artifacts/checks/replace-with-check-name.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": []
+}

@@ -1,0 +1,128 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.9-codex-skill",
+  "objective": "Package Proofline as a reusable Codex skill with bundled installer assets.",
+  "deliverables": [
+    {
+      "id": "skill-source",
+      "requirement": "Add a reusable Proofline Codex skill with discovery metadata.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/agents/openai.yaml"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.9-codex-skill/artifacts/checks/skill-quick-validate.txt"
+      ]
+    },
+    {
+      "id": "installer-assets",
+      "requirement": "Bundle installer code and Proofline harness assets for use in other repositories.",
+      "artifact_paths": [
+        "skills/proofline/scripts/install_proofline.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "skills/proofline/assets/proofline/scripts/init_run.py",
+        "skills/proofline/assets/proofline/templates/MANIFEST.json"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.9-codex-skill/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "local-install",
+      "requirement": "Install the skill into the local Codex skills directory for cross-project use.",
+      "artifact_paths": [
+        "skills/proofline/scripts/install_proofline.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.9-codex-skill/artifacts/checks/local-skill-install.txt"
+      ]
+    },
+    {
+      "id": "run-closeout",
+      "requirement": "Record status and closeout for this skill-packaging run.",
+      "artifact_paths": [
+        "runs/ciph-v0.9-codex-skill/artifacts/status.md",
+        "runs/ciph-v0.9-codex-skill/artifacts/closeout.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.9-codex-skill/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "skills/proofline/SKILL.md",
+      "description": "Proofline Codex skill instructions.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/agents/openai.yaml",
+      "description": "Proofline skill UI metadata.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/scripts/install_proofline.py",
+      "description": "Installer that copies Proofline assets into a target repository.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/assets/proofline/harness/CIPH.md",
+      "description": "Bundled CIPH harness guide.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/assets/proofline/harness/runtime-charter.md",
+      "description": "Bundled runtime charter.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/assets/proofline/scripts/init_run.py",
+      "description": "Bundled Proofline run initializer.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/assets/proofline/templates/MANIFEST.json",
+      "description": "Bundled manifest template.",
+      "required": true
+    },
+    {
+      "path": "tests/test_proofline_skill.py",
+      "description": "Proofline skill installer tests.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.9-codex-skill/artifacts/status.md",
+      "description": "Generated status report for the skill packaging run.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.9-codex-skill/artifacts/closeout.md",
+      "description": "Generated closeout report for the skill packaging run.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.9-codex-skill/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "skill-quick-validate",
+      "command": "python3 /home/bm/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/proofline",
+      "required": true,
+      "evidence": "runs/ciph-v0.9-codex-skill/artifacts/checks/skill-quick-validate.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "local-skill-install",
+      "command": "test -f /home/bm/.codex/skills/proofline/SKILL.md && test -x /home/bm/.codex/skills/proofline/scripts/install_proofline.py",
+      "required": true,
+      "evidence": "runs/ciph-v0.9-codex-skill/artifacts/checks/local-skill-install.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": []
+}
