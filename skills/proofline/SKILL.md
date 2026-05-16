@@ -13,31 +13,31 @@ Proofline is a repo-native harness for evidence-backed agent work. Use it to mak
 
 Use Proofline for multi-step, high-risk, delegated, review-heavy, or evidence-sensitive work. For a one-line typo or trivial local edit, keep the workflow lightweight unless the user explicitly asks for Proofline.
 
-If the repo already has `scripts/init_run.py`, `templates/MANIFEST.json`, and `harness/CIPH.md`, use the installed harness. If not, install bundled assets first:
+If the repo already has `vendor/proofline/scripts/init_run.py`, use the vendored harness. If not, install bundled assets first:
 
 ```bash
 python3 <skill-dir>/scripts/install_proofline.py --target .
 ```
 
-Use `--force` only when the user has approved overwriting existing `harness/`, `scripts/`, or `templates/` files.
+This installs Proofline under `vendor/proofline` so product files stay separate from harness files. Use `--force` only when the user has approved overwriting existing files under `vendor/proofline`.
 
 ## Start A Run
 
 Create a run before implementation:
 
 ```bash
-python3 scripts/init_run.py <run-id> --objective "<objective>"
+python3 vendor/proofline/scripts/init_run.py <run-id> --root . --proofline-root vendor/proofline --objective "<objective>"
 ```
 
 Then fill in:
 
-- `runs/<run-id>/TASK.md`: objective, acceptance object, constraints, volatile facts, deliverables, risks, closeout commands.
-- `runs/<run-id>/MANIFEST.json`: every explicit requirement mapped to artifact paths, evidence paths, and required checks.
+- `vendor/proofline/runs/<run-id>/TASK.md`: objective, acceptance object, constraints, volatile facts, deliverables, risks, closeout commands.
+- `vendor/proofline/runs/<run-id>/MANIFEST.json`: every explicit requirement mapped to project-root-relative artifact paths, evidence paths, and required checks.
 
 Lint the contract before coding:
 
 ```bash
-python3 scripts/lint_manifest.py runs/<run-id>/MANIFEST.json --root .
+python3 vendor/proofline/scripts/lint_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
 ```
 
 Show the user the run contract for approval when the user asked to approve plans or when the scope is ambiguous. Otherwise proceed if they clearly asked for implementation.
@@ -47,7 +47,7 @@ Show the user the run contract for approval when the user asked to approve plans
 Implement only inside the agreed scope. When work needs delegated agents, create bounded child packets:
 
 ```bash
-python3 scripts/init_child_task.py runs/<run-id>/MANIFEST.json <child-id> --owner <role> --write-scope <path>
+python3 vendor/proofline/scripts/init_child_task.py vendor/proofline/runs/<run-id>/MANIFEST.json <child-id> --owner <role> --write-scope <path>
 ```
 
 Child-agent self-report is not evidence. Inspect returned changes and verify them locally.
@@ -55,8 +55,8 @@ Child-agent self-report is not evidence. Inspect returned changes and verify the
 For competing approaches, scaffold candidates:
 
 ```bash
-python3 scripts/init_candidate.py runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
-python3 scripts/candidate_summary.py runs/<run-id> --output runs/<run-id>/artifacts/candidate-summary.md
+python3 vendor/proofline/scripts/init_candidate.py vendor/proofline/runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
+python3 vendor/proofline/scripts/candidate_summary.py vendor/proofline/runs/<run-id> --output vendor/proofline/runs/<run-id>/artifacts/candidate-summary.md
 ```
 
 ## Verify And Close
@@ -64,16 +64,16 @@ python3 scripts/candidate_summary.py runs/<run-id> --output runs/<run-id>/artifa
 Run required checks and write evidence:
 
 ```bash
-python3 scripts/run_checks.py runs/<run-id>/MANIFEST.json --root .
-python3 scripts/verify_manifest.py runs/<run-id>/MANIFEST.json --root .
-python3 scripts/run_status.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/status.md
-python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/closeout.md
+python3 vendor/proofline/scripts/run_checks.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
+python3 vendor/proofline/scripts/verify_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
+python3 vendor/proofline/scripts/run_status.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/status.md
+python3 vendor/proofline/scripts/closeout_check.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/closeout.md
 ```
 
 Finish with the repository gate when available:
 
 ```bash
-python3 scripts/check_repo.py
+python3 vendor/proofline/scripts/check_repo.py --root . --runs-dir vendor/proofline/runs
 ```
 
 Only claim completion when closeout maps every explicit requirement to existing artifacts and evidence, or when remaining gaps are recorded as blockers.

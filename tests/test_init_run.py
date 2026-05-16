@@ -75,6 +75,29 @@ class InitRunTests(unittest.TestCase):
             self.assertIn("Created CIPH run: runs/cli-run", completed.stdout)
             self.assertTrue((root / "runs" / "cli-run" / "TASK.md").is_file())
 
+    def test_initialize_run_can_keep_state_in_vendor_proofline(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project_root = Path(tmp) / "project"
+            proofline_root = project_root / "vendor" / "proofline"
+            proofline_root.mkdir(parents=True)
+            _write_templates(proofline_root)
+
+            result = initialize_run(
+                "vendor-run",
+                root=project_root,
+                proofline_root=proofline_root,
+                objective="Keep Proofline locked in vendor.",
+            )
+
+            run_dir = proofline_root / "runs" / "vendor-run"
+            self.assertEqual(run_dir, result.run_dir)
+            self.assertTrue((run_dir / "TASK.md").is_file())
+            self.assertTrue((run_dir / "MANIFEST.json").is_file())
+            self.assertIn("Keep Proofline locked in vendor.", (run_dir / "TASK.md").read_text(encoding="utf-8"))
+
+            manifest = json.loads((run_dir / "MANIFEST.json").read_text(encoding="utf-8"))
+            self.assertEqual("vendor-run", manifest["task_id"])
+
 
 def _write_templates(root: Path) -> None:
     template_dir = root / "templates"

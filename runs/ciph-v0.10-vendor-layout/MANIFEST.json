@@ -1,0 +1,152 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.10-vendor-layout",
+  "objective": "Make Proofline install and operate from a vendored project directory by default.",
+  "deliverables": [
+    {
+      "id": "vendor-init",
+      "requirement": "Support creating runs under a separate Proofline root such as vendor/proofline.",
+      "artifact_paths": [
+        "scripts/init_run.py",
+        "tests/test_init_run.py",
+        "skills/proofline/assets/proofline/scripts/init_run.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.10-vendor-layout/artifacts/checks/vendor-layout-tests.txt"
+      ]
+    },
+    {
+      "id": "vendor-gate",
+      "requirement": "Support repo health checks against a custom runs directory.",
+      "artifact_paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py",
+        "skills/proofline/assets/proofline/scripts/check_repo.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.10-vendor-layout/artifacts/checks/vendor-layout-tests.txt"
+      ]
+    },
+    {
+      "id": "vendor-lint",
+      "requirement": "Derive required check evidence paths from the manifest location instead of assuming root-level runs/.",
+      "artifact_paths": [
+        "scripts/lint_manifest.py",
+        "skills/proofline/assets/proofline/scripts/lint_manifest.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.10-vendor-layout/artifacts/checks/vendor-layout-tests.txt"
+      ]
+    },
+    {
+      "id": "skill-vendor-install",
+      "requirement": "Make the Proofline Codex skill install into vendor/proofline and document vendor commands.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/scripts/install_proofline.py",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.10-vendor-layout/artifacts/checks/skill-quick-validate.txt",
+        "runs/ciph-v0.10-vendor-layout/artifacts/checks/vendor-layout-tests.txt"
+      ]
+    },
+    {
+      "id": "local-skill-refresh",
+      "requirement": "Refresh the local Codex Proofline skill from the canonical skill source.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.10-vendor-layout/artifacts/checks/local-skill-install.txt"
+      ]
+    },
+    {
+      "id": "run-closeout",
+      "requirement": "Record status and closeout for the vendor-layout run.",
+      "artifact_paths": [
+        "runs/ciph-v0.10-vendor-layout/artifacts/status.md",
+        "runs/ciph-v0.10-vendor-layout/artifacts/closeout.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.10-vendor-layout/artifacts/checks/vendor-layout-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/init_run.py",
+      "description": "Run initializer with separate Proofline root support.",
+      "required": true
+    },
+    {
+      "path": "scripts/check_repo.py",
+      "description": "Repo gate with configurable runs directory.",
+      "required": true
+    },
+    {
+      "path": "scripts/lint_manifest.py",
+      "description": "Manifest linter with location-derived evidence prefix.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/SKILL.md",
+      "description": "Proofline skill instructions for vendor layout.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/scripts/install_proofline.py",
+      "description": "Installer that copies Proofline into vendor/proofline.",
+      "required": true
+    },
+    {
+      "path": "tests/test_init_run.py",
+      "description": "Run initializer tests.",
+      "required": true
+    },
+    {
+      "path": "tests/test_check_repo.py",
+      "description": "Repo gate tests.",
+      "required": true
+    },
+    {
+      "path": "tests/test_proofline_skill.py",
+      "description": "Proofline skill installer tests.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.10-vendor-layout/artifacts/status.md",
+      "description": "Generated status report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.10-vendor-layout/artifacts/closeout.md",
+      "description": "Generated closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "vendor-layout-tests",
+      "command": "python3 -m unittest tests.test_init_run tests.test_check_repo tests.test_lint_manifest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.10-vendor-layout/artifacts/checks/vendor-layout-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "skill-quick-validate",
+      "command": "python3 /home/bm/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/proofline",
+      "required": true,
+      "evidence": "runs/ciph-v0.10-vendor-layout/artifacts/checks/skill-quick-validate.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "local-skill-install",
+      "command": "test -f /home/bm/.codex/skills/proofline/SKILL.md && grep -q \"vendor/proofline\" /home/bm/.codex/skills/proofline/SKILL.md",
+      "required": true,
+      "evidence": "runs/ciph-v0.10-vendor-layout/artifacts/checks/local-skill-install.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": []
+}

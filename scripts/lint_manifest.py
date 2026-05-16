@@ -35,7 +35,7 @@ class LintResult:
 
 def lint_manifest(manifest_path: Path | str, root: Path | str | None = None) -> LintResult:
     manifest_path = Path(manifest_path)
-    _root_path = Path(root) if root is not None else manifest_path.parent
+    root_path = Path(root) if root is not None else manifest_path.parent
     result = LintResult()
 
     try:
@@ -47,7 +47,7 @@ def lint_manifest(manifest_path: Path | str, root: Path | str | None = None) -> 
     task_id = manifest.get("task_id")
     _lint_placeholders(manifest, result)
     _lint_deliverables(manifest.get("deliverables", []), result)
-    _lint_checks(manifest.get("checks", []), task_id, result)
+    _lint_checks(manifest.get("checks", []), task_id, manifest_path, root_path, result)
 
     return result
 
@@ -106,11 +106,11 @@ def _lint_deliverables(deliverables: Any, result: LintResult) -> None:
                 result.warnings.append(f"WARN deliverable {deliverable_id} repeats evidence path: {duplicate}")
 
 
-def _lint_checks(checks: Any, task_id: Any, result: LintResult) -> None:
+def _lint_checks(checks: Any, task_id: Any, manifest_path: Path, root: Path, result: LintResult) -> None:
     if not isinstance(checks, list) or not isinstance(task_id, str) or not task_id:
         return
 
-    expected_prefix = f"runs/{task_id}/artifacts/checks/"
+    expected_prefix = _expected_check_evidence_prefix(manifest_path, root, task_id)
     evidence_paths: set[str] = set()
     for index, check in enumerate(checks, start=1):
         if not isinstance(check, dict):
@@ -133,6 +133,15 @@ def _lint_checks(checks: Any, task_id: Any, result: LintResult) -> None:
 
         if check.get("evidence_producer") != "run_checks":
             result.warnings.append(f"WARN required check {name} should use evidence_producer: run_checks")
+
+
+def _expected_check_evidence_prefix(manifest_path: Path, root: Path, task_id: str) -> str:
+    expected_dir = manifest_path.parent / "artifacts" / "checks"
+    try:
+        relative = expected_dir.relative_to(root)
+    except ValueError:
+        relative = Path("runs") / task_id / "artifacts" / "checks"
+    return f"{relative.as_posix().rstrip('/')}/"
 
 
 def _has_duplicate_strings(values: list[Any]) -> bool:

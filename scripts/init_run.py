@@ -27,13 +27,15 @@ class InitRunResult:
 def initialize_run(
     run_id: str,
     root: Path | str = ".",
+    proofline_root: Path | str | None = None,
     objective: str | None = None,
     force: bool = False,
 ) -> InitRunResult:
     validate_run_id(run_id)
     root_path = Path(root)
-    templates_dir = root_path / "templates"
-    run_dir = root_path / "runs" / run_id
+    proofline_path = Path(proofline_root) if proofline_root is not None else root_path
+    templates_dir = proofline_path / "templates"
+    run_dir = proofline_path / "runs" / run_id
     task_path = run_dir / "TASK.md"
     manifest_path = run_dir / "MANIFEST.json"
     artifacts_dir = run_dir / "artifacts"
@@ -116,23 +118,36 @@ def _replace_placeholders(value: Any, run_id: str, objective: str) -> Any:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Initialize a CIPH run directory.")
     parser.add_argument("run_id", help="Run id using letters, numbers, dots, underscores, or hyphens")
-    parser.add_argument("--root", type=Path, default=Path("."), help="Repository root")
+    parser.add_argument("--root", type=Path, default=Path("."), help="Project repository root")
+    parser.add_argument(
+        "--proofline-root",
+        type=Path,
+        default=None,
+        help="Proofline state root containing templates/ and runs/; defaults to --root",
+    )
     parser.add_argument("--objective", default=None, help="Original user objective for TASK.md and MANIFEST.json")
     parser.add_argument("--force", action="store_true", help="Overwrite generated files for an existing run")
     args = parser.parse_args(argv)
 
     try:
-        result = initialize_run(args.run_id, args.root, args.objective, args.force)
+        result = initialize_run(args.run_id, args.root, args.proofline_root, args.objective, args.force)
     except (FileExistsError, FileNotFoundError, ValueError) as exc:
         print(f"ERROR: {exc}")
         return 1
 
-    display_path = Path("runs") / result.run_id
+    display_path = _display_path(result.run_dir, args.root)
     print(f"Created CIPH run: {display_path}")
     print(f"- Task: {result.task_path}")
     print(f"- Manifest: {result.manifest_path}")
     print(f"- Artifacts: {result.artifacts_dir}")
     return 0
+
+
+def _display_path(path: Path, root: Path) -> Path | str:
+    try:
+        return path.relative_to(root)
+    except ValueError:
+        return path
 
 
 if __name__ == "__main__":

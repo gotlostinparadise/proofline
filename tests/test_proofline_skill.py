@@ -22,18 +22,23 @@ class ProoflineSkillTests(unittest.TestCase):
             completed = _run_installer(target)
 
             self.assertEqual(completed.returncode, 0, completed.stderr)
-            self.assertTrue((target / "harness" / "CIPH.md").is_file())
-            self.assertTrue((target / "harness" / "runtime-charter.md").is_file())
-            self.assertTrue((target / "templates" / "TASK.md").is_file())
-            self.assertTrue((target / "templates" / "MANIFEST.json").is_file())
-            self.assertTrue((target / "scripts" / "init_run.py").is_file())
-            self.assertTrue(os.access(target / "scripts" / "init_run.py", os.X_OK))
+            vendor = target / "vendor" / "proofline"
+            self.assertTrue((vendor / "harness" / "CIPH.md").is_file())
+            self.assertTrue((vendor / "harness" / "runtime-charter.md").is_file())
+            self.assertTrue((vendor / "templates" / "TASK.md").is_file())
+            self.assertTrue((vendor / "templates" / "MANIFEST.json").is_file())
+            self.assertTrue((vendor / "scripts" / "init_run.py").is_file())
+            self.assertTrue(os.access(vendor / "scripts" / "init_run.py", os.X_OK))
 
             init_run = subprocess.run(
                 [
                     sys.executable,
-                    "scripts/init_run.py",
+                    "vendor/proofline/scripts/init_run.py",
                     "sample-run",
+                    "--root",
+                    str(target),
+                    "--proofline-root",
+                    str(vendor),
                     "--objective",
                     "Exercise installed Proofline.",
                 ],
@@ -44,15 +49,15 @@ class ProoflineSkillTests(unittest.TestCase):
             )
 
             self.assertEqual(init_run.returncode, 0, init_run.stderr)
-            self.assertTrue((target / "runs" / "sample-run" / "TASK.md").is_file())
-            self.assertTrue((target / "runs" / "sample-run" / "MANIFEST.json").is_file())
+            self.assertTrue((vendor / "runs" / "sample-run" / "TASK.md").is_file())
+            self.assertTrue((vendor / "runs" / "sample-run" / "MANIFEST.json").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):
         self.assertTrue(INSTALLER.exists(), f"Missing installer: {INSTALLER}")
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "target"
-            target.joinpath("scripts").mkdir(parents=True)
-            existing = target / "scripts" / "init_run.py"
+            target.joinpath("vendor", "proofline", "scripts").mkdir(parents=True)
+            existing = target / "vendor" / "proofline" / "scripts" / "init_run.py"
             existing.write_text("custom\n", encoding="utf-8")
 
             refused = _run_installer(target)

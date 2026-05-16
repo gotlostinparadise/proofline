@@ -29,14 +29,19 @@ class RepoGateResult:
         return not self.failures
 
 
-def check_repo(root: Path | str = ".", include_diff_check: bool = True) -> RepoGateResult:
+def check_repo(
+    root: Path | str = ".",
+    include_diff_check: bool = True,
+    runs_dir: Path | str = "runs",
+) -> RepoGateResult:
     root_path = Path(root)
+    runs_path = root_path / runs_dir
     result = RepoGateResult()
 
     _run_tests(root_path, result)
-    manifests = sorted((root_path / "runs").glob("*/MANIFEST.json"))
+    manifests = sorted(runs_path.glob("*/MANIFEST.json"))
     if not manifests:
-        result.failures.append("FAIL manifests none found under runs/*/MANIFEST.json")
+        result.failures.append(f"FAIL manifests none found under {Path(runs_dir).as_posix()}/*/MANIFEST.json")
 
     for manifest_path in manifests:
         rel_manifest = _relative(manifest_path, root_path)
@@ -110,10 +115,11 @@ def _relative(path: Path, root: Path) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the CIPH repository health gate.")
     parser.add_argument("--root", type=Path, default=Path("."), help="Repository root")
+    parser.add_argument("--runs-dir", type=Path, default=Path("runs"), help="Runs directory relative to --root")
     parser.add_argument("--skip-diff-check", action="store_true", help="Skip git diff --check")
     args = parser.parse_args(argv)
 
-    result = check_repo(args.root, include_diff_check=not args.skip_diff_check)
+    result = check_repo(args.root, include_diff_check=not args.skip_diff_check, runs_dir=args.runs_dir)
     for message in result.messages:
         print(message)
     for failure in result.failures:

@@ -85,6 +85,18 @@ class CheckRepoTests(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stderr)
             self.assertIn("CIPH repo gate passed", completed.stdout)
 
+    def test_check_repo_accepts_vendored_runs_directory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _write_test_file(root, passing=True)
+            _write_clean_run(root, "sample", runs_dir=Path("vendor") / "proofline" / "runs")
+
+            result = check_repo(root, include_diff_check=False, runs_dir=Path("vendor") / "proofline" / "runs")
+
+            self.assertTrue(result.ok, result.failures)
+            self.assertIn("PASS lint vendor/proofline/runs/sample/MANIFEST.json", result.messages)
+            self.assertIn("PASS closeout vendor/proofline/runs/sample/MANIFEST.json", result.messages)
+
 
 def _write_test_file(root: Path, passing: bool) -> None:
     tests_dir = root / "tests"
@@ -106,8 +118,13 @@ def _create_dirty_git_diff(root: Path) -> None:
     tracked.write_text("trailing whitespace \n", encoding="utf-8")
 
 
-def _write_clean_run(root: Path, run_id: str, create_artifact: bool = True) -> None:
-    run_dir = root / "runs" / run_id
+def _write_clean_run(
+    root: Path,
+    run_id: str,
+    create_artifact: bool = True,
+    runs_dir: Path = Path("runs"),
+) -> None:
+    run_dir = root / runs_dir / run_id
     check_dir = run_dir / "artifacts" / "checks"
     check_dir.mkdir(parents=True)
     if create_artifact:
@@ -129,7 +146,7 @@ def _write_clean_run(root: Path, run_id: str, create_artifact: bool = True) -> N
                 "id": "repo-gate",
                 "requirement": "Gate the repository.",
                 "artifact_paths": ["artifact.txt"],
-                "evidence_paths": [f"runs/{run_id}/artifacts/checks/unit-tests.txt"],
+                "evidence_paths": [f"{runs_dir.as_posix()}/{run_id}/artifacts/checks/unit-tests.txt"],
             }
         ],
         "artifacts": [
@@ -144,7 +161,7 @@ def _write_clean_run(root: Path, run_id: str, create_artifact: bool = True) -> N
                 "name": "unit-tests",
                 "command": "python3 -m unittest discover",
                 "required": True,
-                "evidence": f"runs/{run_id}/artifacts/checks/unit-tests.txt",
+                "evidence": f"{runs_dir.as_posix()}/{run_id}/artifacts/checks/unit-tests.txt",
                 "evidence_producer": "run_checks",
             }
         ],

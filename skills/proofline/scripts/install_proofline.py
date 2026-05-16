@@ -25,6 +25,7 @@ class InstallResult:
 
 def install_proofline(target: Path | str, force: bool = False) -> InstallResult:
     target_path = Path(target)
+    destination_root = target_path / "vendor" / "proofline"
     source_root = Path(__file__).resolve().parents[1] / "assets" / "proofline"
     if not source_root.is_dir():
         raise FileNotFoundError(f"Missing bundled Proofline assets: {source_root}")
@@ -34,7 +35,7 @@ def install_proofline(target: Path | str, force: bool = False) -> InstallResult:
 
     for source in files:
         relative = source.relative_to(source_root)
-        destination = target_path / relative
+        destination = destination_root / relative
         if destination.exists():
             if destination.is_file() and filecmp.cmp(source, destination, shallow=False):
                 result.unchanged.append(relative)
@@ -76,7 +77,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- {conflict}", file=sys.stderr)
         return 1
 
-    print(f"Installed Proofline into {args.target}")
+    print(f"Installed Proofline into {args.target / 'vendor' / 'proofline'}")
     print(f"Copied: {len(result.copied)}")
     print(f"Unchanged: {len(result.unchanged)}")
     return 0
