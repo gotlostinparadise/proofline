@@ -73,6 +73,13 @@ Render a closeout checklist:
 python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root .
 ```
 
+Write reusable reports:
+
+```bash
+python3 scripts/run_status.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/status.md
+python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/closeout.md
+```
+
 ## Minimal Run Layout
 
 ```text

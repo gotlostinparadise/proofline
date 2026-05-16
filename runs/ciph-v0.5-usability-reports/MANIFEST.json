@@ -1,0 +1,169 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.5-usability-reports",
+  "objective": "Add closeout report file output and concise run status reporting for CIPH usability.",
+  "deliverables": [
+    {
+      "id": "closeout-output",
+      "requirement": "Add --output support to scripts/closeout_check.py.",
+      "artifact_paths": [
+        "scripts/closeout_check.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.5-usability-reports/artifacts/checks/focused-closeout-tests.txt"
+      ]
+    },
+    {
+      "id": "run-status",
+      "requirement": "Add scripts/run_status.py for concise run status reports.",
+      "artifact_paths": [
+        "scripts/run_status.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.5-usability-reports/artifacts/checks/focused-status-tests.txt"
+      ]
+    },
+    {
+      "id": "report-tests",
+      "requirement": "Add tests for report rendering and file output.",
+      "artifact_paths": [
+        "tests/test_run_status.py",
+        "tests/test_closeout_check.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.5-usability-reports/artifacts/checks/full-unit-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-flow",
+      "requirement": "Document reusable status and closeout reports.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "templates/TASK.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.5-usability-reports/artifacts/checks/full-unit-tests.txt"
+      ]
+    },
+    {
+      "id": "dogfood-reports",
+      "requirement": "Generate status and closeout report artifacts for this run.",
+      "artifact_paths": [
+        "runs/ciph-v0.5-usability-reports/artifacts/status.md",
+        "runs/ciph-v0.5-usability-reports/artifacts/closeout.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.5-usability-reports/artifacts/checks/status-help.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/closeout_check.py",
+      "description": "Closeout checklist renderer with output-file support.",
+      "required": true
+    },
+    {
+      "path": "scripts/run_status.py",
+      "description": "Concise run status renderer.",
+      "required": true
+    },
+    {
+      "path": "tests/test_run_status.py",
+      "description": "Run status tests.",
+      "required": true
+    },
+    {
+      "path": "tests/test_closeout_check.py",
+      "description": "Closeout output tests.",
+      "required": true
+    },
+    {
+      "path": "README.md",
+      "description": "Quick-start documentation including reusable reports.",
+      "required": true
+    },
+    {
+      "path": "harness/CIPH.md",
+      "description": "Harness procedure including report generation.",
+      "required": true
+    },
+    {
+      "path": "templates/TASK.md",
+      "description": "Task template including report generation.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.5-usability-reports/TASK.md",
+      "description": "Dogfood task for v0.5.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.5-usability-reports/MANIFEST.json",
+      "description": "Dogfood manifest for v0.5.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.5-usability-reports/artifacts/status.md",
+      "description": "Generated status report for the dogfood run.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.5-usability-reports/artifacts/closeout.md",
+      "description": "Generated closeout report for the dogfood run.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.5-usability-reports/artifacts/checks/focused-status-tests.txt",
+      "description": "Runner-produced status test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.5-usability-reports/artifacts/checks/focused-closeout-tests.txt",
+      "description": "Runner-produced closeout test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.5-usability-reports/artifacts/checks/full-unit-tests.txt",
+      "description": "Runner-produced full unit test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.5-usability-reports/artifacts/checks/status-help.txt",
+      "description": "Runner-produced status CLI help evidence.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "focused-status-tests",
+      "command": "python3 -m unittest tests.test_run_status",
+      "required": true,
+      "evidence": "runs/ciph-v0.5-usability-reports/artifacts/checks/focused-status-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "focused-closeout-tests",
+      "command": "python3 -m unittest tests.test_closeout_check",
+      "required": true,
+      "evidence": "runs/ciph-v0.5-usability-reports/artifacts/checks/focused-closeout-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.5-usability-reports/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "status-help",
+      "command": "python3 scripts/run_status.py --help",
+      "required": true,
+      "evidence": "runs/ciph-v0.5-usability-reports/artifacts/checks/status-help.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": []
+}

@@ -109,9 +109,16 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Render a CIPH closeout checklist.")
     parser.add_argument("manifest", type=Path, help="Path to MANIFEST.json")
     parser.add_argument("--root", type=Path, default=None, help="Path that manifest references are relative to")
+    parser.add_argument("--output", type=Path, default=None, help="Write checklist to this path")
     args = parser.parse_args(argv)
 
-    print(render_closeout(args.manifest, args.root), end="")
+    output = render_closeout(args.manifest, args.root)
+    if args.output is not None:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(output, encoding="utf-8")
+        print(f"Wrote CIPH closeout checklist: {args.output}")
+    else:
+        print(output, end="")
     return 0
 
 

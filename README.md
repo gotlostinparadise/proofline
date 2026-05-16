@@ -45,6 +45,13 @@ Render the closeout checklist:
 python3 scripts/closeout_check.py runs/my-run/MANIFEST.json --root .
 ```
 
+Write reusable reports:
+
+```bash
+python3 scripts/run_status.py runs/my-run/MANIFEST.json --root . --output runs/my-run/artifacts/status.md
+python3 scripts/closeout_check.py runs/my-run/MANIFEST.json --root . --output runs/my-run/artifacts/closeout.md
+```
+
 ## Files
 
 - `harness/CIPH.md`: harness lifecycle and contracts.
@@ -55,6 +62,7 @@ python3 scripts/closeout_check.py runs/my-run/MANIFEST.json --root .
 - `scripts/lint_manifest.py`: catches placeholders and weak manifest contracts.
 - `scripts/run_checks.py`: runs manifest checks and writes structured evidence.
 - `scripts/verify_manifest.py`: validates manifest structure and required local paths.
+- `scripts/run_status.py`: writes a concise run status report.
 - `scripts/closeout_check.py`: prints the prompt-to-artifact closeout checklist.
 
 ## Development Checks
@@ -65,14 +73,19 @@ python3 scripts/lint_manifest.py runs/example-harness-design/MANIFEST.json --roo
 python3 scripts/lint_manifest.py runs/ciph-v0.2-init-run/MANIFEST.json --root .
 python3 scripts/lint_manifest.py runs/ciph-v0.3-run-checks/MANIFEST.json --root .
 python3 scripts/lint_manifest.py runs/ciph-v0.4-manifest-lint/MANIFEST.json --root .
+python3 scripts/lint_manifest.py runs/ciph-v0.5-usability-reports/MANIFEST.json --root .
 python3 scripts/run_checks.py runs/ciph-v0.3-run-checks/MANIFEST.json --root .
 python3 scripts/run_checks.py runs/ciph-v0.4-manifest-lint/MANIFEST.json --root .
+python3 scripts/run_checks.py runs/ciph-v0.5-usability-reports/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/example-harness-design/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/ciph-v0.2-init-run/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/ciph-v0.3-run-checks/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/ciph-v0.4-manifest-lint/MANIFEST.json --root .
+python3 scripts/verify_manifest.py runs/ciph-v0.5-usability-reports/MANIFEST.json --root .
+python3 scripts/run_status.py runs/ciph-v0.5-usability-reports/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/example-harness-design/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/ciph-v0.2-init-run/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/ciph-v0.3-run-checks/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/ciph-v0.4-manifest-lint/MANIFEST.json --root .
+python3 scripts/closeout_check.py runs/ciph-v0.5-usability-reports/MANIFEST.json --root .
 ```

@@ -1,0 +1,20 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "status-help", "command": "python3 scripts/run_status.py --help", "exit_code": 0, "finished_at_utc": "2026-05-16T11:50:39+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T11:50:39+00:00", "status": "PASS"}
+
+## STDOUT
+
+usage: run_status.py [-h] [--root ROOT] [--output OUTPUT] manifest
+
+Render a concise CIPH run status report.
+
+positional arguments:
+  manifest         Path to MANIFEST.json
+
+options:
+  -h, --help       show this help message and exit
+  --root ROOT      Path that manifest references are relative to
+  --output OUTPUT  Write report to this path
+
+## STDERR
+
+<empty>

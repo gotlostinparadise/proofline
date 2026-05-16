@@ -37,4 +37,6 @@ python3 scripts/lint_manifest.py runs/<run-id>/MANIFEST.json --root .
 python3 scripts/run_checks.py runs/<run-id>/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/<run-id>/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root .
+python3 scripts/run_status.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/status.md
+python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/closeout.md
 ```
