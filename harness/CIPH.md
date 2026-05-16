@@ -39,6 +39,12 @@ A run is complete only when the closeout checklist maps every explicit requireme
 
 ## Commands
 
+Create a run:
+
+```bash
+python3 scripts/init_run.py <run-id> --objective "Describe the coding task."
+```
+
 Validate a run manifest:
 
 ```bash
