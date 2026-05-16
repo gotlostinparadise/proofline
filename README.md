@@ -75,6 +75,7 @@ python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/
 - `scripts/init_child_task.py`: creates a bounded child task packet.
 - `scripts/init_candidate.py`: creates candidate trace and score scaffolding.
 - `scripts/candidate_summary.py`: writes a candidate score summary.
+- `scripts/check_repo.py`: runs the repository health gate.
 - `scripts/lint_manifest.py`: catches placeholders and weak manifest contracts.
 - `scripts/run_checks.py`: runs manifest checks and writes structured evidence.
 - `scripts/verify_manifest.py`: validates manifest structure and required local paths.
@@ -82,6 +83,14 @@ python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/
 - `scripts/closeout_check.py`: prints the prompt-to-artifact closeout checklist.
 
 ## Development Checks
+
+Default repo gate:
+
+```bash
+python3 scripts/check_repo.py
+```
+
+Expanded commands:
 
 ```bash
 python3 -m unittest discover
@@ -92,11 +101,13 @@ python3 scripts/lint_manifest.py runs/ciph-v0.4-manifest-lint/MANIFEST.json --ro
 python3 scripts/lint_manifest.py runs/ciph-v0.5-usability-reports/MANIFEST.json --root .
 python3 scripts/lint_manifest.py runs/ciph-v0.6-child-tasks/MANIFEST.json --root .
 python3 scripts/lint_manifest.py runs/ciph-v0.7-candidates/MANIFEST.json --root .
+python3 scripts/lint_manifest.py runs/ciph-v0.8-repo-gate/MANIFEST.json --root .
 python3 scripts/run_checks.py runs/ciph-v0.3-run-checks/MANIFEST.json --root .
 python3 scripts/run_checks.py runs/ciph-v0.4-manifest-lint/MANIFEST.json --root .
 python3 scripts/run_checks.py runs/ciph-v0.5-usability-reports/MANIFEST.json --root .
 python3 scripts/run_checks.py runs/ciph-v0.6-child-tasks/MANIFEST.json --root .
 python3 scripts/run_checks.py runs/ciph-v0.7-candidates/MANIFEST.json --root .
+python3 scripts/run_checks.py runs/ciph-v0.8-repo-gate/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/example-harness-design/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/ciph-v0.2-init-run/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/ciph-v0.3-run-checks/MANIFEST.json --root .
@@ -104,9 +115,11 @@ python3 scripts/verify_manifest.py runs/ciph-v0.4-manifest-lint/MANIFEST.json --
 python3 scripts/verify_manifest.py runs/ciph-v0.5-usability-reports/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/ciph-v0.6-child-tasks/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/ciph-v0.7-candidates/MANIFEST.json --root .
+python3 scripts/verify_manifest.py runs/ciph-v0.8-repo-gate/MANIFEST.json --root .
 python3 scripts/run_status.py runs/ciph-v0.5-usability-reports/MANIFEST.json --root .
 python3 scripts/run_status.py runs/ciph-v0.6-child-tasks/MANIFEST.json --root .
 python3 scripts/run_status.py runs/ciph-v0.7-candidates/MANIFEST.json --root .
+python3 scripts/run_status.py runs/ciph-v0.8-repo-gate/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/example-harness-design/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/ciph-v0.2-init-run/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/ciph-v0.3-run-checks/MANIFEST.json --root .
@@ -114,4 +127,5 @@ python3 scripts/closeout_check.py runs/ciph-v0.4-manifest-lint/MANIFEST.json --r
 python3 scripts/closeout_check.py runs/ciph-v0.5-usability-reports/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/ciph-v0.6-child-tasks/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/ciph-v0.7-candidates/MANIFEST.json --root .
+python3 scripts/closeout_check.py runs/ciph-v0.8-repo-gate/MANIFEST.json --root .
 ```

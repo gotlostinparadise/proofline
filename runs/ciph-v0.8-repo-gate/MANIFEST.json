@@ -1,0 +1,130 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.8-repo-gate",
+  "objective": "Add one deterministic repository health gate for CIPH.",
+  "deliverables": [
+    {
+      "id": "repo-gate-command",
+      "requirement": "Add scripts/check_repo.py as a deterministic repo health gate.",
+      "artifact_paths": [
+        "scripts/check_repo.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.8-repo-gate/artifacts/checks/focused-repo-gate-tests.txt"
+      ]
+    },
+    {
+      "id": "repo-gate-tests",
+      "requirement": "Add tests for clean pass, missing closeout failure, and direct CLI execution.",
+      "artifact_paths": [
+        "tests/test_check_repo.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.8-repo-gate/artifacts/checks/focused-repo-gate-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-flow",
+      "requirement": "Document the repo gate as the default development check.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.8-repo-gate/artifacts/checks/full-unit-tests.txt"
+      ]
+    },
+    {
+      "id": "dogfood-gate",
+      "requirement": "Run the gate against this checkout and record evidence.",
+      "artifact_paths": [
+        "runs/ciph-v0.8-repo-gate/artifacts/status.md",
+        "runs/ciph-v0.8-repo-gate/artifacts/closeout.md"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-help.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/check_repo.py",
+      "description": "Repository health gate.",
+      "required": true
+    },
+    {
+      "path": "tests/test_check_repo.py",
+      "description": "Repository gate tests.",
+      "required": true
+    },
+    {
+      "path": "README.md",
+      "description": "Quick-start documentation including the repo gate.",
+      "required": true
+    },
+    {
+      "path": "harness/CIPH.md",
+      "description": "Harness procedure including the repo gate.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.8-repo-gate/TASK.md",
+      "description": "Dogfood task for v0.8.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.8-repo-gate/MANIFEST.json",
+      "description": "Dogfood manifest for v0.8.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.8-repo-gate/artifacts/status.md",
+      "description": "Generated status report for the dogfood run.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.8-repo-gate/artifacts/closeout.md",
+      "description": "Generated closeout report for the dogfood run.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.8-repo-gate/artifacts/checks/focused-repo-gate-tests.txt",
+      "description": "Runner-produced repo gate test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.8-repo-gate/artifacts/checks/full-unit-tests.txt",
+      "description": "Runner-produced full unit test evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-help.txt",
+      "description": "Runner-produced repo gate CLI help evidence.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "focused-repo-gate-tests",
+      "command": "python3 -m unittest tests.test_check_repo",
+      "required": true,
+      "evidence": "runs/ciph-v0.8-repo-gate/artifacts/checks/focused-repo-gate-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.8-repo-gate/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "repo-gate-help",
+      "command": "python3 scripts/check_repo.py --help",
+      "required": true,
+      "evidence": "runs/ciph-v0.8-repo-gate/artifacts/checks/repo-gate-help.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": []
+}

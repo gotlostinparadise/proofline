@@ -93,6 +93,12 @@ python3 scripts/init_candidate.py runs/<run-id>/MANIFEST.json <candidate-id> --c
 python3 scripts/candidate_summary.py runs/<run-id> --output runs/<run-id>/artifacts/candidate-summary.md
 ```
 
+Run the repository gate:
+
+```bash
+python3 scripts/check_repo.py
+```
+
 ## Minimal Run Layout
 
 ```text

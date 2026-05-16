@@ -1,0 +1,17 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "repo-gate-help", "command": "python3 scripts/check_repo.py --help", "exit_code": 0, "finished_at_utc": "2026-05-16T16:14:15+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T16:14:15+00:00", "status": "PASS"}
+
+## STDOUT
+
+usage: check_repo.py [-h] [--root ROOT] [--skip-diff-check]
+
+Run the CIPH repository health gate.
+
+options:
+  -h, --help         show this help message and exit
+  --root ROOT        Repository root
+  --skip-diff-check  Skip git diff --check
+
+## STDERR
+
+<empty>
