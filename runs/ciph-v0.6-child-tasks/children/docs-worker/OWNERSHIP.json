@@ -1,0 +1,12 @@
+{
+  "parent_task_id": "ciph-v0.6-child-tasks",
+  "child_id": "docs-worker",
+  "owner": "worker-docs",
+  "write_scopes": [
+    "README.md",
+    "harness/CIPH.md"
+  ],
+  "task_path": "runs/ciph-v0.6-child-tasks/children/docs-worker/TASK.md",
+  "response_path": "runs/ciph-v0.6-child-tasks/children/docs-worker/RESPONSE.md",
+  "artifacts_dir": "runs/ciph-v0.6-child-tasks/children/docs-worker/artifacts"
+}

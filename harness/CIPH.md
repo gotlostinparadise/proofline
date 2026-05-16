@@ -80,6 +80,12 @@ python3 scripts/run_status.py runs/<run-id>/MANIFEST.json --root . --output runs
 python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/closeout.md
 ```
 
+Create a bounded child task packet:
+
+```bash
+python3 scripts/init_child_task.py runs/<run-id>/MANIFEST.json <child-id> --owner <role> --write-scope <path>
+```
+
 ## Minimal Run Layout
 
 ```text

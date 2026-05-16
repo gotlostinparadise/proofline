@@ -1,0 +1,28 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "child-help", "command": "python3 scripts/init_child_task.py --help", "exit_code": 0, "finished_at_utc": "2026-05-16T11:55:50+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T11:55:50+00:00", "status": "PASS"}
+
+## STDOUT
+
+usage: init_child_task.py [-h] [--root ROOT] [--title TITLE] [--owner OWNER]
+                          [--write-scope WRITE_SCOPE] [--force]
+                          manifest child_id
+
+Create a bounded CIPH child-task packet.
+
+positional arguments:
+  manifest              Path to parent MANIFEST.json
+  child_id              Child id using letters, numbers, dots, underscores, or
+                        hyphens
+
+options:
+  -h, --help            show this help message and exit
+  --root ROOT           Repository root
+  --title TITLE         Child task title
+  --owner OWNER         Assigned child owner or role
+  --write-scope WRITE_SCOPE
+                        Allowed write path; repeatable
+  --force               Overwrite generated child packet files
+
+## STDERR
+
+<empty>
