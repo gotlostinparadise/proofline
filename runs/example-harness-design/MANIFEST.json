@@ -1,0 +1,74 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "example-harness-design",
+  "objective": "Validate the initial structured HTML research artifact for the agent harness research task.",
+  "deliverables": [
+    {
+      "id": "source-meta-harness",
+      "requirement": "Study and cite https://arxiv.org/pdf/2603.28052v1.",
+      "artifact_paths": [
+        "index.html"
+      ],
+      "evidence_paths": [
+        "source:https://arxiv.org/pdf/2603.28052v1"
+      ]
+    },
+    {
+      "id": "source-nlah",
+      "requirement": "Study and cite https://arxiv.org/pdf/2603.25723.",
+      "artifact_paths": [
+        "index.html"
+      ],
+      "evidence_paths": [
+        "source:https://arxiv.org/pdf/2603.25723"
+      ]
+    },
+    {
+      "id": "structured-html",
+      "requirement": "Document valuable information in structured HTML.",
+      "artifact_paths": [
+        "index.html"
+      ],
+      "evidence_paths": [
+        "runs/example-harness-design/artifacts/verification.md"
+      ]
+    },
+    {
+      "id": "invented-harness",
+      "requirement": "Present an invented harness for complex coding projects.",
+      "artifact_paths": [
+        "index.html"
+      ],
+      "evidence_paths": [
+        "runs/example-harness-design/artifacts/verification.md"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "index.html",
+      "description": "Structured HTML synthesis and CIPH harness proposal.",
+      "required": true
+    },
+    {
+      "path": "runs/example-harness-design/artifacts/verification.md",
+      "description": "Local verification evidence for the structured HTML artifact.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "html-parse",
+      "command": "python3 - <<'PY'\nfrom html.parser import HTMLParser\nfrom pathlib import Path\nparser = HTMLParser()\nparser.feed(Path('index.html').read_text(encoding='utf-8'))\nparser.close()\nprint('HTML parse ok')\nPY",
+      "required": true,
+      "evidence": "runs/example-harness-design/artifacts/verification.md"
+    },
+    {
+      "name": "source-and-section-markers",
+      "command": "rg -n \"2603\\.28052|2603\\.25723|Invented Harness: CIPH|Verification Matrix|Minimum Viable Harness\" index.html",
+      "required": true,
+      "evidence": "runs/example-harness-design/artifacts/verification.md"
+    }
+  ],
+  "risks": []
+}

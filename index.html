@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Harness for Complex Coding Projects</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1d2430;
+      --muted: #5c6678;
+      --line: #d8dee8;
+      --panel: #f7f9fc;
+      --accent: #1f6f8b;
+      --accent-2: #7a4b22;
+      --good: #1f7a4d;
+      --warn: #9a5b00;
+      --bad: #a33a34;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      color: var(--ink);
+      background: var(--white);
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: #eef4f7;
+    }
+
+    .wrap {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 58vh;
+      display: grid;
+      align-content: center;
+      gap: 22px;
+      padding: 56px 0 44px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.12;
+      letter-spacing: 0;
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 880px;
+      font-size: clamp(2.3rem, 8vw, 5.5rem);
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 4vw, 2.65rem);
+      margin-bottom: 18px;
+    }
+
+    h3 {
+      font-size: 1.02rem;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .lead {
+      max-width: 820px;
+      color: #344054;
+      font-size: clamp(1rem, 2.6vw, 1.28rem);
+    }
+
+    .source-strip {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 920px;
+    }
+
+    .source-strip a {
+      display: block;
+      min-height: 76px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.74);
+      text-decoration: none;
+    }
+
+    .source-strip strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    main {
+      display: grid;
+      gap: 0;
+    }
+
+    section {
+      padding: 54px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-intro {
+      max-width: 820px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: var(--white);
+    }
+
+    .card.compact {
+      padding: 14px;
+    }
+
+    .card p,
+    li {
+      color: var(--muted);
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: var(--accent);
+      background: #e3f2f6;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .band {
+      background: var(--panel);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      background: var(--white);
+      font-size: 0.95rem;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      color: #2b3443;
+      background: #edf2f6;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    pre {
+      overflow: auto;
+      margin: 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #111827;
+      color: #e5e7eb;
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .step {
+      min-height: 112px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent-2);
+    }
+
+    .metric {
+      display: grid;
+      gap: 4px;
+      padding: 14px;
+      border-left: 4px solid var(--accent);
+      background: #f2f8fa;
+    }
+
+    .metric b {
+      font-size: 1.35rem;
+    }
+
+    .status-good {
+      color: var(--good);
+      font-weight: 700;
+    }
+
+    .status-warn {
+      color: var(--warn);
+      font-weight: 700;
+    }
+
+    .status-bad {
+      color: var(--bad);
+      font-weight: 700;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    footer {
+      padding: 34px 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 920px) {
+      .grid.two,
+      .grid.three,
+      .source-strip,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap hero">
+      <p class="eyebrow">Research synthesis and proposed architecture</p>
+      <h1>Agent Harness for Complex Coding Projects</h1>
+      <p class="lead">
+        A practical harness design that combines searchable execution history, natural-language
+        contracts, delegated workspaces, and evaluator-aligned verification for long-running coding work.
+      </p>
+      <div class="source-strip" aria-label="Studied papers">
+        <a href="https://arxiv.org/pdf/2603.28052v1">
+          <strong>Meta-Harness: End-to-End Optimization of Model Harnesses</strong>
+          Lee, Nair, Zhang, Lee, Khattab, Finn. arXiv:2603.28052v1.
+        </a>
+        <a href="https://arxiv.org/pdf/2603.25723">
+          <strong>Natural-Language Agent Harnesses</strong>
+          Pan, Zou, Guo, Ni, Zheng. arXiv:2603.25723.
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="wrap">
+        <h2>Core Thesis</h2>
+        <p class="section-intro">
+          Complex coding projects need more than a better prompt. They need a harness: the layer that
+          decides what state persists, which context is visible, how work is delegated, what artifacts
+          must be produced, how failures are classified, and which evidence is strong enough to stop.
+        </p>
+        <div class="grid three">
+          <article class="card">
+            <span class="tag">State</span>
+            <h3>Filesystem-backed memory beats lossy summaries</h3>
+            <p>
+              The Meta-Harness paper shows that optimization improves when the proposer can inspect
+              prior source code, scores, prompts, tool calls, outputs, and state updates through normal
+              file operations instead of relying only on scalar scores or compressed feedback.
+            </p>
+          </article>
+          <article class="card">
+            <span class="tag">Contracts</span>
+            <h3>Natural language is useful when bounded</h3>
+            <p>
+              The NLAH paper argues that harness logic can be represented as structured text if
+              deterministic scripts and adapters carry hard checks such as tests, linters, scrapers,
+              verifiers, manifests, and final artifact validation.
+            </p>
+          </article>
+          <article class="card">
+            <span class="tag">Verification</span>
+            <h3>More process is not automatically better</h3>
+            <p>
+              Ablations in NLAH show that extra stages can improve auditability while still harming
+              task outcomes when local acceptance diverges from the final evaluator. The harness must
+              stay aligned with the actual acceptance object.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <h2>Research Takeaways</h2>
+        <p class="section-intro">
+          The two papers point to complementary design rules: Meta-Harness focuses on optimizing
+          harness code from rich prior experience; NLAH focuses on making harness logic portable,
+          inspectable, executable, and ablatable as structured natural language.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Finding</th>
+              <th>Evidence from papers</th>
+              <th>Design implication for coding projects</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Harnesses are executable context systems</td>
+              <td>They determine what is stored, retrieved, and shown to the model; small changes can produce large performance gaps.</td>
+              <td>Represent prompts, memory, retrieval, delegation, tool policy, and verification as one governed system.</td>
+            </tr>
+            <tr>
+              <td>Full traces matter for credit assignment</td>
+              <td>Meta-Harness stores every evaluated candidate with code, scores, and execution traces in a growing filesystem.</td>
+              <td>Every run should leave searchable logs, decisions, failed attempts, commands, outputs, and artifacts.</td>
+            </tr>
+            <tr>
+              <td>The proposer should inspect selectively</td>
+              <td>Meta-Harness relies on a coding agent using shell-style inspection instead of stuffing all history into context.</td>
+              <td>Give agents path-addressable state plus query tools; keep context assembly explicit and inspectable.</td>
+            </tr>
+            <tr>
+              <td>Harness logic can be text if contracts are hard</td>
+              <td>NLAH defines roles, stages, adapters, scripts, state semantics, failure taxonomy, retry rules, and stop rules.</td>
+              <td>Use natural-language harness specs for orchestration, backed by deterministic scripts for gates.</td>
+            </tr>
+            <tr>
+              <td>Delegation needs visible boundaries</td>
+              <td>NLAH separates a runtime-owned parent from child agents with explicit task packets and output paths.</td>
+              <td>Use child workspaces with precise responsibilities, budgets, permissions, and normalized responses.</td>
+            </tr>
+            <tr>
+              <td>Evaluator alignment dominates process polish</td>
+              <td>NLAH reports cases where local revalidation succeeded but the official evaluator still failed.</td>
+              <td>Final gates must test the real success condition, not only local proxies or narrative confidence.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Invented Harness: CIPH</h2>
+        <p class="section-intro">
+          CIPH, the Complex Implementation Project Harness, is a repo-native harness for hard coding
+          tasks. It turns a vague project objective into a governed sequence of inspectable contracts,
+          delegated execution, evidence promotion, and completion audit.
+        </p>
+        <div class="flow" aria-label="CIPH lifecycle">
+          <div class="step">
+            <strong>1. Intake</strong>
+            Parse the objective, repo rules, facts that need MCP or documentation, permissions, and hard deliverables.
+          </div>
+          <div class="step">
+            <strong>2. Scope</strong>
+            Build a prompt-to-artifact checklist and identify source-of-truth files, tests, and external docs.
+          </div>
+          <div class="step">
+            <strong>3. Design</strong>
+            Produce a bounded plan with contracts, roles, allowed write sets, failure taxonomy, and stop gates.
+          </div>
+          <div class="step">
+            <strong>4. Execute</strong>
+            Run parent orchestration plus child workspaces for independent subtasks; log every material action.
+          </div>
+          <div class="step">
+            <strong>5. Verify</strong>
+            Run evaluator-aligned checks, inspect artifacts, and record command output as evidence.
+          </div>
+          <div class="step">
+            <strong>6. Close</strong>
+            Compare objective against evidence, classify gaps, and only then report complete or continue.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <h2>Harness Specification</h2>
+        <div class="grid two">
+          <article class="card">
+            <h3>Runtime charter</h3>
+            <ul>
+              <li>The parent agent owns orchestration, scope control, evidence promotion, and final audit.</li>
+              <li>Substantive implementation may run in child workspaces only when tasks are independent and bounded.</li>
+              <li>Facts about APIs, config keys, CLI flags, pricing, limits, schemas, or product behavior require authoritative documentation before setup steps or code changes.</li>
+              <li>Secrets are never printed; logs are redacted before being promoted into artifacts.</li>
+              <li>Completion claims require fresh verification evidence mapped back to the original objective.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Harness skill</h3>
+            <ul>
+              <li>Define role prompts for planner, implementer, reviewer, verifier, and closeout auditor.</li>
+              <li>Define stage transitions: plan, implement, local verify, independent review, repair, closeout.</li>
+              <li>Define adapters: test runner, docs fetcher, static checker, browser driver, log redactor, artifact manifest checker.</li>
+              <li>Define failure taxonomy: missing fact, stale fact, bad patch, failing verifier, evaluator mismatch, incomplete artifact, unsafe scope expansion.</li>
+              <li>Define retry rules: repair only the failing contract; escalate when the acceptance object itself is unclear.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Canonical Workspace</h2>
+        <p class="section-intro">
+          The harness is file-backed so it survives context compaction, enables selective inspection,
+          and makes delegation boundaries auditable.
+        </p>
+        <pre><code>run/
+  TASK.md                         # original objective, constraints, deliverables
+  MANIFEST.json                   # expected artifacts, checks, owners, statuses
+  harness/
+    CIPH.md                       # natural-language harness logic
+    runtime-charter.md            # shared rules for contracts, state, delegation
+    scripts/
+      verify_manifest.py
+      redact_logs.py
+      summarize_trace.py
+  facts/
+    sources.jsonl                 # authoritative docs consulted, URLs, timestamps
+    source_notes.md               # short research notes and applicability decisions
+  state/
+    task_history.jsonl            # append-only events, child calls, promotions
+    decisions.jsonl               # design choices and rejected alternatives
+    risks.jsonl                   # unresolved risk and mitigation records
+  candidates/
+    001/
+      patch.diff
+      score.json
+      trace/
+  children/
+    001/
+      TASK.md
+      inputs/
+      scratch/
+      RESPONSE.md
+      artifacts/
+  artifacts/
+    final_patch.diff
+    verification.md
+    closeout.md</code></pre>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <h2>Contracts</h2>
+        <div class="grid three">
+          <article class="card compact">
+            <h3>Task contract</h3>
+            <p>Required outputs, forbidden changes, target files, facts to verify, budget, and acceptance object.</p>
+          </article>
+          <article class="card compact">
+            <h3>Child contract</h3>
+            <p>Role, owned write set, inputs, permissions, completion condition, output path, and failure reporting format.</p>
+          </article>
+          <article class="card compact">
+            <h3>Artifact contract</h3>
+            <p>Exact files that must exist, schema or format requirements, checks that validate them, and evidence pointers.</p>
+          </article>
+          <article class="card compact">
+            <h3>Fact contract</h3>
+            <p>Volatile claims require a cited source, access date, authority ranking, and local applicability decision.</p>
+          </article>
+          <article class="card compact">
+            <h3>Verification contract</h3>
+            <p>Every completion claim maps to a command, inspected file, browser trace, or explicit gap record.</p>
+          </article>
+          <article class="card compact">
+            <h3>Stop contract</h3>
+            <p>The run stops only when every deliverable is covered by evidence or the blocker is made concrete.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Decision Model</h2>
+        <p class="section-intro">
+          CIPH keeps heavy orchestration optional. The harness should add structure only when it reduces
+          uncertainty or improves evaluator alignment.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Condition</th>
+              <th>Harness behavior</th>
+              <th>Reasoning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Small local bug with clear tests</td>
+              <td>Use one direct implementer loop plus verification.</td>
+              <td>Heavy candidate search can add cost without improving a tight repair path.</td>
+            </tr>
+            <tr>
+              <td>Ambiguous architecture or multiple subsystems</td>
+              <td>Require design, artifact contracts, and independent review before implementation.</td>
+              <td>The main risk is committing to the wrong boundary, not typing the patch.</td>
+            </tr>
+            <tr>
+              <td>Independent slices with disjoint files</td>
+              <td>Spawn child workspaces with isolated write ownership and normalized responses.</td>
+              <td>Parallelism helps only when outputs can be integrated without hidden coupling.</td>
+            </tr>
+            <tr>
+              <td>Volatile external API or product behavior</td>
+              <td>Consult authoritative MCP or vendor docs before setup steps or code.</td>
+              <td>Harness quality depends on preventing plausible but stale details from entering the plan.</td>
+            </tr>
+            <tr>
+              <td>Final evaluator differs from local proxy</td>
+              <td>Promote evaluator alignment to a blocking risk and adjust gates.</td>
+              <td>NLAH case studies show local acceptance can be misleading when it is not the actual judge.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <h2>Optimization Loop</h2>
+        <p class="section-intro">
+          The harness can improve itself using a Meta-Harness style outer loop. Each candidate harness
+          is evaluated on a search set, then all artifacts and traces are stored for later selective inspection.
+        </p>
+        <div class="grid two">
+          <article class="card">
+            <h3>Candidate record</h3>
+            <pre><code>{
+  "candidate_id": "ciph-017",
+  "parent_ids": ["ciph-011", "ciph-014"],
+  "changed_modules": ["verification", "delegation"],
+  "search_scores": {
+    "task_success": 0.76,
+    "cost_tokens": 1240000,
+    "wall_minutes": 31,
+    "audit_completeness": 0.94
+  },
+  "trace_paths": [
+    "candidates/017/trace/prompts.jsonl",
+    "candidates/017/trace/tools.jsonl",
+    "candidates/017/trace/failures.md"
+  ],
+  "pareto_status": "frontier"
+}</code></pre>
+          </article>
+          <article class="card">
+            <h3>Search policy</h3>
+            <ul>
+              <li>Keep a Pareto frontier over success, cost, time, auditability, and defect escape rate.</li>
+              <li>Let the proposer inspect any prior candidate, not only the highest scorer.</li>
+              <li>Require leakage audits for benchmark-specific strings or task memorization.</li>
+              <li>Prefer additive changes until trace evidence justifies broad rewrites.</li>
+              <li>Record failed hypotheses, because they are high-value context for future diagnosis.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Verification Matrix</h2>
+        <p class="section-intro">
+          Completion is a checklist over concrete evidence, not a feeling that the implementation looks done.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Claim</th>
+              <th>Required evidence</th>
+              <th>Status rule</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Implementation matches objective</td>
+              <td>Prompt-to-artifact checklist maps every explicit requirement to a file, command, or inspected output.</td>
+              <td><span class="status-good">Pass</span> only if no objective item is uncovered.</td>
+            </tr>
+            <tr>
+              <td>Code works</td>
+              <td>Fresh test, build, lint, typecheck, or runtime command aligned with the acceptance object.</td>
+              <td><span class="status-warn">Weak</span> if command is a proxy; <span class="status-bad">fail</span> if not run.</td>
+            </tr>
+            <tr>
+              <td>External facts are correct</td>
+              <td>Authoritative docs consulted, source recorded, and applicability decision noted.</td>
+              <td><span class="status-good">Pass</span> only with current source evidence.</td>
+            </tr>
+            <tr>
+              <td>Delegated work is integrated</td>
+              <td>Diff inspected, write ownership respected, returned artifacts verified locally.</td>
+              <td><span class="status-bad">Fail</span> if relying only on child-agent self-report.</td>
+            </tr>
+            <tr>
+              <td>Run is auditable</td>
+              <td>Manifest, trace summaries, decision log, risk log, and closeout report are present.</td>
+              <td><span class="status-warn">Weak</span> if only chat history contains the rationale.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <h2>Minimum Viable Harness</h2>
+        <p class="section-intro">
+          The first implementation should be small enough to use immediately in real repositories.
+          It should not attempt to be a full agent platform.
+        </p>
+        <div class="grid two">
+          <article class="card">
+            <h3>Version 0.1 deliverables</h3>
+            <ul>
+              <li><code>run/TASK.md</code> template for objective, constraints, deliverables, and acceptance object.</li>
+              <li><code>run/MANIFEST.json</code> schema for artifacts, owners, evidence, checks, and status.</li>
+              <li><code>harness/CIPH.md</code> natural-language harness with stages, roles, contracts, and stop rules.</li>
+              <li><code>scripts/verify_manifest.py</code> to fail when required artifacts or evidence pointers are missing.</li>
+              <li><code>scripts/closeout_check.py</code> to print the prompt-to-artifact checklist before completion.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Deferred intentionally</h3>
+            <ul>
+              <li>No custom agent runtime until file-backed contracts prove useful in manual operation.</li>
+              <li>No automatic benchmark optimizer until enough real project traces exist.</li>
+              <li>No hidden memory service; all durable state starts as files under the run workspace.</li>
+              <li>No broad multi-agent spawning by default; delegation remains contract-triggered.</li>
+              <li>No completion based only on tests; tests must map to objective requirements.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>
+        Prepared from the two linked arXiv papers on 2026-05-16. The proposal is an applied synthesis:
+        source-grounded ideas are separated from the invented CIPH harness design in the section labels.
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
