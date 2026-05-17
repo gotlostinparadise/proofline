@@ -45,6 +45,21 @@ class RunStatusTests(unittest.TestCase):
             self.assertTrue(output_path.is_file())
             self.assertIn("# CIPH Run Status", output_path.read_text(encoding="utf-8"))
 
+    def test_write_status_creates_html_report_when_output_suffix_is_html(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = _write_manifest(root, objective="Escape <script>alert(1)</script> in status.")
+            output_path = root / "runs" / "sample" / "artifacts" / "status.html"
+
+            write_status(manifest_path, root, output_path)
+
+            html = output_path.read_text(encoding="utf-8")
+            self.assertTrue(html.startswith("<!doctype html>"))
+            self.assertIn('data-proofline-report="status"', html)
+            self.assertIn("CIPH Run Status", html)
+            self.assertIn("Escape &lt;script&gt;alert(1)&lt;/script&gt; in status.", html)
+            self.assertIn("<section", html)
+
     def test_run_status_script_runs_when_executed_by_file_path(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -7,16 +7,16 @@
       "id": "example",
       "requirement": "Replace this with a concrete requirement from the prompt.",
       "artifact_paths": [
-        "path/to/artifact"
+        "path/to/artifact.html"
       ],
       "evidence_paths": [
-        "runs/<run-id>/artifacts/verification.md"
+        "runs/<run-id>/artifacts/verification.html"
       ]
     }
   ],
   "artifacts": [
     {
-      "path": "path/to/artifact",
+      "path": "path/to/artifact.html",
       "description": "Replace this with the artifact purpose.",
       "required": true
     }

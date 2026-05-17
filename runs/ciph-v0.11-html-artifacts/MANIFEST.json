@@ -1,0 +1,141 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.11-html-artifacts",
+  "objective": "Migrate Proofline human-facing artifacts from Markdown-first to HTML-first while preserving manifest compatibility and historical runs",
+  "deliverables": [
+    {
+      "id": "source-notes",
+      "requirement": "Record the applicable HTML-effectiveness lessons and migration boundary.",
+      "artifact_paths": [
+        "runs/ciph-v0.11-html-artifacts/artifacts/source-notes.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.11-html-artifacts/artifacts/checks/html-migration-tests.txt"
+      ]
+    },
+    {
+      "id": "html-templates",
+      "requirement": "Add HTML-first task and child templates while preserving historical Markdown compatibility.",
+      "artifact_paths": [
+        "templates/TASK.html",
+        "templates/CHILD_TASK.html",
+        "templates/CHILD_RESPONSE.html",
+        "scripts/init_run.py",
+        "scripts/init_child_task.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.11-html-artifacts/artifacts/checks/html-migration-tests.txt"
+      ]
+    },
+    {
+      "id": "html-reports",
+      "requirement": "Render status, closeout, and candidate summary reports as self-contained HTML when requested.",
+      "artifact_paths": [
+        "scripts/html_report.py",
+        "scripts/run_status.py",
+        "scripts/closeout_check.py",
+        "scripts/candidate_summary.py",
+        "runs/ciph-v0.11-html-artifacts/artifacts/status.html",
+        "runs/ciph-v0.11-html-artifacts/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.11-html-artifacts/artifacts/checks/html-report-generation.txt"
+      ]
+    },
+    {
+      "id": "docs-skill",
+      "requirement": "Update operator docs and the bundled Codex skill to use HTML-first paths and closeout commands.",
+      "artifact_paths": [
+        "README.md",
+        "index.html",
+        "harness/CIPH.md",
+        "harness/runtime-charter.md",
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.11-html-artifacts/artifacts/checks/html-migration-tests.txt"
+      ]
+    },
+    {
+      "id": "compatibility-tests",
+      "requirement": "Add automated coverage for generated HTML artifacts, HTML report parsing, and Markdown compatibility.",
+      "artifact_paths": [
+        "tests/test_html_artifacts.py",
+        "tests/test_init_run.py",
+        "tests/test_init_child_task.py",
+        "tests/test_run_status.py",
+        "tests/test_closeout_check.py",
+        "tests/test_candidate_summary.py",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.11-html-artifacts/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "templates/TASK.html",
+      "description": "HTML-first task template used by new run initialization.",
+      "required": true
+    },
+    {
+      "path": "templates/CHILD_TASK.html",
+      "description": "HTML-first child task packet template.",
+      "required": true
+    },
+    {
+      "path": "templates/CHILD_RESPONSE.html",
+      "description": "HTML-first child response handoff template.",
+      "required": true
+    },
+    {
+      "path": "scripts/html_report.py",
+      "description": "Shared helpers for escaping and rendering self-contained HTML reports.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.11-html-artifacts/artifacts/source-notes.html",
+      "description": "Reviewed source-material notes and migration applicability boundary.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.11-html-artifacts/artifacts/status.html",
+      "description": "Dogfood HTML run status report for this migration.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.11-html-artifacts/artifacts/closeout.html",
+      "description": "Dogfood HTML closeout report for this migration.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "html-migration-tests",
+      "command": "python3 -m unittest tests.test_html_artifacts tests.test_init_run tests.test_init_child_task tests.test_run_status tests.test_closeout_check tests.test_candidate_summary tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.11-html-artifacts/artifacts/checks/html-migration-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "html-report-generation",
+      "command": "python3 scripts/run_status.py runs/ciph-v0.11-html-artifacts/MANIFEST.json --root . --output runs/ciph-v0.11-html-artifacts/artifacts/status.html && python3 scripts/closeout_check.py runs/ciph-v0.11-html-artifacts/MANIFEST.json --root . --output runs/ciph-v0.11-html-artifacts/artifacts/closeout.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.11-html-artifacts/artifacts/checks/html-report-generation.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover tests",
+      "required": true,
+      "evidence": "runs/ciph-v0.11-html-artifacts/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "HTML can become decorative noise if semantic sections are not asserted by tests.",
+    "Historical Markdown runs must stay valid and should not be rewritten."
+  ]
+}

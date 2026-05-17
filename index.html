@@ -484,7 +484,7 @@
           and makes delegation boundaries auditable.
         </p>
         <pre><code>run/
-  TASK.md                         # original objective, constraints, deliverables
+  TASK.html                       # original objective, constraints, deliverables
   MANIFEST.json                   # expected artifacts, checks, owners, statuses
   harness/
     CIPH.md                       # natural-language harness logic
@@ -495,7 +495,7 @@
       summarize_trace.py
   facts/
     sources.jsonl                 # authoritative docs consulted, URLs, timestamps
-    source_notes.md               # short research notes and applicability decisions
+    source_notes.html             # short research notes and applicability decisions
   state/
     task_history.jsonl            # append-only events, child calls, promotions
     decisions.jsonl               # design choices and rejected alternatives
@@ -507,15 +507,15 @@
       trace/
   children/
     001/
-      TASK.md
+      TASK.html
       inputs/
       scratch/
-      RESPONSE.md
+      RESPONSE.html
       artifacts/
   artifacts/
     final_patch.diff
-    verification.md
-    closeout.md</code></pre>
+    verification.html
+    closeout.html</code></pre>
       </div>
     </section>
 
@@ -695,7 +695,7 @@
           <article class="card">
             <h3>Version 0.1 deliverables</h3>
             <ul>
-              <li><code>run/TASK.md</code> template for objective, constraints, deliverables, and acceptance object.</li>
+              <li><code>run/TASK.html</code> template for objective, constraints, deliverables, and acceptance object.</li>
               <li><code>run/MANIFEST.json</code> schema for artifacts, owners, evidence, checks, and status.</li>
               <li><code>harness/CIPH.md</code> natural-language harness with stages, roles, contracts, and stop rules.</li>
               <li><code>scripts/verify_manifest.py</code> to fail when required artifacts or evidence pointers are missing.</li>

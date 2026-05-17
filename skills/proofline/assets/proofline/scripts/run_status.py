@@ -9,9 +9,11 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from scripts.html_report import render_html_document
     from scripts.lint_manifest import lint_manifest
     from scripts.verify_manifest import load_manifest, path_exists, validate_manifest
 except ModuleNotFoundError:  # pragma: no cover - exercised by direct script execution.
+    from html_report import render_html_document
     from lint_manifest import lint_manifest
     from verify_manifest import load_manifest, path_exists, validate_manifest
 
@@ -59,8 +61,66 @@ def render_status(manifest_path: Path | str, root: Path | str | None = None) -> 
 def write_status(manifest_path: Path | str, root: Path | str | None, output_path: Path | str) -> Path:
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(render_status(manifest_path, root), encoding="utf-8")
+    rendered = render_status_html(manifest_path, root) if output.suffix == ".html" else render_status(manifest_path, root)
+    output.write_text(rendered, encoding="utf-8")
     return output
+
+
+def render_status_html(manifest_path: Path | str, root: Path | str | None = None) -> str:
+    manifest_path = Path(manifest_path)
+    root_path = Path(root) if root is not None else manifest_path.parent
+    manifest = load_manifest(manifest_path)
+    lint_result = lint_manifest(manifest_path, root_path)
+    validation_result = validate_manifest(manifest_path, root_path)
+    covered_deliverables, total_deliverables = _deliverable_coverage(manifest, root_path)
+    passed_checks, total_checks, check_lines = _check_status(manifest, root_path)
+
+    sections: list[dict[str, Any]] = [
+        {
+            "id": "summary",
+            "title": "Summary",
+            "items": [
+                f"Lint: {'PASS' if lint_result.ok else 'FAIL'} ({len(lint_result.errors)} errors, {len(lint_result.warnings)} warnings)",
+                f"Manifest: {'PASS' if validation_result.ok else 'FAIL'} ({len(validation_result.errors)} errors)",
+                f"Deliverables: {covered_deliverables}/{total_deliverables} covered",
+                f"Required checks: {passed_checks}/{total_checks} passed",
+            ],
+        },
+        {
+            "id": "required-checks",
+            "title": "Required Checks",
+            "items": check_lines or ["None."],
+        },
+    ]
+    if lint_result.errors or lint_result.warnings:
+        sections.append(
+            {
+                "id": "lint-issues",
+                "title": "Lint Issues",
+                "items": [*lint_result.errors, *lint_result.warnings],
+            }
+        )
+    if validation_result.errors:
+        sections.append(
+            {
+                "id": "manifest-issues",
+                "title": "Manifest Issues",
+                "items": validation_result.errors,
+            }
+        )
+
+    return render_html_document(
+        title="CIPH Run Status",
+        heading="CIPH Run Status",
+        report_kind="status",
+        summary_items=[
+            ("Task", str(manifest.get("task_id", "<missing>"))),
+            ("Objective", str(manifest.get("objective", "<missing>"))),
+            ("Manifest", str(manifest_path)),
+            ("Root", str(root_path)),
+        ],
+        sections=sections,
+    )
 
 
 def _deliverable_coverage(manifest: dict[str, Any], root: Path) -> tuple[int, int]:

@@ -8,6 +8,11 @@ import json
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.html_report import render_html_document, render_table
+except ModuleNotFoundError:  # pragma: no cover - exercised by direct script execution.
+    from html_report import render_html_document, render_table
+
 
 MAXIMIZE = ["task_success", "audit_completeness"]
 MINIMIZE = ["cost_tokens", "wall_minutes", "defect_escape_rate"]
@@ -50,10 +55,61 @@ def render_candidate_summary(run_dir: Path | str) -> str:
     return "\n".join(lines) + "\n"
 
 
+def render_candidate_summary_html(run_dir: Path | str) -> str:
+    run_path = Path(run_dir)
+    candidates = _load_candidates(run_path)
+    statuses = _pareto_statuses(candidates)
+    rows: list[list[str]] = []
+    for candidate in sorted(candidates, key=lambda item: str(item.get("candidate_id", ""))):
+        candidate_id = str(candidate.get("candidate_id", "<missing>"))
+        scores = candidate.get("search_scores", {})
+        if not isinstance(scores, dict):
+            scores = {}
+        rows.append(
+            [
+                candidate_id,
+                statuses.get(candidate_id, "unscored"),
+                _fmt(scores.get("task_success")),
+                _fmt(scores.get("audit_completeness")),
+                _fmt(scores.get("cost_tokens")),
+                _fmt(scores.get("wall_minutes")),
+                _fmt(scores.get("defect_escape_rate")),
+            ]
+        )
+    if not rows:
+        rows.append(["None", "unscored", "-", "-", "-", "-", "-"])
+
+    return render_html_document(
+        title="CIPH Candidate Summary",
+        heading="CIPH Candidate Summary",
+        report_kind="candidate-summary",
+        summary_items=[("Run", str(run_path)), ("Candidates", str(len(candidates)))],
+        sections=[
+            {
+                "id": "scores",
+                "title": "Candidate Scores",
+                "body_html": render_table(
+                    [
+                        "Candidate",
+                        "Pareto",
+                        "Task Success",
+                        "Audit",
+                        "Cost Tokens",
+                        "Wall Minutes",
+                        "Defect Escape",
+                    ],
+                    rows,
+                ),
+            }
+        ],
+    )
+
+
 def write_candidate_summary(run_dir: Path | str, output_path: Path | str) -> Path:
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(render_candidate_summary(run_dir), encoding="utf-8")
+    rendered = render_candidate_summary_html(run_dir) if output.suffix == ".html" else render_candidate_summary(run_dir)
+    output.write_text(rendered, encoding="utf-8")
     return output
 
 

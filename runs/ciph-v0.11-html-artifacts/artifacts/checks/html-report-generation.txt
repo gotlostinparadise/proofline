@@ -1,0 +1,11 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "html-report-generation", "command": "python3 scripts/run_status.py runs/ciph-v0.11-html-artifacts/MANIFEST.json --root . --output runs/ciph-v0.11-html-artifacts/artifacts/status.html && python3 scripts/closeout_check.py runs/ciph-v0.11-html-artifacts/MANIFEST.json --root . --output runs/ciph-v0.11-html-artifacts/artifacts/closeout.html", "exit_code": 0, "finished_at_utc": "2026-05-16T23:58:26+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-16T23:58:26+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH run status: runs/ciph-v0.11-html-artifacts/artifacts/status.html
+Wrote CIPH closeout checklist: runs/ciph-v0.11-html-artifacts/artifacts/closeout.html
+
+## STDERR
+
+<empty>

@@ -6,7 +6,7 @@ The parent agent owns orchestration, scope control, evidence promotion, and fina
 
 ## Source Truth
 
-The repository is the durable source of work state. Chat can explain decisions, but durable task facts belong in `TASK.md`, `MANIFEST.json`, plans, evidence files, and closeout output.
+The repository is the durable source of work state. Chat can explain decisions, but durable task facts belong in `TASK.html`, `MANIFEST.json`, plans, evidence files, and closeout output. Historical `TASK.md` files remain valid evidence for older runs.
 
 ## Volatile Facts
 

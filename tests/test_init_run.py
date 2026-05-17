@@ -18,19 +18,34 @@ class InitRunTests(unittest.TestCase):
 
             run_dir = root / "runs" / "sample-run"
             self.assertEqual(run_dir, result.run_dir)
-            self.assertTrue((run_dir / "TASK.md").is_file())
+            self.assertEqual(run_dir / "TASK.html", result.task_path)
+            self.assertTrue((run_dir / "TASK.html").is_file())
             self.assertTrue((run_dir / "MANIFEST.json").is_file())
             self.assertTrue((run_dir / "artifacts").is_dir())
             self.assertTrue((run_dir / "artifacts" / ".gitkeep").is_file())
-            self.assertIn("Ship a useful harness.", (run_dir / "TASK.md").read_text(encoding="utf-8"))
+            task_html = (run_dir / "TASK.html").read_text(encoding="utf-8")
+            self.assertIn('data-proofline-kind="task"', task_html)
+            self.assertIn("Ship a useful harness.", task_html)
 
             manifest = json.loads((run_dir / "MANIFEST.json").read_text(encoding="utf-8"))
             self.assertEqual("sample-run", manifest["task_id"])
             self.assertEqual("Ship a useful harness.", manifest["objective"])
             self.assertEqual(
-                "runs/sample-run/artifacts/verification.md",
+                "runs/sample-run/artifacts/verification.html",
                 manifest["checks"][0]["evidence"],
             )
+
+    def test_initialize_run_falls_back_to_legacy_markdown_template(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _write_legacy_templates(root)
+
+            result = initialize_run("legacy-run", root, objective="Keep old runs usable.")
+
+            run_dir = root / "runs" / "legacy-run"
+            self.assertEqual(run_dir / "TASK.md", result.task_path)
+            self.assertTrue((run_dir / "TASK.md").is_file())
+            self.assertIn("Keep old runs usable.", (run_dir / "TASK.md").read_text(encoding="utf-8"))
 
     def test_initialize_run_refuses_to_overwrite_existing_run(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -73,7 +88,7 @@ class InitRunTests(unittest.TestCase):
 
             self.assertEqual(completed.returncode, 0, completed.stderr)
             self.assertIn("Created CIPH run: runs/cli-run", completed.stdout)
-            self.assertTrue((root / "runs" / "cli-run" / "TASK.md").is_file())
+            self.assertTrue((root / "runs" / "cli-run" / "TASK.html").is_file())
 
     def test_initialize_run_can_keep_state_in_vendor_proofline(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -91,9 +106,9 @@ class InitRunTests(unittest.TestCase):
 
             run_dir = proofline_root / "runs" / "vendor-run"
             self.assertEqual(run_dir, result.run_dir)
-            self.assertTrue((run_dir / "TASK.md").is_file())
+            self.assertTrue((run_dir / "TASK.html").is_file())
             self.assertTrue((run_dir / "MANIFEST.json").is_file())
-            self.assertIn("Keep Proofline locked in vendor.", (run_dir / "TASK.md").read_text(encoding="utf-8"))
+            self.assertIn("Keep Proofline locked in vendor.", (run_dir / "TASK.html").read_text(encoding="utf-8"))
 
             manifest = json.loads((run_dir / "MANIFEST.json").read_text(encoding="utf-8"))
             self.assertEqual("vendor-run", manifest["task_id"])
@@ -102,10 +117,12 @@ class InitRunTests(unittest.TestCase):
 def _write_templates(root: Path) -> None:
     template_dir = root / "templates"
     template_dir.mkdir()
-    template_dir.joinpath("TASK.md").write_text(
-        "# CIPH Task\n\n## Objective\n\nState the original user request in concrete terms.\n\n"
-        "## Closeout Commands\n\n"
-        "python3 scripts/verify_manifest.py runs/<run-id>/MANIFEST.json --root .\n",
+    template_dir.joinpath("TASK.html").write_text(
+        '<!doctype html>\n<html lang="en">\n<body data-proofline-kind="task">\n'
+        "<h1>CIPH Task</h1>\n"
+        '<section id="objective"><h2>Objective</h2><p>State the original user request in concrete terms.</p></section>\n'
+        '<section id="closeout"><h2>Closeout Commands</h2><pre>python3 scripts/verify_manifest.py runs/&lt;run-id&gt;/MANIFEST.json --root .</pre></section>\n'
+        "</body>\n</html>\n",
         encoding="utf-8",
     )
     template_dir.joinpath("MANIFEST.json").write_text(
@@ -119,7 +136,7 @@ def _write_templates(root: Path) -> None:
                         "id": "example",
                         "requirement": "Replace this with a concrete requirement from the prompt.",
                         "artifact_paths": ["path/to/artifact"],
-                        "evidence_paths": ["runs/<run-id>/artifacts/verification.md"],
+                        "evidence_paths": ["runs/<run-id>/artifacts/verification.html"],
                     }
                 ],
                 "artifacts": [
@@ -133,6 +150,50 @@ def _write_templates(root: Path) -> None:
                     {
                         "name": "replace-with-check-name",
                         "command": "replace with exact command",
+                        "required": True,
+                        "evidence": "runs/<run-id>/artifacts/verification.html",
+                    }
+                ],
+                "risks": [],
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+
+def _write_legacy_templates(root: Path) -> None:
+    template_dir = root / "templates"
+    template_dir.mkdir()
+    template_dir.joinpath("TASK.md").write_text(
+        "# CIPH Task\n\n## Objective\n\nState the original user request in concrete terms.\n",
+        encoding="utf-8",
+    )
+    template_dir.joinpath("MANIFEST.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "ciph.manifest.v1",
+                "task_id": "<run-id>",
+                "objective": "<original objective>",
+                "deliverables": [
+                    {
+                        "id": "legacy",
+                        "requirement": "Keep legacy Markdown initialization available.",
+                        "artifact_paths": ["runs/<run-id>/TASK.md"],
+                        "evidence_paths": ["runs/<run-id>/artifacts/verification.md"],
+                    }
+                ],
+                "artifacts": [
+                    {
+                        "path": "runs/<run-id>/TASK.md",
+                        "description": "Legacy task document.",
+                        "required": True,
+                    }
+                ],
+                "checks": [
+                    {
+                        "name": "legacy-check",
+                        "command": "python3 -m unittest",
                         "required": True,
                         "evidence": "runs/<run-id>/artifacts/verification.md",
                     }

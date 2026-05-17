@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Effectiveness Notes</title>
+<style>
+body{margin:0;background:#faf9f5;color:#141413;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;padding:44px 28px 88px}
+main{max-width:920px;margin:0 auto}
+h1,h2{font-family:ui-serif,Georgia,serif;font-weight:500}
+section{background:#fff;border:1px solid #d1cfc5;border-radius:8px;padding:18px;margin:16px 0}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+</style>
+</head>
+<body data-proofline-report="source-notes">
+<main>
+<h1>HTML Effectiveness Notes</h1>
+<section id="sources" data-proofline-section="sources">
+<h2>Sources Reviewed</h2>
+<ul>
+<li><a href="https://thariqs.github.io/html-effectiveness/">HTML effectiveness example gallery</a></li>
+<li><a href="https://thariqs.github.io/html-effectiveness/16-implementation-plan.html">Implementation plan example</a></li>
+<li><a href="https://thariqs.github.io/html-effectiveness/11-status-report.html">Status report example</a></li>
+<li><a href="https://github.com/ThariqS/html-effectiveness/tree/main">Source repository</a></li>
+</ul>
+</section>
+<section id="lessons" data-proofline-section="lessons">
+<h2>Applicable Lessons</h2>
+<ul>
+<li>HTML is useful when agent output is spatial, comparative, or review-heavy.</li>
+<li>Plans, status reports, closeouts, candidate comparisons, and code reviews benefit from semantic sections, tables, and visual hierarchy.</li>
+<li>Self-contained files keep artifacts portable and inspectable without adding a web server.</li>
+<li>The migration should preserve machine-readable JSON manifests and use HTML for human review surfaces.</li>
+</ul>
+</section>
+<section id="boundary" data-proofline-section="boundary">
+<h2>Migration Boundary</h2>
+<ul>
+<li>New generated human-facing artifacts should be HTML-first.</li>
+<li>Historical Markdown runs stay valid and are not rewritten.</li>
+<li>No remote assets, JavaScript dependency, or framework is needed for this migration.</li>
+<li>X status pages did not expose tweet text in this environment, so implementation does not depend on inaccessible tweet content.</li>
+</ul>
+</section>
+</main>
+</body>
+</html>

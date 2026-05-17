@@ -15,7 +15,7 @@ CIPH is a file-backed harness for complex coding work. It keeps the project obje
 
 ### Task Contract
 
-Each run starts with `TASK.md`. It records the original objective, acceptance object, constraints, non-goals, volatile facts that require source verification, and intended deliverables.
+Each new run starts with `TASK.html`. It records the original objective, acceptance object, constraints, non-goals, volatile facts that require source verification, and intended deliverables. Older `TASK.md` runs remain valid historical records.
 
 ### Artifact Contract
 
@@ -76,8 +76,8 @@ python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root .
 Write reusable reports:
 
 ```bash
-python3 scripts/run_status.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/status.md
-python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/closeout.md
+python3 scripts/run_status.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/status.html
+python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/closeout.html
 ```
 
 Create a bounded child task packet:
@@ -90,7 +90,7 @@ Create and summarize candidates:
 
 ```bash
 python3 scripts/init_candidate.py runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
-python3 scripts/candidate_summary.py runs/<run-id> --output runs/<run-id>/artifacts/candidate-summary.md
+python3 scripts/candidate_summary.py runs/<run-id> --output runs/<run-id>/artifacts/candidate-summary.html
 ```
 
 Run the repository gate:
@@ -103,11 +103,11 @@ python3 scripts/check_repo.py
 
 ```text
 runs/<run-id>/
-  TASK.md
+  TASK.html
   MANIFEST.json
   artifacts/
     checks/
       <check-name>.txt
 ```
 
-Use `templates/TASK.md` and `templates/MANIFEST.json` as starting points.
+Use `templates/TASK.html` and `templates/MANIFEST.json` as starting points. `templates/TASK.md` remains as a legacy fallback for older installs.

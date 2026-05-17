@@ -34,6 +34,22 @@ class CandidateSummaryTests(unittest.TestCase):
             self.assertTrue(output_path.is_file())
             self.assertIn("# CIPH Candidate Summary", output_path.read_text(encoding="utf-8"))
 
+    def test_write_candidate_summary_creates_html_report_when_output_suffix_is_html(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = root / "runs" / "sample"
+            output_path = run_dir / "artifacts" / "candidate-summary.html"
+            _write_score(run_dir, "strong", task_success=0.9, audit_completeness=0.9, cost_tokens=100, wall_minutes=2, defect_escape_rate=0.0)
+
+            write_candidate_summary(run_dir, output_path)
+
+            html = output_path.read_text(encoding="utf-8")
+            self.assertTrue(html.startswith("<!doctype html>"))
+            self.assertIn('data-proofline-report="candidate-summary"', html)
+            self.assertIn("CIPH Candidate Summary", html)
+            self.assertIn("<table", html)
+            self.assertIn("strong", html)
+
     def test_candidate_summary_script_runs_when_executed_by_file_path(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

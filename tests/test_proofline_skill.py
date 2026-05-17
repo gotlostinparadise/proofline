@@ -25,7 +25,7 @@ class ProoflineSkillTests(unittest.TestCase):
             vendor = target / "vendor" / "proofline"
             self.assertTrue((vendor / "harness" / "CIPH.md").is_file())
             self.assertTrue((vendor / "harness" / "runtime-charter.md").is_file())
-            self.assertTrue((vendor / "templates" / "TASK.md").is_file())
+            self.assertTrue((vendor / "templates" / "TASK.html").is_file())
             self.assertTrue((vendor / "templates" / "MANIFEST.json").is_file())
             self.assertTrue((vendor / "scripts" / "init_run.py").is_file())
             self.assertTrue(os.access(vendor / "scripts" / "init_run.py", os.X_OK))
@@ -49,7 +49,7 @@ class ProoflineSkillTests(unittest.TestCase):
             )
 
             self.assertEqual(init_run.returncode, 0, init_run.stderr)
-            self.assertTrue((vendor / "runs" / "sample-run" / "TASK.md").is_file())
+            self.assertTrue((vendor / "runs" / "sample-run" / "TASK.html").is_file())
             self.assertTrue((vendor / "runs" / "sample-run" / "MANIFEST.json").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):

@@ -14,7 +14,7 @@ Edit the generated files:
 
 ```text
 runs/my-run/
-  TASK.md
+  TASK.html
   MANIFEST.json
   artifacts/
 ```
@@ -48,8 +48,8 @@ python3 scripts/closeout_check.py runs/my-run/MANIFEST.json --root .
 Write reusable reports:
 
 ```bash
-python3 scripts/run_status.py runs/my-run/MANIFEST.json --root . --output runs/my-run/artifacts/status.md
-python3 scripts/closeout_check.py runs/my-run/MANIFEST.json --root . --output runs/my-run/artifacts/closeout.md
+python3 scripts/run_status.py runs/my-run/MANIFEST.json --root . --output runs/my-run/artifacts/status.html
+python3 scripts/closeout_check.py runs/my-run/MANIFEST.json --root . --output runs/my-run/artifacts/closeout.html
 ```
 
 Create a bounded child task packet:
@@ -62,14 +62,15 @@ Create and summarize candidates:
 
 ```bash
 python3 scripts/init_candidate.py runs/my-run/MANIFEST.json baseline --changed-module verification
-python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/candidate-summary.md
+python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/candidate-summary.html
 ```
 
 ## Files
 
 - `harness/CIPH.md`: harness lifecycle and contracts.
 - `harness/runtime-charter.md`: runtime rules for facts, evidence, delegation, and closeout.
-- `templates/TASK.md`: task template used by the initializer.
+- `templates/TASK.html`: HTML-first task template used by the initializer.
+- `templates/TASK.md`: legacy Markdown fallback task template.
 - `templates/MANIFEST.json`: manifest template used by the initializer.
 - `scripts/init_run.py`: creates a run directory from templates.
 - `scripts/init_child_task.py`: creates a bounded child task packet.
@@ -78,6 +79,7 @@ python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/
 - `scripts/check_repo.py`: runs the repository health gate.
 - `scripts/lint_manifest.py`: catches placeholders and weak manifest contracts.
 - `scripts/run_checks.py`: runs manifest checks and writes structured evidence.
+- `scripts/html_report.py`: renders shared self-contained HTML report structure.
 - `scripts/verify_manifest.py`: validates manifest structure and required local paths.
 - `scripts/run_status.py`: writes a concise run status report.
 - `scripts/closeout_check.py`: prints the prompt-to-artifact closeout checklist.

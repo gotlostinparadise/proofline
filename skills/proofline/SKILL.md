@@ -31,7 +31,7 @@ python3 vendor/proofline/scripts/init_run.py <run-id> --root . --proofline-root 
 
 Then fill in:
 
-- `vendor/proofline/runs/<run-id>/TASK.md`: objective, acceptance object, constraints, volatile facts, deliverables, risks, closeout commands.
+- `vendor/proofline/runs/<run-id>/TASK.html`: objective, acceptance object, constraints, volatile facts, deliverables, risks, closeout commands.
 - `vendor/proofline/runs/<run-id>/MANIFEST.json`: every explicit requirement mapped to project-root-relative artifact paths, evidence paths, and required checks.
 
 Lint the contract before coding:
@@ -56,7 +56,7 @@ For competing approaches, scaffold candidates:
 
 ```bash
 python3 vendor/proofline/scripts/init_candidate.py vendor/proofline/runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
-python3 vendor/proofline/scripts/candidate_summary.py vendor/proofline/runs/<run-id> --output vendor/proofline/runs/<run-id>/artifacts/candidate-summary.md
+python3 vendor/proofline/scripts/candidate_summary.py vendor/proofline/runs/<run-id> --output vendor/proofline/runs/<run-id>/artifacts/candidate-summary.html
 ```
 
 ## Verify And Close
@@ -66,8 +66,8 @@ Run required checks and write evidence:
 ```bash
 python3 vendor/proofline/scripts/run_checks.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
 python3 vendor/proofline/scripts/verify_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
-python3 vendor/proofline/scripts/run_status.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/status.md
-python3 vendor/proofline/scripts/closeout_check.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/closeout.md
+python3 vendor/proofline/scripts/run_status.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/status.html
+python3 vendor/proofline/scripts/closeout_check.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/closeout.html
 ```
 
 Finish with the repository gate when available:
@@ -82,8 +82,8 @@ Only claim completion when closeout maps every explicit requirement to existing 
 
 | Mistake | Fix |
 | --- | --- |
-| Coding before `TASK.md` and `MANIFEST.json` exist | Create and lint the run contract first. |
+| Coding before `TASK.html` and `MANIFEST.json` exist | Create and lint the run contract first. |
 | Listing vague deliverables | Use concrete file paths and exact evidence paths. |
 | Treating chat or child-agent output as proof | Record command evidence or source references in the manifest. |
-| Forgetting generated reports | Write `status.md` and `closeout.md` before final verification. |
+| Forgetting generated reports | Write `status.html` and `closeout.html` before final verification. |
 | Installing over an existing harness casually | Use installer `--force` only with explicit approval. |

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from html import escape
 import json
 import re
 from dataclasses import dataclass
@@ -36,14 +37,15 @@ def initialize_run(
     proofline_path = Path(proofline_root) if proofline_root is not None else root_path
     templates_dir = proofline_path / "templates"
     run_dir = proofline_path / "runs" / run_id
-    task_path = run_dir / "TASK.md"
+    task_template_path = _select_task_template(templates_dir)
+    task_path = run_dir / ("TASK.html" if task_template_path.suffix == ".html" else "TASK.md")
     manifest_path = run_dir / "MANIFEST.json"
     artifacts_dir = run_dir / "artifacts"
 
     if run_dir.exists() and not force:
         raise FileExistsError(f"Run already exists: runs/{run_id}")
 
-    task_template = _read_template(templates_dir / "TASK.md")
+    task_template = _read_template(task_template_path)
     manifest_template = _load_manifest_template(templates_dir / "MANIFEST.json")
     objective_text = objective.strip() if objective and objective.strip() else DEFAULT_OBJECTIVE
 
@@ -51,7 +53,7 @@ def initialize_run(
     artifacts_dir.mkdir(parents=True, exist_ok=True)
     (artifacts_dir / ".gitkeep").touch()
 
-    task_path.write_text(_render_task(task_template, run_id, objective_text), encoding="utf-8")
+    task_path.write_text(_render_task(task_template, run_id, objective_text, task_template_path.suffix == ".html"), encoding="utf-8")
     manifest_path.write_text(
         json.dumps(_render_manifest(manifest_template, run_id, objective_text), indent=2) + "\n",
         encoding="utf-8",
@@ -80,6 +82,13 @@ def _read_template(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _select_task_template(templates_dir: Path) -> Path:
+    html_template = templates_dir / "TASK.html"
+    if html_template.is_file():
+        return html_template
+    return templates_dir / "TASK.md"
+
+
 def _load_manifest_template(path: Path) -> dict[str, Any]:
     if not path.is_file():
         raise FileNotFoundError(f"Missing template: {path}")
@@ -90,11 +99,12 @@ def _load_manifest_template(path: Path) -> dict[str, Any]:
     return payload
 
 
-def _render_task(template: str, run_id: str, objective: str) -> str:
-    rendered = template.replace("<run-id>", run_id)
+def _render_task(template: str, run_id: str, objective: str, is_html: bool = False) -> str:
+    objective_text = escape(objective) if is_html else objective
+    rendered = template.replace("<run-id>", run_id).replace("&lt;run-id&gt;", run_id)
     placeholder = "State the original user request in concrete terms."
     if placeholder in rendered:
-        rendered = rendered.replace(placeholder, objective, 1)
+        rendered = rendered.replace(placeholder, objective_text, 1)
     return rendered
 
 
@@ -125,7 +135,7 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Proofline state root containing templates/ and runs/; defaults to --root",
     )
-    parser.add_argument("--objective", default=None, help="Original user objective for TASK.md and MANIFEST.json")
+    parser.add_argument("--objective", default=None, help="Original user objective for the generated task file and MANIFEST.json")
     parser.add_argument("--force", action="store_true", help="Overwrite generated files for an existing run")
     args = parser.parse_args(argv)
 
