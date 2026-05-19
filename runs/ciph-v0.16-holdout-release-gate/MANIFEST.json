@@ -1,0 +1,174 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.16-holdout-release-gate",
+  "objective": "Implement CIPH v0.16 Holdout Release Gate: deterministic transition from search to holdout_released only when evaluation validation, frontier selection, release budget, candidate validation, docs, bundled Proofline assets, and dogfood evidence are clean.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.16-holdout-release-gate/TRACE.jsonl"
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "holdout-release-gate",
+      "requirement": "Gate and perform a repeatable holdout release transition only when evaluation and frontier candidate validation pass.",
+      "artifact_paths": [
+        "scripts/release_holdout.py",
+        "tests/test_release_holdout.py",
+        "scripts/validate_evaluation.py",
+        "runs/ciph-v0.16-holdout-release-gate/EVALUATION.json",
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/holdout-release.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/holdout-release-tests.txt",
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/holdout-release-report.txt"
+      ]
+    },
+    {
+      "id": "evaluation-post-release",
+      "requirement": "Validate post-release evaluation state and report it without adding holdout scores.",
+      "artifact_paths": [
+        "scripts/validate_evaluation.py",
+        "tests/test_validate_evaluation.py",
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/evaluation-report.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/evaluation-validator-tests.txt",
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/evaluation-report.txt"
+      ]
+    },
+    {
+      "id": "proofline-skill-sync",
+      "requirement": "Mirror holdout release scripts, docs, and skill instructions into bundled Proofline assets.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/release_holdout.py",
+        "skills/proofline/assets/proofline/scripts/validate_evaluation.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-closeout",
+      "requirement": "Document holdout release behavior and close out the dogfood run with generated evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "docs/plans/2026-05-20-ciph-v0.16-holdout-release-gate-design.md",
+        "docs/plans/2026-05-20-ciph-v0.16-holdout-release-gate.md",
+        "runs/ciph-v0.16-holdout-release-gate/TASK.html",
+        "runs/ciph-v0.16-holdout-release-gate/MANIFEST.json",
+        "runs/ciph-v0.16-holdout-release-gate/TRACE.jsonl",
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/status.html",
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/closeout.html",
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/mechanism-metrics.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/release_holdout.py",
+      "description": "Holdout release gate and report generator.",
+      "required": true
+    },
+    {
+      "path": "tests/test_release_holdout.py",
+      "description": "Holdout release gate tests.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.16-holdout-release-gate/EVALUATION.json",
+      "description": "Dogfood evaluation protocol after holdout release.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.16-holdout-release-gate/artifacts/holdout-release.html",
+      "description": "Generated holdout release report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.16-holdout-release-gate/artifacts/evaluation-report.html",
+      "description": "Generated post-release evaluation report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.16-holdout-release-gate/artifacts/status.html",
+      "description": "Generated run status report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.16-holdout-release-gate/artifacts/closeout.html",
+      "description": "Generated closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "holdout-release-tests",
+      "command": "python3 -m unittest tests.test_release_holdout",
+      "required": true,
+      "evidence": "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/holdout-release-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "holdout-release-report",
+      "command": "python3 scripts/release_holdout.py runs/ciph-v0.16-holdout-release-gate --root . --released-at 2026-05-20T04:00:00Z --output runs/ciph-v0.16-holdout-release-gate/artifacts/holdout-release.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/holdout-release-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "evaluation-validator-tests",
+      "command": "python3 -m unittest tests.test_validate_evaluation",
+      "required": true,
+      "evidence": "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/evaluation-validator-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "evaluation-report",
+      "command": "python3 scripts/validate_evaluation.py runs/ciph-v0.16-holdout-release-gate --root . --output runs/ciph-v0.16-holdout-release-gate/artifacts/evaluation-report.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/evaluation-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-ledger-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.16-holdout-release-gate/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/trace-ledger-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.16-holdout-release-gate/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Release command must remain idempotent after transition so manifest checks are repeatable.",
+    "Release must not add holdout scores or bypass candidate validation.",
+    "Bundled Proofline assets and installed skill must stay synchronized."
+  ]
+}
