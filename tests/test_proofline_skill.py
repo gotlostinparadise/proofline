@@ -29,9 +29,11 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((vendor / "templates" / "MANIFEST.json").is_file())
             self.assertTrue((vendor / "scripts" / "init_run.py").is_file())
             self.assertTrue((vendor / "scripts" / "lint_trace.py").is_file())
+            self.assertTrue((vendor / "scripts" / "trace_metrics.py").is_file())
             self.assertTrue((vendor / "harness" / "policies" / "README.md").is_file())
             self.assertTrue(os.access(vendor / "scripts" / "init_run.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "lint_trace.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "trace_metrics.py", os.X_OK))
 
             init_run = subprocess.run(
                 [
@@ -79,10 +81,13 @@ class ProoflineSkillTests(unittest.TestCase):
         task_html = (SKILL_DIR / "assets" / "proofline" / "templates" / "TASK.html").read_text(encoding="utf-8")
 
         self.assertIn("lint_trace.py", skill_text)
+        self.assertIn("trace_metrics.py", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)
+        self.assertIn("Mechanism Metrics", task_html)
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "lint_trace.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "trace_metrics.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "harness" / "policies" / "state.md").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):

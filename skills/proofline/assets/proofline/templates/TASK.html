@@ -58,6 +58,11 @@ pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
 <p>Research runs use <code>runs/&lt;run-id&gt;/TRACE.jsonl</code> for raw events. Validate it with <code>scripts/lint_trace.py</code> before closeout.</p>
 </section>
 
+<section id="mechanism-metrics" data-proofline-section="mechanism-metrics">
+<h2>Mechanism Metrics</h2>
+<p>Research runs can derive mechanism metrics with <code>scripts/trace_metrics.py</code>. Use them to inspect harness behavior; keep manifest validation and closeout evidence as the source of completion truth.</p>
+</section>
+
 <section id="deliverables" data-proofline-section="deliverables">
 <h2>Deliverables</h2>
 <table>
@@ -77,6 +82,7 @@ pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
 python3 scripts/lint_trace.py runs/&lt;run-id&gt;/TRACE.jsonl --root .
 python3 scripts/run_checks.py runs/&lt;run-id&gt;/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/&lt;run-id&gt;/MANIFEST.json --root .
+python3 scripts/trace_metrics.py runs/&lt;run-id&gt;/MANIFEST.json --root . --output runs/&lt;run-id&gt;/artifacts/mechanism-metrics.html
 python3 scripts/run_status.py runs/&lt;run-id&gt;/MANIFEST.json --root . --output runs/&lt;run-id&gt;/artifacts/status.html
 python3 scripts/closeout_check.py runs/&lt;run-id&gt;/MANIFEST.json --root . --output runs/&lt;run-id&gt;/artifacts/closeout.html</code></pre>
 </section>

@@ -37,6 +37,10 @@ Research-grade runs declare active `policy_modules` in `MANIFEST.json`. Policy m
 
 Research-grade runs include `TRACE.jsonl` with schema version `ciph.trace.v1`. The trace ledger records raw events, while status and closeout reports are derived views. Validate trace ledgers with `scripts/lint_trace.py` before closeout.
 
+### Mechanism Metrics Contract
+
+Research-grade runs can derive mechanism metrics from `MANIFEST.json` and `TRACE.jsonl` with `scripts/trace_metrics.py`. Metrics expose harness behavior, including artifact coverage, stage coverage, ordered workflow, tool success, handoff recall, validation coverage, and recovery completion. Metrics are diagnostic reports, not substitutes for manifest validation or closeout evidence.
+
 ### Delegation Contract
 
 Delegated work requires a bounded task packet, clear write ownership, expected output paths, and local verification after return. Child-agent self-report is not completion evidence.
@@ -65,6 +69,12 @@ Lint a trace ledger:
 
 ```bash
 python3 scripts/lint_trace.py runs/<run-id>/TRACE.jsonl --root .
+```
+
+Render mechanism metrics:
+
+```bash
+python3 scripts/trace_metrics.py runs/<run-id>/MANIFEST.json --root . --output runs/<run-id>/artifacts/mechanism-metrics.html
 ```
 
 Run executable checks:

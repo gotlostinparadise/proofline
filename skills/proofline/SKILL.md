@@ -9,7 +9,7 @@ description: Use when starting, managing, reviewing, delegating, or closing out 
 
 Proofline is a repo-native harness for evidence-backed agent work. Use it to make complex coding tasks inspectable by recording the objective, deliverables, artifacts, checks, evidence, and closeout in the repository before claiming completion.
 
-For research-grade runs, Proofline also records policy modules and a raw `TRACE.jsonl` ledger. Policy modules describe editable harness strategy; deterministic scripts still own exact validation, scoring, trace linting, and closeout checks.
+For research-grade runs, Proofline also records policy modules and a raw `TRACE.jsonl` ledger. Policy modules describe editable harness strategy; deterministic scripts still own exact validation, scoring, trace linting, mechanism metrics, and closeout checks.
 
 ## Decision
 
@@ -71,6 +71,7 @@ Run required checks and write evidence:
 python3 vendor/proofline/scripts/run_checks.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
 python3 vendor/proofline/scripts/lint_trace.py vendor/proofline/runs/<run-id>/TRACE.jsonl --root .
 python3 vendor/proofline/scripts/verify_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
+python3 vendor/proofline/scripts/trace_metrics.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/mechanism-metrics.html
 python3 vendor/proofline/scripts/run_status.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/status.html
 python3 vendor/proofline/scripts/closeout_check.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/closeout.html
 ```
@@ -90,6 +91,7 @@ Only claim completion when closeout maps every explicit requirement to existing 
 | Coding before `TASK.html` and `MANIFEST.json` exist | Create and lint the run contract first. |
 | Listing vague deliverables | Use concrete file paths and exact evidence paths. |
 | Forgetting trace linting on research-grade runs | Run `lint_trace.py` against `TRACE.jsonl`. |
+| Treating mechanism metrics as completion proof | Run `trace_metrics.py` for diagnostics, then keep `verify_manifest.py` and closeout evidence authoritative. |
 | Treating chat or child-agent output as proof | Record command evidence or source references in the manifest. |
 | Forgetting generated reports | Write `status.html` and `closeout.html` before final verification. |
 | Installing over an existing harness casually | Use installer `--force` only with explicit approval. |
