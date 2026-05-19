@@ -63,12 +63,99 @@ class ValidateEvaluationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             run_dir = _create_run(root)
-            _write_evaluation(run_dir, phase="holdout_released", frontier_ids=[])
+            _write_evaluation(
+                run_dir,
+                phase="holdout_released",
+                frontier_ids=[],
+                holdout_sealed=False,
+                holdout_releases=[
+                    {
+                        "release_index": 1,
+                        "released_at": "2026-05-20T04:00:00Z",
+                        "frontier_candidate_ids": ["baseline"],
+                    }
+                ],
+            )
 
             result = validate_evaluation(run_dir, root=root)
 
             self.assertFalse(result.ok)
             self.assertIn("holdout_released phase requires at least one frontier candidate", result.errors)
+
+    def test_validate_evaluation_accepts_holdout_released_protocol(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = _create_run(root)
+            _write_evaluation(
+                run_dir,
+                phase="holdout_released",
+                frontier_ids=["baseline"],
+                holdout_sealed=False,
+                holdout_releases=[
+                    {
+                        "release_index": 1,
+                        "released_at": "2026-05-20T04:00:00Z",
+                        "frontier_candidate_ids": ["baseline"],
+                    }
+                ],
+            )
+
+            result = validate_evaluation(run_dir, root=root)
+
+            self.assertTrue(result.ok, result.errors)
+            self.assertIn("PASS holdout released", result.messages)
+            self.assertIn("PASS holdout release 1", result.messages)
+
+    def test_validate_evaluation_rejects_released_protocol_with_sealed_holdout(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = _create_run(root)
+            _write_evaluation(
+                run_dir,
+                phase="holdout_released",
+                frontier_ids=["baseline"],
+                holdout_sealed=True,
+                holdout_releases=[
+                    {
+                        "release_index": 1,
+                        "released_at": "2026-05-20T04:00:00Z",
+                        "frontier_candidate_ids": ["baseline"],
+                    }
+                ],
+            )
+
+            result = validate_evaluation(run_dir, root=root)
+
+            self.assertFalse(result.ok)
+            self.assertIn("holdout_set.sealed must be false after holdout release", result.errors)
+
+    def test_validate_evaluation_rejects_release_count_over_budget(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = _create_run(root)
+            _write_evaluation(
+                run_dir,
+                phase="holdout_released",
+                frontier_ids=["baseline"],
+                holdout_sealed=False,
+                holdout_releases=[
+                    {
+                        "release_index": 1,
+                        "released_at": "2026-05-20T04:00:00Z",
+                        "frontier_candidate_ids": ["baseline"],
+                    },
+                    {
+                        "release_index": 2,
+                        "released_at": "2026-05-20T05:00:00Z",
+                        "frontier_candidate_ids": ["baseline"],
+                    },
+                ],
+            )
+
+            result = validate_evaluation(run_dir, root=root)
+
+            self.assertFalse(result.ok)
+            self.assertIn("holdout_releases count exceeds budget.max_holdout_releases: 2/1", result.errors)
 
     def test_write_evaluation_report_creates_html_report(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -154,34 +241,32 @@ def _write_evaluation(
     baseline_candidate_id: str = "baseline",
     holdout_ids: list[str] | None = None,
     frontier_ids: list[str] | None = None,
+    holdout_sealed: bool = True,
+    holdout_releases: list[dict[str, object]] | None = None,
 ) -> None:
     run_id = run_dir.name
     candidate_path = f"runs/{run_id}/candidates/baseline/score.json"
-    run_dir.joinpath("EVALUATION.json").write_text(
-        json.dumps(
+    payload = {
+        "schema_version": "ciph.evaluation.v1",
+        "run_id": run_id,
+        "phase": phase,
+        "baseline_candidate_id": baseline_candidate_id,
+        "search_set": {"scenario_ids": ["search-1", "search-2"]},
+        "holdout_set": {"scenario_ids": holdout_ids or ["holdout-1"], "sealed": holdout_sealed},
+        "budget": {"max_candidates": 3, "max_holdout_releases": 1},
+        "frontier_candidate_ids": frontier_ids if frontier_ids is not None else [],
+        "candidates": [
             {
-                "schema_version": "ciph.evaluation.v1",
-                "run_id": run_id,
-                "phase": phase,
-                "baseline_candidate_id": baseline_candidate_id,
-                "search_set": {"scenario_ids": ["search-1", "search-2"]},
-                "holdout_set": {"scenario_ids": holdout_ids or ["holdout-1"], "sealed": True},
-                "budget": {"max_candidates": 3, "max_holdout_releases": 1},
-                "frontier_candidate_ids": frontier_ids if frontier_ids is not None else [],
-                "candidates": [
-                    {
-                        "candidate_id": "baseline",
-                        "role": "baseline",
-                        "evaluation_phase": "search",
-                        "score_path": candidate_path,
-                    }
-                ],
-            },
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
+                "candidate_id": "baseline",
+                "role": "baseline",
+                "evaluation_phase": "search",
+                "score_path": candidate_path,
+            }
+        ],
+    }
+    if holdout_releases is not None:
+        payload["holdout_releases"] = holdout_releases
+    run_dir.joinpath("EVALUATION.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":
