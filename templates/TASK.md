@@ -20,6 +20,14 @@ Describe what proves the work is acceptable. Prefer exact files, commands, UI st
 
 List API shapes, CLI flags, config keys, pricing, product limits, schemas, required fields, or other facts that need authoritative sources before implementation depends on them.
 
+## Policy Modules
+
+List any active harness policy modules from `harness/policies/`. Policy modules describe strategy; deterministic scripts still own exact validation and scoring.
+
+## Trace Ledger
+
+Research runs use `runs/<run-id>/TRACE.jsonl` for raw events. Validate it with `scripts/lint_trace.py` before closeout.
+
 ## Deliverables
 
 | ID | Requirement | Artifact paths | Evidence paths |
@@ -34,6 +42,7 @@ List API shapes, CLI flags, config keys, pricing, product limits, schemas, requi
 
 ```bash
 python3 scripts/lint_manifest.py runs/<run-id>/MANIFEST.json --root .
+python3 scripts/lint_trace.py runs/<run-id>/TRACE.jsonl --root .
 python3 scripts/run_checks.py runs/<run-id>/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/<run-id>/MANIFEST.json --root .
 python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root .

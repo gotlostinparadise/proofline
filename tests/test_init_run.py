@@ -21,6 +21,8 @@ class InitRunTests(unittest.TestCase):
             self.assertEqual(run_dir / "TASK.html", result.task_path)
             self.assertTrue((run_dir / "TASK.html").is_file())
             self.assertTrue((run_dir / "MANIFEST.json").is_file())
+            self.assertTrue((run_dir / "TRACE.jsonl").is_file())
+            self.assertEqual("", (run_dir / "TRACE.jsonl").read_text(encoding="utf-8"))
             self.assertTrue((run_dir / "artifacts").is_dir())
             self.assertTrue((run_dir / "artifacts" / ".gitkeep").is_file())
             task_html = (run_dir / "TASK.html").read_text(encoding="utf-8")
@@ -30,6 +32,13 @@ class InitRunTests(unittest.TestCase):
             manifest = json.loads((run_dir / "MANIFEST.json").read_text(encoding="utf-8"))
             self.assertEqual("sample-run", manifest["task_id"])
             self.assertEqual("Ship a useful harness.", manifest["objective"])
+            self.assertEqual(
+                {
+                    "schema_version": "ciph.trace.v1",
+                    "path": "runs/sample-run/TRACE.jsonl",
+                },
+                manifest["trace"],
+            )
             self.assertEqual(
                 "runs/sample-run/artifacts/verification.html",
                 manifest["checks"][0]["evidence"],
@@ -45,6 +54,7 @@ class InitRunTests(unittest.TestCase):
             run_dir = root / "runs" / "legacy-run"
             self.assertEqual(run_dir / "TASK.md", result.task_path)
             self.assertTrue((run_dir / "TASK.md").is_file())
+            self.assertTrue((run_dir / "TRACE.jsonl").is_file())
             self.assertIn("Keep old runs usable.", (run_dir / "TASK.md").read_text(encoding="utf-8"))
 
     def test_initialize_run_refuses_to_overwrite_existing_run(self):
@@ -89,6 +99,7 @@ class InitRunTests(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stderr)
             self.assertIn("Created CIPH run: runs/cli-run", completed.stdout)
             self.assertTrue((root / "runs" / "cli-run" / "TASK.html").is_file())
+            self.assertTrue((root / "runs" / "cli-run" / "TRACE.jsonl").is_file())
 
     def test_initialize_run_can_keep_state_in_vendor_proofline(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -108,10 +119,30 @@ class InitRunTests(unittest.TestCase):
             self.assertEqual(run_dir, result.run_dir)
             self.assertTrue((run_dir / "TASK.html").is_file())
             self.assertTrue((run_dir / "MANIFEST.json").is_file())
+            self.assertTrue((run_dir / "TRACE.jsonl").is_file())
             self.assertIn("Keep Proofline locked in vendor.", (run_dir / "TASK.html").read_text(encoding="utf-8"))
 
             manifest = json.loads((run_dir / "MANIFEST.json").read_text(encoding="utf-8"))
             self.assertEqual("vendor-run", manifest["task_id"])
+            self.assertEqual("runs/vendor-run/TRACE.jsonl", manifest["trace"]["path"])
+
+    def test_repo_templates_include_policy_modules_and_trace_closeout(self):
+        repo_root = Path(__file__).resolve().parents[1]
+        task_html = (repo_root / "templates" / "TASK.html").read_text(encoding="utf-8")
+        task_md = (repo_root / "templates" / "TASK.md").read_text(encoding="utf-8")
+        manifest = json.loads((repo_root / "templates" / "MANIFEST.json").read_text(encoding="utf-8"))
+
+        self.assertIn("Policy Modules", task_html)
+        self.assertIn("scripts/lint_trace.py", task_html)
+        self.assertIn("Policy Modules", task_md)
+        self.assertIn("scripts/lint_trace.py", task_md)
+        self.assertEqual(
+            {
+                "schema_version": "ciph.trace.v1",
+                "path": "runs/<run-id>/TRACE.jsonl",
+            },
+            manifest["trace"],
+        )
 
 
 def _write_templates(root: Path) -> None:
