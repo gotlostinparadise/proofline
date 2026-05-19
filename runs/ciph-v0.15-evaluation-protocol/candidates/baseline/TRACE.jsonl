@@ -1,0 +1,2 @@
+{"event_id": "evt-v0-15-baseline-created", "event_type": "candidate.created", "occurred_at": "2026-05-20T03:00:00Z", "schema_version": "ciph.trace.v1", "candidate_id": "baseline"}
+{"event_id": "evt-v0-15-baseline-scored", "event_type": "candidate.scored", "occurred_at": "2026-05-20T03:01:00Z", "schema_version": "ciph.trace.v1", "candidate_id": "baseline", "score_path": "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/score.json"}

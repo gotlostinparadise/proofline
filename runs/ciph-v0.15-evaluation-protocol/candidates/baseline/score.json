@@ -1,0 +1,47 @@
+{
+  "schema_version": "ciph.candidate.v1",
+  "candidate_id": "baseline",
+  "hypothesis": "A baseline candidate with search-only scores should validate without exposing holdout results.",
+  "parent_ids": [
+    "seed"
+  ],
+  "lineage": {
+    "parents": [
+      "seed"
+    ],
+    "generation": 0
+  },
+  "changed_modules": [
+    "baseline"
+  ],
+  "search_scores": {
+    "task_success": 0.8,
+    "audit_completeness": 0.8,
+    "cost_tokens": 100,
+    "wall_minutes": 4,
+    "defect_escape_rate": 0.1
+  },
+  "candidate_trace": "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/TRACE.jsonl",
+  "trace_paths": [
+    "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/TRACE.jsonl",
+    "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/trace/prompts.jsonl",
+    "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/trace/tools.jsonl",
+    "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/trace/failures.md"
+  ],
+  "artifact_paths": [
+    "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/policy/README.md",
+    "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/source/README.md",
+    "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/artifacts/.gitkeep",
+    "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/patch.diff",
+    "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/NOTES.md"
+  ],
+  "mechanism_metrics": {
+    "artifact_contract_compliance": 1.0,
+    "stage_coverage": 1.0,
+    "ordered_workflow_compliance": 1.0,
+    "tool_call_success": 1.0,
+    "handoff_recall": 1.0,
+    "validation_coverage": 1.0
+  },
+  "pareto_status": "unscored"
+}

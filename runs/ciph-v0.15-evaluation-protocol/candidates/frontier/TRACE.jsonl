@@ -1,0 +1,2 @@
+{"event_id": "evt-v0-15-frontier-created", "event_type": "candidate.created", "occurred_at": "2026-05-20T03:02:00Z", "schema_version": "ciph.trace.v1", "candidate_id": "frontier"}
+{"event_id": "evt-v0-15-frontier-scored", "event_type": "candidate.scored", "occurred_at": "2026-05-20T03:03:00Z", "schema_version": "ciph.trace.v1", "candidate_id": "frontier", "score_path": "runs/ciph-v0.15-evaluation-protocol/candidates/frontier/score.json"}

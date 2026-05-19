@@ -1,0 +1,41 @@
+{
+  "schema_version": "ciph.evaluation.v1",
+  "run_id": "ciph-v0.15-evaluation-protocol",
+  "phase": "search",
+  "baseline_candidate_id": "baseline",
+  "search_set": {
+    "scenario_ids": [
+      "manifest-contract",
+      "candidate-summary",
+      "skill-install"
+    ]
+  },
+  "holdout_set": {
+    "scenario_ids": [
+      "sealed-regression",
+      "sealed-frontier-review"
+    ],
+    "sealed": true
+  },
+  "budget": {
+    "max_candidates": 3,
+    "max_holdout_releases": 1
+  },
+  "frontier_candidate_ids": [
+    "frontier"
+  ],
+  "candidates": [
+    {
+      "candidate_id": "baseline",
+      "role": "baseline",
+      "evaluation_phase": "search",
+      "score_path": "runs/ciph-v0.15-evaluation-protocol/candidates/baseline/score.json"
+    },
+    {
+      "candidate_id": "frontier",
+      "role": "frontier",
+      "evaluation_phase": "search",
+      "score_path": "runs/ciph-v0.15-evaluation-protocol/candidates/frontier/score.json"
+    }
+  ]
+}
