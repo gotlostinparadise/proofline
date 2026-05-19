@@ -39,6 +39,12 @@ Validate the manifest:
 python3 scripts/verify_manifest.py runs/my-run/MANIFEST.json --root .
 ```
 
+Lint a research trace ledger:
+
+```bash
+python3 scripts/lint_trace.py runs/my-run/TRACE.jsonl --root .
+```
+
 Render the closeout checklist:
 
 ```bash
@@ -78,6 +84,7 @@ python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/
 - `scripts/candidate_summary.py`: writes a candidate score summary.
 - `scripts/check_repo.py`: runs the repository health gate.
 - `scripts/lint_manifest.py`: catches placeholders and weak manifest contracts.
+- `scripts/lint_trace.py`: validates research trace JSONL event contracts.
 - `scripts/run_checks.py`: runs manifest checks and writes structured evidence.
 - `scripts/html_report.py`: renders shared self-contained HTML report structure.
 - `scripts/verify_manifest.py`: validates manifest structure and required local paths.
