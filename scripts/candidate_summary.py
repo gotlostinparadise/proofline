@@ -16,6 +16,14 @@ except ModuleNotFoundError:  # pragma: no cover - exercised by direct script exe
 
 MAXIMIZE = ["task_success", "audit_completeness"]
 MINIMIZE = ["cost_tokens", "wall_minutes", "defect_escape_rate"]
+MECHANISM_METRICS = [
+    ("artifact_contract_compliance", "Artifact Contract"),
+    ("stage_coverage", "Stage Coverage"),
+    ("ordered_workflow_compliance", "Ordered Workflow"),
+    ("tool_call_success", "Tool Success"),
+    ("handoff_recall", "Handoff Recall"),
+    ("validation_coverage", "Validation Coverage"),
+]
 
 
 def render_candidate_summary(run_dir: Path | str) -> str:
@@ -27,14 +35,17 @@ def render_candidate_summary(run_dir: Path | str) -> str:
         "",
         f"Run: {run_path}",
         "",
-        "| Candidate | Pareto | Task Success | Audit | Cost Tokens | Wall Minutes | Defect Escape |",
-        "| --- | --- | --- | --- | --- | --- | --- |",
+        "| Candidate | Pareto | Task Success | Audit | Cost Tokens | Wall Minutes | Defect Escape | Artifact Contract | Stage Coverage | Ordered Workflow | Tool Success | Handoff Recall | Validation Coverage |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for candidate in sorted(candidates, key=lambda item: str(item.get("candidate_id", ""))):
         candidate_id = str(candidate.get("candidate_id", "<missing>"))
         scores = candidate.get("search_scores", {})
         if not isinstance(scores, dict):
             scores = {}
+        mechanism = candidate.get("mechanism_metrics", {})
+        if not isinstance(mechanism, dict):
+            mechanism = {}
         lines.append(
             "| "
             + " | ".join(
@@ -46,12 +57,13 @@ def render_candidate_summary(run_dir: Path | str) -> str:
                     _fmt(scores.get("cost_tokens")),
                     _fmt(scores.get("wall_minutes")),
                     _fmt(scores.get("defect_escape_rate")),
+                    *[_fmt(mechanism.get(key)) for key, _label in MECHANISM_METRICS],
                 ]
             )
             + " |"
         )
     if not candidates:
-        lines.append("| None | unscored | - | - | - | - | - |")
+        lines.append("| None | unscored | - | - | - | - | - | - | - | - | - | - | - |")
     return "\n".join(lines) + "\n"
 
 
@@ -65,6 +77,9 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
         scores = candidate.get("search_scores", {})
         if not isinstance(scores, dict):
             scores = {}
+        mechanism = candidate.get("mechanism_metrics", {})
+        if not isinstance(mechanism, dict):
+            mechanism = {}
         rows.append(
             [
                 candidate_id,
@@ -74,10 +89,11 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
                 _fmt(scores.get("cost_tokens")),
                 _fmt(scores.get("wall_minutes")),
                 _fmt(scores.get("defect_escape_rate")),
+                *[_fmt(mechanism.get(key)) for key, _label in MECHANISM_METRICS],
             ]
         )
     if not rows:
-        rows.append(["None", "unscored", "-", "-", "-", "-", "-"])
+        rows.append(["None", "unscored", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
 
     return render_html_document(
         title="CIPH Candidate Summary",
@@ -97,6 +113,7 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
                         "Cost Tokens",
                         "Wall Minutes",
                         "Defect Escape",
+                        *[label for _key, label in MECHANISM_METRICS],
                     ],
                     rows,
                 ),

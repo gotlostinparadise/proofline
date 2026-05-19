@@ -50,6 +50,35 @@ class CandidateSummaryTests(unittest.TestCase):
             self.assertIn("<table", html)
             self.assertIn("strong", html)
 
+    def test_candidate_summary_includes_mechanism_metrics_when_present(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = root / "runs" / "sample"
+            _write_score(
+                run_dir,
+                "instrumented",
+                task_success=0.9,
+                audit_completeness=0.9,
+                cost_tokens=100,
+                wall_minutes=2,
+                defect_escape_rate=0.0,
+                mechanism_metrics={
+                    "artifact_contract_compliance": 1.0,
+                    "stage_coverage": 0.75,
+                    "ordered_workflow_compliance": 1.0,
+                    "tool_call_success": 0.5,
+                    "handoff_recall": 1.0,
+                    "validation_coverage": 0.8,
+                },
+            )
+
+            output = render_candidate_summary(run_dir)
+
+            self.assertIn("Artifact Contract", output)
+            self.assertIn("Stage Coverage", output)
+            self.assertIn("| instrumented | frontier |", output)
+            self.assertIn("0.75", output)
+
     def test_candidate_summary_script_runs_when_executed_by_file_path(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -85,6 +114,7 @@ def _write_score(
     cost_tokens: int,
     wall_minutes: int,
     defect_escape_rate: float,
+    mechanism_metrics: dict[str, float] | None = None,
 ) -> None:
     candidate_dir = run_dir / "candidates" / candidate_id
     candidate_dir.mkdir(parents=True, exist_ok=True)
@@ -106,6 +136,7 @@ def _write_score(
                     f"candidates/{candidate_id}/trace/tools.jsonl",
                     f"candidates/{candidate_id}/trace/failures.md",
                 ],
+                "mechanism_metrics": mechanism_metrics or {},
                 "pareto_status": "unscored",
             },
             indent=2,
