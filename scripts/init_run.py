@@ -14,6 +14,15 @@ from typing import Any
 
 RUN_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 DEFAULT_OBJECTIVE = "State the original user request in concrete terms."
+DEFAULT_POLICY_MODULES = [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md",
+]
 
 
 @dataclass(frozen=True)
@@ -123,6 +132,7 @@ def _render_manifest(template: dict[str, Any], run_id: str, objective: str) -> d
             "path": f"runs/{run_id}/TRACE.jsonl",
         },
     )
+    rendered.setdefault("policy_modules", DEFAULT_POLICY_MODULES)
     return rendered
 
 

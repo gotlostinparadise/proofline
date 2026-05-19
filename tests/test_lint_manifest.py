@@ -139,6 +139,28 @@ class LintManifestTests(unittest.TestCase):
                 result.warnings,
             )
 
+    def test_trace_manifest_requires_policy_modules(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = _write_manifest(root, trace={"schema_version": "ciph.trace.v1", "path": "runs/sample/TRACE.jsonl"})
+
+            result = lint_manifest(manifest_path, root)
+
+            self.assertIn("ERROR trace-enabled manifest must list at least one policy module", result.errors)
+
+    def test_trace_manifest_accepts_policy_modules(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = _write_manifest(
+                root,
+                trace={"schema_version": "ciph.trace.v1", "path": "runs/sample/TRACE.jsonl"},
+                policy_modules=["harness/policies/state.md"],
+            )
+
+            result = lint_manifest(manifest_path, root)
+
+            self.assertEqual([], result.errors)
+
     def test_lint_manifest_script_runs_when_executed_by_file_path(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -169,6 +191,8 @@ def _write_manifest(
     objective: str = "Keep the manifest specific and executable.",
     deliverables: list[dict[str, object]] | None = None,
     checks: list[dict[str, object]] | None = None,
+    trace: dict[str, object] | None = None,
+    policy_modules: list[str] | None = None,
 ) -> Path:
     manifest_path = root / "runs" / "sample" / "MANIFEST.json"
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
@@ -206,6 +230,10 @@ def _write_manifest(
         ],
         "risks": [],
     }
+    if trace is not None:
+        payload["trace"] = trace
+    if policy_modules is not None:
+        payload["policy_modules"] = policy_modules
     manifest_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return manifest_path
 

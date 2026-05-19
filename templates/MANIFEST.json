@@ -6,6 +6,15 @@
     "schema_version": "ciph.trace.v1",
     "path": "runs/<run-id>/TRACE.jsonl"
   },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
   "deliverables": [
     {
       "id": "example",

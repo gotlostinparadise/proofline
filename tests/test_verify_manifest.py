@@ -89,6 +89,87 @@ class ValidateManifestTests(unittest.TestCase):
                 result.errors,
             )
 
+    def test_manifest_with_existing_trace_reference_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = root / "runs" / "sample" / "MANIFEST.json"
+            evidence_path = root / "runs" / "sample" / "artifacts" / "verification.md"
+            trace_path = root / "runs" / "sample" / "TRACE.jsonl"
+            manifest_path.parent.mkdir(parents=True, exist_ok=True)
+            evidence_path.parent.mkdir(parents=True)
+            evidence_path.write_text("HTML parse ok", encoding="utf-8")
+            trace_path.write_text("", encoding="utf-8")
+            (root / "index.html").write_text("<!doctype html>", encoding="utf-8")
+            manifest = valid_manifest()
+            manifest["trace"] = {
+                "schema_version": "ciph.trace.v1",
+                "path": "runs/sample/TRACE.jsonl",
+            }
+            write_json(manifest_path, manifest)
+
+            result = validate_manifest(manifest_path, root)
+
+            self.assertTrue(result.ok, result.messages)
+
+    def test_trace_schema_version_must_match(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = root / "MANIFEST.json"
+            _write_valid_manifest_files(root)
+            manifest = valid_manifest()
+            manifest["trace"] = {
+                "schema_version": "wrong",
+                "path": "runs/sample/TRACE.jsonl",
+            }
+            write_json(manifest_path, manifest)
+
+            result = validate_manifest(manifest_path, root)
+
+            self.assertIn("trace.schema_version must be ciph.trace.v1", result.errors)
+
+    def test_trace_path_must_stay_inside_root(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = root / "MANIFEST.json"
+            _write_valid_manifest_files(root)
+            manifest = valid_manifest()
+            manifest["trace"] = {
+                "schema_version": "ciph.trace.v1",
+                "path": "../TRACE.jsonl",
+            }
+            write_json(manifest_path, manifest)
+
+            result = validate_manifest(manifest_path, root)
+
+            self.assertIn("trace.path must be a local path under the root: ../TRACE.jsonl", result.errors)
+
+    def test_missing_trace_file_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = root / "MANIFEST.json"
+            _write_valid_manifest_files(root, include_trace=False)
+            manifest = valid_manifest()
+            manifest["trace"] = {
+                "schema_version": "ciph.trace.v1",
+                "path": "runs/sample/TRACE.jsonl",
+            }
+            write_json(manifest_path, manifest)
+
+            result = validate_manifest(manifest_path, root)
+
+            self.assertIn("Missing trace ledger: runs/sample/TRACE.jsonl", result.errors)
+
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def _write_valid_manifest_files(root: Path, include_trace: bool = True) -> None:
+    (root / "index.html").write_text("<!doctype html>", encoding="utf-8")
+    evidence_path = root / "runs" / "sample" / "artifacts" / "verification.md"
+    evidence_path.parent.mkdir(parents=True, exist_ok=True)
+    evidence_path.write_text("HTML parse ok", encoding="utf-8")
+    if include_trace:
+        trace_path = root / "runs" / "sample" / "TRACE.jsonl"
+        trace_path.parent.mkdir(parents=True, exist_ok=True)
+        trace_path.write_text("", encoding="utf-8")
