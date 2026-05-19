@@ -41,6 +41,10 @@ Research-grade runs include `TRACE.jsonl` with schema version `ciph.trace.v1`. T
 
 Research-grade runs can derive mechanism metrics from `MANIFEST.json` and `TRACE.jsonl` with `scripts/trace_metrics.py`. Metrics expose harness behavior, including artifact coverage, stage coverage, ordered workflow, tool success, handoff recall, validation coverage, and recovery completion. Metrics are diagnostic reports, not substitutes for manifest validation or closeout evidence.
 
+### Candidate Lab Contract
+
+Candidate records live under `runs/<run-id>/candidates/<candidate-id>/`. Each record keeps `score.json`, `NOTES.md`, `patch.diff`, candidate-level `TRACE.jsonl`, policy/source notes, artifact storage, and legacy trace files. Validate candidate records with `scripts/validate_candidate.py` before relying on their scores or summaries.
+
 ### Delegation Contract
 
 Delegated work requires a bounded task packet, clear write ownership, expected output paths, and local verification after return. Child-agent self-report is not completion evidence.
@@ -114,6 +118,7 @@ Create and summarize candidates:
 
 ```bash
 python3 scripts/init_candidate.py runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
+python3 scripts/validate_candidate.py runs/<run-id>/candidates/<candidate-id> --root . --output runs/<run-id>/artifacts/candidate-validation.html
 python3 scripts/candidate_summary.py runs/<run-id> --output runs/<run-id>/artifacts/candidate-summary.html
 ```
 

@@ -56,10 +56,11 @@ python3 vendor/proofline/scripts/init_child_task.py vendor/proofline/runs/<run-i
 
 Child-agent self-report is not evidence. Inspect returned changes and verify them locally.
 
-For competing approaches, scaffold candidates:
+For competing approaches, scaffold and validate candidates:
 
 ```bash
 python3 vendor/proofline/scripts/init_candidate.py vendor/proofline/runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
+python3 vendor/proofline/scripts/validate_candidate.py vendor/proofline/runs/<run-id>/candidates/<candidate-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/candidate-validation.html
 python3 vendor/proofline/scripts/candidate_summary.py vendor/proofline/runs/<run-id> --output vendor/proofline/runs/<run-id>/artifacts/candidate-summary.html
 ```
 
@@ -92,6 +93,7 @@ Only claim completion when closeout maps every explicit requirement to existing 
 | Listing vague deliverables | Use concrete file paths and exact evidence paths. |
 | Forgetting trace linting on research-grade runs | Run `lint_trace.py` against `TRACE.jsonl`. |
 | Treating mechanism metrics as completion proof | Run `trace_metrics.py` for diagnostics, then keep `verify_manifest.py` and closeout evidence authoritative. |
+| Summarizing candidate scores before validating records | Run `validate_candidate.py` for each candidate first. |
 | Treating chat or child-agent output as proof | Record command evidence or source references in the manifest. |
 | Forgetting generated reports | Write `status.html` and `closeout.html` before final verification. |
 | Installing over an existing harness casually | Use installer `--force` only with explicit approval. |

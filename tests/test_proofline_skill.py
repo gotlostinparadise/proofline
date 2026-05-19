@@ -28,10 +28,14 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((vendor / "templates" / "TASK.html").is_file())
             self.assertTrue((vendor / "templates" / "MANIFEST.json").is_file())
             self.assertTrue((vendor / "scripts" / "init_run.py").is_file())
+            self.assertTrue((vendor / "scripts" / "init_candidate.py").is_file())
+            self.assertTrue((vendor / "scripts" / "validate_candidate.py").is_file())
             self.assertTrue((vendor / "scripts" / "lint_trace.py").is_file())
             self.assertTrue((vendor / "scripts" / "trace_metrics.py").is_file())
             self.assertTrue((vendor / "harness" / "policies" / "README.md").is_file())
             self.assertTrue(os.access(vendor / "scripts" / "init_run.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "init_candidate.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "validate_candidate.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "lint_trace.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "trace_metrics.py", os.X_OK))
 
@@ -75,6 +79,45 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(lint_trace.returncode, 0, lint_trace.stderr)
             self.assertIn("PASS trace", lint_trace.stdout)
 
+            init_candidate = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/init_candidate.py",
+                    "vendor/proofline/runs/sample-run/MANIFEST.json",
+                    "baseline",
+                    "--root",
+                    str(target),
+                    "--changed-module",
+                    "candidate-search",
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(init_candidate.returncode, 0, init_candidate.stderr)
+            candidate_dir = vendor / "runs" / "sample-run" / "candidates" / "baseline"
+            self.assertTrue((candidate_dir / "score.json").is_file())
+            self.assertTrue((candidate_dir / "TRACE.jsonl").is_file())
+
+            validate_candidate = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/validate_candidate.py",
+                    "vendor/proofline/runs/sample-run/candidates/baseline",
+                    "--root",
+                    str(target),
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(validate_candidate.returncode, 0, validate_candidate.stderr)
+            self.assertIn("PASS candidate", validate_candidate.stdout)
+
     def test_bundled_assets_are_trace_aware(self):
         skill_text = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
         manifest = (SKILL_DIR / "assets" / "proofline" / "templates" / "MANIFEST.json").read_text(encoding="utf-8")
@@ -82,12 +125,14 @@ class ProoflineSkillTests(unittest.TestCase):
 
         self.assertIn("lint_trace.py", skill_text)
         self.assertIn("trace_metrics.py", skill_text)
+        self.assertIn("validate_candidate.py", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)
         self.assertIn("Mechanism Metrics", task_html)
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "lint_trace.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "trace_metrics.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_candidate.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "harness" / "policies" / "state.md").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):

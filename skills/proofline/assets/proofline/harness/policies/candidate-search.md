@@ -18,7 +18,7 @@ Apply when competing harness policies, scripts, prompts, workflows, or module ab
 
 ## State
 
-Each candidate records `score.json`, `NOTES.md`, `patch.diff`, trace files, parent IDs, changed modules, and artifacts under its candidate directory.
+Each candidate records `score.json`, `NOTES.md`, `patch.diff`, candidate-level `TRACE.jsonl`, policy snapshots, source notes, legacy trace files, parent IDs, changed modules, mechanism metrics, and artifacts under its candidate directory.
 
 ## Evidence
 
@@ -30,4 +30,4 @@ Remove one named policy module or deterministic hook at a time. Do not mix unrel
 
 ## Deterministic Hooks
 
-Use `scripts/init_candidate.py`, `scripts/candidate_summary.py`, candidate score JSON, and future metric scripts.
+Use `scripts/init_candidate.py`, `scripts/validate_candidate.py`, `scripts/candidate_summary.py`, candidate score JSON, and mechanism metric scripts.

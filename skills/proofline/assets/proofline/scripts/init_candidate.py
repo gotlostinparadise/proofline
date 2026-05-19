@@ -36,29 +36,50 @@ def initialize_candidate(
 ) -> CandidateResult:
     validate_candidate_id(candidate_id)
     root_path = Path(root)
-    manifest = load_manifest(Path(manifest_path))
+    manifest_path = Path(manifest_path)
+    if not manifest_path.is_absolute():
+        manifest_path = root_path / manifest_path
+    manifest = load_manifest(manifest_path)
     task_id = manifest.get("task_id")
     if not isinstance(task_id, str) or not task_id.strip():
         raise ValueError("Parent manifest must include a non-empty task_id")
 
-    candidate_dir = root_path / "runs" / task_id / "candidates" / candidate_id
+    run_dir = manifest_path.parent
+    candidate_dir = run_dir / "candidates" / candidate_id
     if candidate_dir.exists() and not force:
-        raise FileExistsError(f"Candidate already exists: runs/{task_id}/candidates/{candidate_id}")
+        raise FileExistsError(f"Candidate already exists: {_display_path(candidate_dir, root_path)}")
 
+    policy_dir = candidate_dir / "policy"
+    source_dir = candidate_dir / "source"
+    artifacts_dir = candidate_dir / "artifacts"
     trace_dir = candidate_dir / "trace"
     trace_dir.mkdir(parents=True, exist_ok=True)
+    policy_dir.mkdir(parents=True, exist_ok=True)
+    source_dir.mkdir(parents=True, exist_ok=True)
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
     (candidate_dir / "patch.diff").write_text("", encoding="utf-8")
     (candidate_dir / "NOTES.md").write_text(_render_notes(candidate_id), encoding="utf-8")
+    (candidate_dir / "TRACE.jsonl").write_text("", encoding="utf-8")
+    (policy_dir / "README.md").write_text(_render_policy_readme(candidate_id), encoding="utf-8")
+    (source_dir / "README.md").write_text(_render_source_readme(candidate_id), encoding="utf-8")
+    (artifacts_dir / ".gitkeep").write_text("", encoding="utf-8")
     (trace_dir / "prompts.jsonl").write_text("", encoding="utf-8")
     (trace_dir / "tools.jsonl").write_text("", encoding="utf-8")
     (trace_dir / "failures.md").write_text("# Candidate Failures\n\n- None recorded.\n", encoding="utf-8")
 
+    display_root = _display_path(candidate_dir, root_path)
     score_path = candidate_dir / "score.json"
     score_path.write_text(
         json.dumps(
             {
+                "schema_version": "ciph.candidate.v1",
                 "candidate_id": candidate_id,
+                "hypothesis": "State what this candidate is testing.",
                 "parent_ids": parent_ids or [],
+                "lineage": {
+                    "parents": parent_ids or [],
+                    "generation": 0,
+                },
                 "changed_modules": changed_modules or [],
                 "search_scores": {
                     "task_success": None,
@@ -67,11 +88,21 @@ def initialize_candidate(
                     "wall_minutes": None,
                     "defect_escape_rate": None,
                 },
+                "candidate_trace": f"{display_root}/TRACE.jsonl",
                 "trace_paths": [
-                    f"runs/{task_id}/candidates/{candidate_id}/trace/prompts.jsonl",
-                    f"runs/{task_id}/candidates/{candidate_id}/trace/tools.jsonl",
-                    f"runs/{task_id}/candidates/{candidate_id}/trace/failures.md",
+                    f"{display_root}/TRACE.jsonl",
+                    f"{display_root}/trace/prompts.jsonl",
+                    f"{display_root}/trace/tools.jsonl",
+                    f"{display_root}/trace/failures.md",
                 ],
+                "artifact_paths": [
+                    f"{display_root}/policy/README.md",
+                    f"{display_root}/source/README.md",
+                    f"{display_root}/artifacts/.gitkeep",
+                    f"{display_root}/patch.diff",
+                    f"{display_root}/NOTES.md",
+                ],
+                "mechanism_metrics": {},
                 "pareto_status": "unscored",
             },
             indent=2,
@@ -110,6 +141,27 @@ State what this candidate is testing.
 
 Unscored.
 """
+
+
+def _render_policy_readme(candidate_id: str) -> str:
+    return f"""# Candidate Policy Snapshot: {candidate_id}
+
+Copy or describe changed policy modules here. Keep one candidate focused on one hypothesis or ablation.
+"""
+
+
+def _render_source_readme(candidate_id: str) -> str:
+    return f"""# Candidate Source Snapshot: {candidate_id}
+
+Record source files, prompt variants, config fragments, or patch references that define this candidate.
+"""
+
+
+def _display_path(path: Path, root: Path) -> str:
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
 
 
 def main(argv: list[str] | None = None) -> int:

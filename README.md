@@ -76,6 +76,7 @@ Create and summarize candidates:
 
 ```bash
 python3 scripts/init_candidate.py runs/my-run/MANIFEST.json baseline --changed-module verification
+python3 scripts/validate_candidate.py runs/my-run/candidates/baseline --root . --output runs/my-run/artifacts/candidate-validation.html
 python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/candidate-summary.html
 ```
 
@@ -89,7 +90,8 @@ python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/
 - `templates/MANIFEST.json`: manifest template used by the initializer.
 - `scripts/init_run.py`: creates a run directory from templates.
 - `scripts/init_child_task.py`: creates a bounded child task packet.
-- `scripts/init_candidate.py`: creates candidate trace and score scaffolding.
+- `scripts/init_candidate.py`: creates Meta-Harness candidate records.
+- `scripts/validate_candidate.py`: validates candidate records and writes validation reports.
 - `scripts/candidate_summary.py`: writes a candidate score summary.
 - `scripts/check_repo.py`: runs the repository health gate.
 - `scripts/lint_manifest.py`: catches placeholders and weak manifest contracts.
@@ -103,7 +105,7 @@ python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/
 
 ## Research Harness Layer
 
-Policy modules under `harness/policies/` describe editable harness strategy. They are intentionally readable and ablatable; exact checks remain in scripts. `TRACE.jsonl` stores raw research events such as stage, state, tool, handoff, validation, candidate, recovery, budget, and closeout events. Validate traces with `scripts/lint_trace.py`, then derive run metrics with `scripts/trace_metrics.py`; generated reports are views over manifest and trace evidence.
+Policy modules under `harness/policies/` describe editable harness strategy. They are intentionally readable and ablatable; exact checks remain in scripts. `TRACE.jsonl` stores raw research events such as stage, state, tool, handoff, validation, candidate, recovery, budget, and closeout events. Candidate records under `runs/<run-id>/candidates/` preserve policy snapshots, source notes, raw candidate traces, score contracts, and artifacts. Validate traces with `scripts/lint_trace.py`, validate candidates with `scripts/validate_candidate.py`, then derive run metrics with `scripts/trace_metrics.py`; generated reports are views over manifest and trace evidence.
 
 ## Development Checks
 
