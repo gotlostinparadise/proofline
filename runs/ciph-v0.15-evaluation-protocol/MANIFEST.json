@@ -1,0 +1,178 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.15-evaluation-protocol",
+  "objective": "Implement CIPH v0.15 Evaluation Protocol: search-set versus holdout discipline, baseline/frontier validation, evaluation reporting, docs, bundled Proofline asset sync, and dogfood closeout evidence.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.15-evaluation-protocol/TRACE.jsonl"
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "evaluation-validator",
+      "requirement": "Validate EVALUATION.json for split separation, baseline presence, budgets, candidate score paths, frontier release, and holdout leakage.",
+      "artifact_paths": [
+        "scripts/validate_evaluation.py",
+        "tests/test_validate_evaluation.py",
+        "runs/ciph-v0.15-evaluation-protocol/EVALUATION.json",
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/evaluation-report.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/evaluation-validator-tests.txt",
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/evaluation-report.txt"
+      ]
+    },
+    {
+      "id": "candidate-summary-evaluation",
+      "requirement": "Expose evaluation phase and holdout status in candidate summaries without breaking runs that lack EVALUATION.json.",
+      "artifact_paths": [
+        "scripts/candidate_summary.py",
+        "tests/test_candidate_summary.py",
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/candidate-summary.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/candidate-summary-tests.txt",
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/candidate-summary-report.txt"
+      ]
+    },
+    {
+      "id": "proofline-skill-sync",
+      "requirement": "Mirror evaluation protocol script, docs, and skill instructions into bundled Proofline assets.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/validate_evaluation.py",
+        "skills/proofline/assets/proofline/scripts/candidate_summary.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-closeout",
+      "requirement": "Document evaluation protocol behavior and close out the dogfood run with generated evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "docs/plans/2026-05-20-ciph-v0.15-evaluation-protocol-design.md",
+        "docs/plans/2026-05-20-ciph-v0.15-evaluation-protocol.md",
+        "runs/ciph-v0.15-evaluation-protocol/TASK.html",
+        "runs/ciph-v0.15-evaluation-protocol/MANIFEST.json",
+        "runs/ciph-v0.15-evaluation-protocol/TRACE.jsonl",
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/status.html",
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/closeout.html",
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/mechanism-metrics.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/validate_evaluation.py",
+      "description": "Evaluation protocol validator and report generator.",
+      "required": true
+    },
+    {
+      "path": "tests/test_validate_evaluation.py",
+      "description": "Evaluation protocol tests.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.15-evaluation-protocol/EVALUATION.json",
+      "description": "Dogfood evaluation protocol.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.15-evaluation-protocol/artifacts/evaluation-report.html",
+      "description": "Generated evaluation protocol report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.15-evaluation-protocol/artifacts/candidate-summary.html",
+      "description": "Candidate summary with evaluation columns.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.15-evaluation-protocol/artifacts/status.html",
+      "description": "Generated run status report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.15-evaluation-protocol/artifacts/closeout.html",
+      "description": "Generated closeout report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.15-evaluation-protocol/artifacts/mechanism-metrics.html",
+      "description": "Generated mechanism metrics report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "evaluation-validator-tests",
+      "command": "python3 -m unittest tests.test_validate_evaluation",
+      "required": true,
+      "evidence": "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/evaluation-validator-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "evaluation-report",
+      "command": "python3 scripts/validate_evaluation.py runs/ciph-v0.15-evaluation-protocol --root . --output runs/ciph-v0.15-evaluation-protocol/artifacts/evaluation-report.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/evaluation-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "candidate-summary-tests",
+      "command": "python3 -m unittest tests.test_candidate_summary",
+      "required": true,
+      "evidence": "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/candidate-summary-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "candidate-summary-report",
+      "command": "python3 scripts/candidate_summary.py runs/ciph-v0.15-evaluation-protocol --output runs/ciph-v0.15-evaluation-protocol/artifacts/candidate-summary.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/candidate-summary-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-ledger-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.15-evaluation-protocol/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/trace-ledger-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.15-evaluation-protocol/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Evaluation validation must stay read-only and must not expose holdout results during search phase.",
+    "Candidate summaries must remain backward-compatible for older runs.",
+    "Bundled Proofline assets and installed skill must stay synchronized."
+  ]
+}
