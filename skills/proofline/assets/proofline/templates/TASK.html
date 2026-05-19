@@ -48,6 +48,16 @@ pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
 <p>List API shapes, CLI flags, config keys, pricing, product limits, schemas, required fields, or other facts that need authoritative sources before implementation depends on them.</p>
 </section>
 
+<section id="policy-modules" data-proofline-section="policy-modules">
+<h2>Policy Modules</h2>
+<p>List any active harness policy modules from <code>harness/policies/</code>. Policy modules describe strategy; deterministic scripts still own exact validation and scoring.</p>
+</section>
+
+<section id="trace-ledger" data-proofline-section="trace-ledger">
+<h2>Trace Ledger</h2>
+<p>Research runs use <code>runs/&lt;run-id&gt;/TRACE.jsonl</code> for raw events. Validate it with <code>scripts/lint_trace.py</code> before closeout.</p>
+</section>
+
 <section id="deliverables" data-proofline-section="deliverables">
 <h2>Deliverables</h2>
 <table>
@@ -64,6 +74,7 @@ pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
 <section id="closeout-commands" data-proofline-section="closeout-commands">
 <h2>Closeout Commands</h2>
 <pre><code>python3 scripts/lint_manifest.py runs/&lt;run-id&gt;/MANIFEST.json --root .
+python3 scripts/lint_trace.py runs/&lt;run-id&gt;/TRACE.jsonl --root .
 python3 scripts/run_checks.py runs/&lt;run-id&gt;/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/&lt;run-id&gt;/MANIFEST.json --root .
 python3 scripts/run_status.py runs/&lt;run-id&gt;/MANIFEST.json --root . --output runs/&lt;run-id&gt;/artifacts/status.html

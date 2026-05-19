@@ -14,6 +14,15 @@ from typing import Any
 
 RUN_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 DEFAULT_OBJECTIVE = "State the original user request in concrete terms."
+DEFAULT_POLICY_MODULES = [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md",
+]
 
 
 @dataclass(frozen=True)
@@ -22,6 +31,7 @@ class InitRunResult:
     run_dir: Path
     task_path: Path
     manifest_path: Path
+    trace_path: Path
     artifacts_dir: Path
 
 
@@ -40,6 +50,7 @@ def initialize_run(
     task_template_path = _select_task_template(templates_dir)
     task_path = run_dir / ("TASK.html" if task_template_path.suffix == ".html" else "TASK.md")
     manifest_path = run_dir / "MANIFEST.json"
+    trace_path = run_dir / "TRACE.jsonl"
     artifacts_dir = run_dir / "artifacts"
 
     if run_dir.exists() and not force:
@@ -52,6 +63,7 @@ def initialize_run(
     run_dir.mkdir(parents=True, exist_ok=True)
     artifacts_dir.mkdir(parents=True, exist_ok=True)
     (artifacts_dir / ".gitkeep").touch()
+    trace_path.write_text("", encoding="utf-8")
 
     task_path.write_text(_render_task(task_template, run_id, objective_text, task_template_path.suffix == ".html"), encoding="utf-8")
     manifest_path.write_text(
@@ -64,6 +76,7 @@ def initialize_run(
         run_dir=run_dir,
         task_path=task_path,
         manifest_path=manifest_path,
+        trace_path=trace_path,
         artifacts_dir=artifacts_dir,
     )
 
@@ -112,6 +125,14 @@ def _render_manifest(template: dict[str, Any], run_id: str, objective: str) -> d
     rendered = _replace_placeholders(template, run_id, objective)
     rendered["task_id"] = run_id
     rendered["objective"] = objective
+    rendered.setdefault(
+        "trace",
+        {
+            "schema_version": "ciph.trace.v1",
+            "path": f"runs/{run_id}/TRACE.jsonl",
+        },
+    )
+    rendered.setdefault("policy_modules", DEFAULT_POLICY_MODULES)
     return rendered
 
 
@@ -149,6 +170,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Created CIPH run: {display_path}")
     print(f"- Task: {result.task_path}")
     print(f"- Manifest: {result.manifest_path}")
+    print(f"- Trace: {result.trace_path}")
     print(f"- Artifacts: {result.artifacts_dir}")
     return 0
 

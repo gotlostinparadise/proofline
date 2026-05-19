@@ -48,6 +48,7 @@ def lint_manifest(manifest_path: Path | str, root: Path | str | None = None) -> 
     _lint_placeholders(manifest, result)
     _lint_deliverables(manifest.get("deliverables", []), result)
     _lint_checks(manifest.get("checks", []), task_id, manifest_path, root_path, result)
+    _lint_policy_modules(manifest, result)
 
     return result
 
@@ -135,6 +136,23 @@ def _lint_checks(checks: Any, task_id: Any, manifest_path: Path, root: Path, res
             result.warnings.append(f"WARN required check {name} should use evidence_producer: run_checks")
 
 
+def _lint_policy_modules(manifest: dict[str, Any], result: LintResult) -> None:
+    if "trace" not in manifest:
+        return
+
+    policy_modules = manifest.get("policy_modules")
+    if not isinstance(policy_modules, list) or not policy_modules:
+        result.errors.append("ERROR trace-enabled manifest must list at least one policy module")
+        return
+
+    if not _list_of_non_empty_strings(policy_modules):
+        result.errors.append("ERROR policy_modules must be a list of non-empty strings")
+        return
+
+    for duplicate in _duplicate_strings(policy_modules):
+        result.warnings.append(f"WARN repeated policy module: {duplicate}")
+
+
 def _expected_check_evidence_prefix(manifest_path: Path, root: Path, task_id: str) -> str:
     expected_dir = manifest_path.parent / "artifacts" / "checks"
     try:
@@ -158,6 +176,10 @@ def _duplicate_strings(values: list[Any]) -> list[str]:
             duplicates.append(value)
         seen.add(value)
     return duplicates
+
+
+def _list_of_non_empty_strings(values: list[Any]) -> bool:
+    return all(isinstance(value, str) and value.strip() for value in values)
 
 
 def main(argv: list[str] | None = None) -> int:

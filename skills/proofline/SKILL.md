@@ -9,6 +9,8 @@ description: Use when starting, managing, reviewing, delegating, or closing out 
 
 Proofline is a repo-native harness for evidence-backed agent work. Use it to make complex coding tasks inspectable by recording the objective, deliverables, artifacts, checks, evidence, and closeout in the repository before claiming completion.
 
+For research-grade runs, Proofline also records policy modules and a raw `TRACE.jsonl` ledger. Policy modules describe editable harness strategy; deterministic scripts still own exact validation, scoring, trace linting, and closeout checks.
+
 ## Decision
 
 Use Proofline for multi-step, high-risk, delegated, review-heavy, or evidence-sensitive work. For a one-line typo or trivial local edit, keep the workflow lightweight unless the user explicitly asks for Proofline.
@@ -32,12 +34,14 @@ python3 vendor/proofline/scripts/init_run.py <run-id> --root . --proofline-root 
 Then fill in:
 
 - `vendor/proofline/runs/<run-id>/TASK.html`: objective, acceptance object, constraints, volatile facts, deliverables, risks, closeout commands.
-- `vendor/proofline/runs/<run-id>/MANIFEST.json`: every explicit requirement mapped to project-root-relative artifact paths, evidence paths, and required checks.
+- `vendor/proofline/runs/<run-id>/MANIFEST.json`: every explicit requirement mapped to project-root-relative artifact paths, evidence paths, required checks, policy modules, and trace metadata.
+- `vendor/proofline/runs/<run-id>/TRACE.jsonl`: raw research trace events; it may start empty.
 
 Lint the contract before coding:
 
 ```bash
 python3 vendor/proofline/scripts/lint_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
+python3 vendor/proofline/scripts/lint_trace.py vendor/proofline/runs/<run-id>/TRACE.jsonl --root .
 ```
 
 Show the user the run contract for approval when the user asked to approve plans or when the scope is ambiguous. Otherwise proceed if they clearly asked for implementation.
@@ -65,6 +69,7 @@ Run required checks and write evidence:
 
 ```bash
 python3 vendor/proofline/scripts/run_checks.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
+python3 vendor/proofline/scripts/lint_trace.py vendor/proofline/runs/<run-id>/TRACE.jsonl --root .
 python3 vendor/proofline/scripts/verify_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
 python3 vendor/proofline/scripts/run_status.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/status.html
 python3 vendor/proofline/scripts/closeout_check.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/closeout.html
@@ -84,6 +89,7 @@ Only claim completion when closeout maps every explicit requirement to existing 
 | --- | --- |
 | Coding before `TASK.html` and `MANIFEST.json` exist | Create and lint the run contract first. |
 | Listing vague deliverables | Use concrete file paths and exact evidence paths. |
+| Forgetting trace linting on research-grade runs | Run `lint_trace.py` against `TRACE.jsonl`. |
 | Treating chat or child-agent output as proof | Record command evidence or source references in the manifest. |
 | Forgetting generated reports | Write `status.html` and `closeout.html` before final verification. |
 | Installing over an existing harness casually | Use installer `--force` only with explicit approval. |

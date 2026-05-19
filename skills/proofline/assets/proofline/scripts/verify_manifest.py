@@ -12,6 +12,7 @@ from typing import Any
 
 
 SCHEMA_VERSION = "ciph.manifest.v1"
+TRACE_SCHEMA_VERSION = "ciph.trace.v1"
 RUN_CHECKS_EVIDENCE_MARKER = "CIPH-CHECK-EVIDENCE v1"
 RUN_CHECKS_GENERATED_BY = "scripts/run_checks.py"
 
@@ -58,6 +59,7 @@ def validate_manifest(manifest_path: Path | str, root: Path | str | None = None)
     _validate_deliverables(manifest, root_path, result)
     _validate_artifacts(manifest, root_path, result)
     _validate_checks(manifest, root_path, result)
+    _validate_trace(manifest, root_path, result)
 
     return result
 
@@ -170,8 +172,46 @@ def _validate_checks(manifest: dict[str, Any], root: Path, result: ValidationRes
                 _validate_run_checks_evidence(root / evidence, evidence, name, check.get("command"), result)
 
 
+def _validate_trace(manifest: dict[str, Any], root: Path, result: ValidationResult) -> None:
+    if "trace" not in manifest:
+        return
+
+    trace = manifest.get("trace")
+    if not isinstance(trace, dict):
+        result.errors.append("trace must be an object")
+        return
+
+    if trace.get("schema_version") != TRACE_SCHEMA_VERSION:
+        result.errors.append(f"trace.schema_version must be {TRACE_SCHEMA_VERSION}")
+
+    trace_path = trace.get("path")
+    if not _non_empty_string(trace_path):
+        result.errors.append("trace.path must be a non-empty string")
+        return
+
+    if not _is_safe_local_reference(root, trace_path):
+        result.errors.append(f"trace.path must be a local path under the root: {trace_path}")
+        return
+
+    if not (root / trace_path).exists():
+        result.errors.append(f"Missing trace ledger: {trace_path}")
+
+
 def _is_external_reference(reference: str) -> bool:
     return reference.startswith(("http://", "https://", "source:"))
+
+
+def _is_safe_local_reference(root: Path, reference: str) -> bool:
+    if _is_external_reference(reference):
+        return False
+    candidate = Path(reference)
+    if candidate.is_absolute():
+        return False
+    try:
+        (root / candidate).resolve().relative_to(root.resolve())
+    except ValueError:
+        return False
+    return True
 
 
 def _validate_run_checks_evidence(
