@@ -79,6 +79,43 @@ class CandidateSummaryTests(unittest.TestCase):
             self.assertIn("| instrumented | frontier |", output)
             self.assertIn("0.75", output)
 
+    def test_candidate_summary_includes_evaluation_protocol_when_present(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = root / "runs" / "sample"
+            _write_score(run_dir, "baseline", task_success=0.9, audit_completeness=0.9, cost_tokens=100, wall_minutes=2, defect_escape_rate=0.0)
+            (run_dir / "EVALUATION.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": "ciph.evaluation.v1",
+                        "run_id": "sample",
+                        "phase": "search",
+                        "baseline_candidate_id": "baseline",
+                        "search_set": {"scenario_ids": ["search-1"]},
+                        "holdout_set": {"scenario_ids": ["holdout-1"], "sealed": True},
+                        "budget": {"max_candidates": 3, "max_holdout_releases": 1},
+                        "frontier_candidate_ids": [],
+                        "candidates": [
+                            {
+                                "candidate_id": "baseline",
+                                "role": "baseline",
+                                "evaluation_phase": "search",
+                                "score_path": "runs/sample/candidates/baseline/score.json",
+                            }
+                        ],
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            output = render_candidate_summary(run_dir)
+
+            self.assertIn("Eval Phase", output)
+            self.assertIn("Holdout", output)
+            self.assertIn("| baseline | frontier | search | sealed |", output)
+
     def test_candidate_summary_script_runs_when_executed_by_file_path(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
