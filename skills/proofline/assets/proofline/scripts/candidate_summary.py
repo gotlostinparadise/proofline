@@ -30,16 +30,18 @@ def render_candidate_summary(run_dir: Path | str) -> str:
     run_path = Path(run_dir)
     candidates = _load_candidates(run_path)
     statuses = _pareto_statuses(candidates)
+    evaluation = _evaluation_statuses(run_path)
     lines = [
         "# CIPH Candidate Summary",
         "",
         f"Run: {run_path}",
         "",
-        "| Candidate | Pareto | Task Success | Audit | Cost Tokens | Wall Minutes | Defect Escape | Artifact Contract | Stage Coverage | Ordered Workflow | Tool Success | Handoff Recall | Validation Coverage |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| Candidate | Pareto | Eval Phase | Holdout | Task Success | Audit | Cost Tokens | Wall Minutes | Defect Escape | Artifact Contract | Stage Coverage | Ordered Workflow | Tool Success | Handoff Recall | Validation Coverage |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for candidate in sorted(candidates, key=lambda item: str(item.get("candidate_id", ""))):
         candidate_id = str(candidate.get("candidate_id", "<missing>"))
+        eval_phase, holdout_status = evaluation.get(candidate_id, ("-", "-"))
         scores = candidate.get("search_scores", {})
         if not isinstance(scores, dict):
             scores = {}
@@ -52,6 +54,8 @@ def render_candidate_summary(run_dir: Path | str) -> str:
                 [
                     candidate_id,
                     statuses.get(candidate_id, "unscored"),
+                    eval_phase,
+                    holdout_status,
                     _fmt(scores.get("task_success")),
                     _fmt(scores.get("audit_completeness")),
                     _fmt(scores.get("cost_tokens")),
@@ -63,7 +67,7 @@ def render_candidate_summary(run_dir: Path | str) -> str:
             + " |"
         )
     if not candidates:
-        lines.append("| None | unscored | - | - | - | - | - | - | - | - | - | - | - |")
+        lines.append("| None | unscored | - | - | - | - | - | - | - | - | - | - | - | - | - |")
     return "\n".join(lines) + "\n"
 
 
@@ -71,9 +75,11 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
     run_path = Path(run_dir)
     candidates = _load_candidates(run_path)
     statuses = _pareto_statuses(candidates)
+    evaluation = _evaluation_statuses(run_path)
     rows: list[list[str]] = []
     for candidate in sorted(candidates, key=lambda item: str(item.get("candidate_id", ""))):
         candidate_id = str(candidate.get("candidate_id", "<missing>"))
+        eval_phase, holdout_status = evaluation.get(candidate_id, ("-", "-"))
         scores = candidate.get("search_scores", {})
         if not isinstance(scores, dict):
             scores = {}
@@ -84,6 +90,8 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
             [
                 candidate_id,
                 statuses.get(candidate_id, "unscored"),
+                eval_phase,
+                holdout_status,
                 _fmt(scores.get("task_success")),
                 _fmt(scores.get("audit_completeness")),
                 _fmt(scores.get("cost_tokens")),
@@ -93,7 +101,7 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
             ]
         )
     if not rows:
-        rows.append(["None", "unscored", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
+        rows.append(["None", "unscored", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
 
     return render_html_document(
         title="CIPH Candidate Summary",
@@ -108,6 +116,8 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
                     [
                         "Candidate",
                         "Pareto",
+                        "Eval Phase",
+                        "Holdout",
                         "Task Success",
                         "Audit",
                         "Cost Tokens",
@@ -141,6 +151,48 @@ def _load_candidates(run_path: Path) -> list[dict[str, Any]]:
         if isinstance(payload, dict):
             candidates.append(payload)
     return candidates
+
+
+def _evaluation_statuses(run_path: Path) -> dict[str, tuple[str, str]]:
+    evaluation_path = run_path / "EVALUATION.json"
+    if not evaluation_path.is_file():
+        return {}
+    try:
+        payload = json.loads(evaluation_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    if not isinstance(payload, dict):
+        return {}
+
+    phase = payload.get("phase")
+    holdout_set = payload.get("holdout_set")
+    holdout_sealed = isinstance(holdout_set, dict) and holdout_set.get("sealed") is True
+    frontier_ids = set(_string_list(payload.get("frontier_candidate_ids")))
+    statuses: dict[str, tuple[str, str]] = {}
+    candidates = payload.get("candidates")
+    if not isinstance(candidates, list):
+        return {}
+
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            continue
+        candidate_id = candidate.get("candidate_id")
+        if not isinstance(candidate_id, str) or not candidate_id.strip():
+            continue
+        eval_phase = candidate.get("evaluation_phase")
+        if not isinstance(eval_phase, str) or not eval_phase.strip():
+            eval_phase = "-"
+        holdout_score_path = candidate.get("holdout_score_path")
+        if isinstance(holdout_score_path, str) and holdout_score_path.strip():
+            holdout = "released"
+        elif phase == "holdout_released" and candidate_id in frontier_ids:
+            holdout = "released"
+        elif holdout_sealed:
+            holdout = "sealed"
+        else:
+            holdout = "-"
+        statuses[candidate_id] = (eval_phase, holdout)
+    return statuses
 
 
 def _pareto_statuses(candidates: list[dict[str, Any]]) -> dict[str, str]:
@@ -177,6 +229,12 @@ def _fmt(value: Any) -> str:
     if value is None:
         return "-"
     return str(value)
+
+
+def _string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, str) and item.strip()]
 
 
 def main(argv: list[str] | None = None) -> int:

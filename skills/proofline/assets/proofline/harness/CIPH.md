@@ -45,6 +45,10 @@ Research-grade runs can derive mechanism metrics from `MANIFEST.json` and `TRACE
 
 Candidate records live under `runs/<run-id>/candidates/<candidate-id>/`. Each record keeps `score.json`, `NOTES.md`, `patch.diff`, candidate-level `TRACE.jsonl`, policy/source notes, artifact storage, and legacy trace files. Validate candidate records with `scripts/validate_candidate.py` before relying on their scores or summaries.
 
+### Evaluation Protocol Contract
+
+Research-grade optimization runs can include `EVALUATION.json` at the run root. It records baseline candidate, search-set IDs, sealed holdout IDs, fixed budget, current phase, selected frontier candidates, and candidate score paths. Validate it with `scripts/validate_evaluation.py` before holdout release or final comparison.
+
 ### Delegation Contract
 
 Delegated work requires a bounded task packet, clear write ownership, expected output paths, and local verification after return. Child-agent self-report is not completion evidence.
@@ -120,6 +124,12 @@ Create and summarize candidates:
 python3 scripts/init_candidate.py runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
 python3 scripts/validate_candidate.py runs/<run-id>/candidates/<candidate-id> --root . --output runs/<run-id>/artifacts/candidate-validation.html
 python3 scripts/candidate_summary.py runs/<run-id> --output runs/<run-id>/artifacts/candidate-summary.html
+```
+
+Validate evaluation protocol:
+
+```bash
+python3 scripts/validate_evaluation.py runs/<run-id> --root . --output runs/<run-id>/artifacts/evaluation-report.html
 ```
 
 Run the repository gate:

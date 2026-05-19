@@ -1,3 +1,4 @@
+import json
 import os
 import stat
 import subprocess
@@ -30,12 +31,14 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((vendor / "scripts" / "init_run.py").is_file())
             self.assertTrue((vendor / "scripts" / "init_candidate.py").is_file())
             self.assertTrue((vendor / "scripts" / "validate_candidate.py").is_file())
+            self.assertTrue((vendor / "scripts" / "validate_evaluation.py").is_file())
             self.assertTrue((vendor / "scripts" / "lint_trace.py").is_file())
             self.assertTrue((vendor / "scripts" / "trace_metrics.py").is_file())
             self.assertTrue((vendor / "harness" / "policies" / "README.md").is_file())
             self.assertTrue(os.access(vendor / "scripts" / "init_run.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "init_candidate.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "validate_candidate.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "validate_evaluation.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "lint_trace.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "trace_metrics.py", os.X_OK))
 
@@ -118,6 +121,48 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(validate_candidate.returncode, 0, validate_candidate.stderr)
             self.assertIn("PASS candidate", validate_candidate.stdout)
 
+            (vendor / "runs" / "sample-run" / "EVALUATION.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": "ciph.evaluation.v1",
+                        "run_id": "sample-run",
+                        "phase": "search",
+                        "baseline_candidate_id": "baseline",
+                        "search_set": {"scenario_ids": ["search-1"]},
+                        "holdout_set": {"scenario_ids": ["holdout-1"], "sealed": True},
+                        "budget": {"max_candidates": 3, "max_holdout_releases": 1},
+                        "frontier_candidate_ids": [],
+                        "candidates": [
+                            {
+                                "candidate_id": "baseline",
+                                "role": "baseline",
+                                "evaluation_phase": "search",
+                                "score_path": "vendor/proofline/runs/sample-run/candidates/baseline/score.json",
+                            }
+                        ],
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            validate_evaluation = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/validate_evaluation.py",
+                    "vendor/proofline/runs/sample-run",
+                    "--root",
+                    str(target),
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(validate_evaluation.returncode, 0, validate_evaluation.stderr)
+            self.assertIn("PASS evaluation", validate_evaluation.stdout)
+
     def test_bundled_assets_are_trace_aware(self):
         skill_text = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
         manifest = (SKILL_DIR / "assets" / "proofline" / "templates" / "MANIFEST.json").read_text(encoding="utf-8")
@@ -126,6 +171,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertIn("lint_trace.py", skill_text)
         self.assertIn("trace_metrics.py", skill_text)
         self.assertIn("validate_candidate.py", skill_text)
+        self.assertIn("validate_evaluation.py", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)
@@ -133,6 +179,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "lint_trace.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "trace_metrics.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_candidate.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_evaluation.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "harness" / "policies" / "state.md").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):

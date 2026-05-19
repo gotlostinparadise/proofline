@@ -64,6 +64,12 @@ python3 vendor/proofline/scripts/validate_candidate.py vendor/proofline/runs/<ru
 python3 vendor/proofline/scripts/candidate_summary.py vendor/proofline/runs/<run-id> --output vendor/proofline/runs/<run-id>/artifacts/candidate-summary.html
 ```
 
+For search-set / holdout research runs, validate the evaluation protocol:
+
+```bash
+python3 vendor/proofline/scripts/validate_evaluation.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/evaluation-report.html
+```
+
 ## Verify And Close
 
 Run required checks and write evidence:
@@ -94,6 +100,7 @@ Only claim completion when closeout maps every explicit requirement to existing 
 | Forgetting trace linting on research-grade runs | Run `lint_trace.py` against `TRACE.jsonl`. |
 | Treating mechanism metrics as completion proof | Run `trace_metrics.py` for diagnostics, then keep `verify_manifest.py` and closeout evidence authoritative. |
 | Summarizing candidate scores before validating records | Run `validate_candidate.py` for each candidate first. |
+| Releasing holdout scores during search | Record split state in `EVALUATION.json` and run `validate_evaluation.py`. |
 | Treating chat or child-agent output as proof | Record command evidence or source references in the manifest. |
 | Forgetting generated reports | Write `status.html` and `closeout.html` before final verification. |
 | Installing over an existing harness casually | Use installer `--force` only with explicit approval. |
