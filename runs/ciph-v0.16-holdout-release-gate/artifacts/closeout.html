@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIPH Closeout Checklist</title>
+<style>
+:root{--bg:#faf9f5;--paper:#fff;--ink:#141413;--muted:#66635c;--line:#d1cfc5;--soft:#f0eee6;--accent:#b85c3e;--ok:#5f7f49;--bad:#b85c3e;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;--serif:ui-serif,Georgia,serif;}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;padding:48px 28px 96px;}main{max-width:1040px;margin:0 auto}header{margin-bottom:32px}h1{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1.12;margin:0 0 10px}h2{font-family:var(--serif);font-weight:500;font-size:24px;margin:0 0 14px}.eyebrow{font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:24px 0 34px}.summary div,section{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px}.k{font:11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}.v{font-weight:650}section{margin:18px 0}ul{margin:0;padding-left:20px}li{margin:6px 0}code,pre{font-family:var(--mono)}table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}th{font:11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--soft)}.status-pass,.covered{color:var(--ok);font-weight:700}.status-fail,.missing{color:var(--bad);font-weight:700}.muted{color:var(--muted)}
+</style>
+</head>
+<body data-proofline-report="closeout">
+<main>
+<header>
+<div class="eyebrow">Proofline artifact</div>
+<h1>CIPH Closeout Checklist</h1>
+</header>
+<div class="summary"><div><div class="k">Task</div><div class="v">ciph-v0.16-holdout-release-gate</div></div><div><div class="k">Objective</div><div class="v">Implement CIPH v0.16 Holdout Release Gate: deterministic transition from search to holdout_released only when evaluation validation, frontier selection, release budget, candidate validation, docs, bundled Proofline assets, and dogfood evidence are clean.</div></div><div><div class="k">Manifest</div><div class="v">runs/ciph-v0.16-holdout-release-gate/MANIFEST.json</div></div><div><div class="k">Root</div><div class="v">.</div></div></div>
+<section id="prompt-to-artifact" data-proofline-section="prompt-to-artifact">
+<h2>Prompt-to-Artifact Checklist</h2>
+<ul><li>[COVERED] holdout-release-gate: Gate and perform a repeatable holdout release transition only when evaluation and frontier candidate validation pass. - Artifacts: scripts/release_holdout.py, tests/test_release_holdout.py, scripts/validate_evaluation.py, runs/ciph-v0.16-holdout-release-gate/EVALUATION.json, runs/ciph-v0.16-holdout-release-gate/artifacts/holdout-release.html - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/holdout-release-tests.txt, runs/ciph-v0.16-holdout-release-gate/artifacts/checks/holdout-release-report.txt</li><li>[COVERED] evaluation-post-release: Validate post-release evaluation state and report it without adding holdout scores. - Artifacts: scripts/validate_evaluation.py, tests/test_validate_evaluation.py, runs/ciph-v0.16-holdout-release-gate/artifacts/evaluation-report.html - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/evaluation-validator-tests.txt, runs/ciph-v0.16-holdout-release-gate/artifacts/checks/evaluation-report.txt</li><li>[COVERED] proofline-skill-sync: Mirror holdout release scripts, docs, and skill instructions into bundled Proofline assets. - Artifacts: skills/proofline/SKILL.md, skills/proofline/assets/proofline/scripts/release_holdout.py, skills/proofline/assets/proofline/scripts/validate_evaluation.py, skills/proofline/assets/proofline/harness/CIPH.md, tests/test_proofline_skill.py - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/proofline-skill-tests.txt</li><li>[COVERED] docs-and-closeout: Document holdout release behavior and close out the dogfood run with generated evidence. - Artifacts: README.md, harness/CIPH.md, docs/plans/2026-05-20-ciph-v0.16-holdout-release-gate-design.md, docs/plans/2026-05-20-ciph-v0.16-holdout-release-gate.md, runs/ciph-v0.16-holdout-release-gate/TASK.html, runs/ciph-v0.16-holdout-release-gate/MANIFEST.json, runs/ciph-v0.16-holdout-release-gate/TRACE.jsonl, runs/ciph-v0.16-holdout-release-gate/artifacts/status.html, runs/ciph-v0.16-holdout-release-gate/artifacts/closeout.html, runs/ciph-v0.16-holdout-release-gate/artifacts/mechanism-metrics.html - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/full-unit-tests.txt</li></ul>
+</section>
+<section id="required-checks" data-proofline-section="required-checks">
+<h2>Required Checks</h2>
+<ul><li>[COVERED] holdout-release-tests - Command: python3 -m unittest tests.test_release_holdout - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/holdout-release-tests.txt</li><li>[COVERED] holdout-release-report - Command: python3 scripts/release_holdout.py runs/ciph-v0.16-holdout-release-gate --root . --released-at 2026-05-20T04:00:00Z --output runs/ciph-v0.16-holdout-release-gate/artifacts/holdout-release.html - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/holdout-release-report.txt</li><li>[COVERED] evaluation-validator-tests - Command: python3 -m unittest tests.test_validate_evaluation - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/evaluation-validator-tests.txt</li><li>[COVERED] evaluation-report - Command: python3 scripts/validate_evaluation.py runs/ciph-v0.16-holdout-release-gate --root . --output runs/ciph-v0.16-holdout-release-gate/artifacts/evaluation-report.html - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/evaluation-report.txt</li><li>[COVERED] proofline-skill-tests - Command: python3 -m unittest tests.test_proofline_skill - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/proofline-skill-tests.txt</li><li>[COVERED] trace-ledger-lint - Command: python3 scripts/lint_trace.py runs/ciph-v0.16-holdout-release-gate/TRACE.jsonl --root . - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/trace-ledger-lint.txt</li><li>[COVERED] full-unit-tests - Command: python3 -m unittest discover - Evidence: runs/ciph-v0.16-holdout-release-gate/artifacts/checks/full-unit-tests.txt</li></ul>
+</section>
+<section id="risks" data-proofline-section="risks">
+<h2>Risks</h2>
+<ul><li>Release command must remain idempotent after transition so manifest checks are repeatable.</li><li>Release must not add holdout scores or bypass candidate validation.</li><li>Bundled Proofline assets and installed skill must stay synchronized.</li></ul>
+</section>
+<section id="manifest-validation" data-proofline-section="manifest-validation">
+<h2>Manifest Validation</h2>
+<ul><li>COVERED: manifest validation passed.</li></ul>
+</section>
+</main>
+</body>
+</html>

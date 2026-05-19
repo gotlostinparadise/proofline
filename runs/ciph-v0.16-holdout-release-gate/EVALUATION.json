@@ -1,0 +1,50 @@
+{
+  "schema_version": "ciph.evaluation.v1",
+  "run_id": "ciph-v0.16-holdout-release-gate",
+  "phase": "holdout_released",
+  "baseline_candidate_id": "baseline",
+  "search_set": {
+    "scenario_ids": [
+      "search-release-valid",
+      "search-release-idempotent",
+      "search-release-invalid-candidate",
+      "search-release-leakage"
+    ]
+  },
+  "holdout_set": {
+    "scenario_ids": [
+      "holdout-release-final-report"
+    ],
+    "sealed": false
+  },
+  "budget": {
+    "max_candidates": 3,
+    "max_holdout_releases": 1
+  },
+  "frontier_candidate_ids": [
+    "frontier"
+  ],
+  "candidates": [
+    {
+      "candidate_id": "baseline",
+      "role": "baseline",
+      "evaluation_phase": "search",
+      "score_path": "runs/ciph-v0.16-holdout-release-gate/candidates/baseline/score.json"
+    },
+    {
+      "candidate_id": "frontier",
+      "role": "frontier",
+      "evaluation_phase": "search",
+      "score_path": "runs/ciph-v0.16-holdout-release-gate/candidates/frontier/score.json"
+    }
+  ],
+  "holdout_releases": [
+    {
+      "release_index": 1,
+      "released_at": "2026-05-20T04:00:00Z",
+      "frontier_candidate_ids": [
+        "frontier"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "evaluation-report", "command": "python3 scripts/validate_evaluation.py runs/ciph-v0.16-holdout-release-gate --root . --output runs/ciph-v0.16-holdout-release-gate/artifacts/evaluation-report.html", "exit_code": 0, "finished_at_utc": "2026-05-19T22:49:03+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-19T22:49:03+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH evaluation report: runs/ciph-v0.16-holdout-release-gate/artifacts/evaluation-report.html
+PASS evaluation runs/ciph-v0.16-holdout-release-gate
+PASS phase holdout_released
+PASS search/holdout split separation
+PASS holdout released
+PASS budget max_candidates=3
+PASS budget max_holdout_releases=1
+PASS baseline candidate baseline
+PASS candidate score baseline
+PASS candidate score frontier
+PASS holdout release 1
+
+## STDERR
+
+<empty>

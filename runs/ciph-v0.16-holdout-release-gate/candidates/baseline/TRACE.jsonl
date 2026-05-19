@@ -1,0 +1,2 @@
+{"schema_version":"ciph.trace.v1","event_id":"baseline-created","occurred_at":"2026-05-20T03:40:00Z","event_type":"candidate.created","candidate_id":"baseline"}
+{"schema_version":"ciph.trace.v1","event_id":"baseline-scored","occurred_at":"2026-05-20T03:45:00Z","event_type":"candidate.scored","candidate_id":"baseline","score_path":"runs/ciph-v0.16-holdout-release-gate/candidates/baseline/score.json"}
