@@ -58,6 +58,18 @@ class InitCandidateTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 initialize_candidate(manifest_path, "baseline", root=root)
 
+    def test_initialize_candidate_uses_manifest_parent_directory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = _write_manifest(root, run_prefix=("vendor", "proofline", "runs"))
+
+            result = initialize_candidate(manifest_path, "baseline", root=root)
+
+            candidate_dir = root / "vendor" / "proofline" / "runs" / "sample" / "candidates" / "baseline"
+            self.assertEqual(candidate_dir, result.candidate_dir)
+            score = json.loads((candidate_dir / "score.json").read_text(encoding="utf-8"))
+            self.assertEqual("vendor/proofline/runs/sample/candidates/baseline/TRACE.jsonl", score["candidate_trace"])
+
     def test_initialize_candidate_rejects_unsafe_candidate_id(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -96,8 +108,8 @@ class InitCandidateTests(unittest.TestCase):
             self.assertTrue((root / "runs" / "sample" / "candidates" / "cli-candidate" / "score.json").is_file())
 
 
-def _write_manifest(root: Path) -> Path:
-    manifest_path = root / "runs" / "sample" / "MANIFEST.json"
+def _write_manifest(root: Path, run_prefix: tuple[str, ...] = ("runs",)) -> Path:
+    manifest_path = root.joinpath(*run_prefix, "sample", "MANIFEST.json")
     manifest_path.parent.mkdir(parents=True)
     manifest_path.write_text(
         json.dumps(

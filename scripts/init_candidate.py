@@ -36,14 +36,18 @@ def initialize_candidate(
 ) -> CandidateResult:
     validate_candidate_id(candidate_id)
     root_path = Path(root)
-    manifest = load_manifest(Path(manifest_path))
+    manifest_path = Path(manifest_path)
+    if not manifest_path.is_absolute():
+        manifest_path = root_path / manifest_path
+    manifest = load_manifest(manifest_path)
     task_id = manifest.get("task_id")
     if not isinstance(task_id, str) or not task_id.strip():
         raise ValueError("Parent manifest must include a non-empty task_id")
 
-    candidate_dir = root_path / "runs" / task_id / "candidates" / candidate_id
+    run_dir = manifest_path.parent
+    candidate_dir = run_dir / "candidates" / candidate_id
     if candidate_dir.exists() and not force:
-        raise FileExistsError(f"Candidate already exists: runs/{task_id}/candidates/{candidate_id}")
+        raise FileExistsError(f"Candidate already exists: {_display_path(candidate_dir, root_path)}")
 
     policy_dir = candidate_dir / "policy"
     source_dir = candidate_dir / "source"
@@ -63,7 +67,7 @@ def initialize_candidate(
     (trace_dir / "tools.jsonl").write_text("", encoding="utf-8")
     (trace_dir / "failures.md").write_text("# Candidate Failures\n\n- None recorded.\n", encoding="utf-8")
 
-    display_root = f"runs/{task_id}/candidates/{candidate_id}"
+    display_root = _display_path(candidate_dir, root_path)
     score_path = candidate_dir / "score.json"
     score_path.write_text(
         json.dumps(
@@ -151,6 +155,13 @@ def _render_source_readme(candidate_id: str) -> str:
 
 Record source files, prompt variants, config fragments, or patch references that define this candidate.
 """
+
+
+def _display_path(path: Path, root: Path) -> str:
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
 
 
 def main(argv: list[str] | None = None) -> int:
