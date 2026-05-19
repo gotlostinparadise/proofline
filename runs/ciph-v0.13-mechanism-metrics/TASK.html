@@ -58,6 +58,11 @@ pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
 <p>Research runs use <code>runs/ciph-v0.13-mechanism-metrics/TRACE.jsonl</code> for raw events. Validate it with <code>scripts/lint_trace.py</code> before closeout.</p>
 </section>
 
+<section id="mechanism-metrics" data-proofline-section="mechanism-metrics">
+<h2>Mechanism Metrics</h2>
+<p>Generate <code>runs/ciph-v0.13-mechanism-metrics/artifacts/mechanism-metrics.html</code> with <code>scripts/trace_metrics.py</code> after validation evidence exists so the report reflects the completed run.</p>
+</section>
+
 <section id="deliverables" data-proofline-section="deliverables">
 <h2>Deliverables</h2>
 <table>
@@ -87,6 +92,7 @@ pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
 python3 scripts/lint_trace.py runs/ciph-v0.13-mechanism-metrics/TRACE.jsonl --root .
 python3 scripts/run_checks.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root .
 python3 scripts/verify_manifest.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root .
+python3 scripts/trace_metrics.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root . --output runs/ciph-v0.13-mechanism-metrics/artifacts/mechanism-metrics.html
 python3 scripts/run_status.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root . --output runs/ciph-v0.13-mechanism-metrics/artifacts/status.html
 python3 scripts/closeout_check.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root . --output runs/ciph-v0.13-mechanism-metrics/artifacts/closeout.html</code></pre>
 </section>
