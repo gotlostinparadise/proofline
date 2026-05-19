@@ -1,4 +1,6 @@
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -82,6 +84,93 @@ class TraceMetricsTests(unittest.TestCase):
             metrics = calculate_metrics(manifest_path, root=root)
 
             self.assertEqual(0.0, metrics["ordered_workflow_compliance"])
+
+    def test_trace_metrics_script_prints_json(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = _write_manifest(root)
+            _write_existing_paths(root)
+            _write_trace(root / "runs" / "sample" / "TRACE.jsonl", [_event("closeout.completed", status="PASS")])
+            repo_root = Path(__file__).resolve().parents[1]
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/trace_metrics.py",
+                    str(manifest_path),
+                    "--root",
+                    str(root),
+                ],
+                cwd=repo_root,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            payload = json.loads(completed.stdout)
+            self.assertIn("artifact_contract_compliance", payload)
+
+    def test_trace_metrics_script_writes_html_report(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = _write_manifest(root)
+            _write_existing_paths(root)
+            _write_trace(root / "runs" / "sample" / "TRACE.jsonl", [_event("closeout.completed", status="PASS")])
+            output_path = root / "runs" / "sample" / "artifacts" / "mechanism-metrics.html"
+            repo_root = Path(__file__).resolve().parents[1]
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/trace_metrics.py",
+                    str(manifest_path),
+                    "--root",
+                    str(root),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=repo_root,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertIn(f"Wrote CIPH mechanism metrics: {output_path}", completed.stdout)
+            html = output_path.read_text(encoding="utf-8")
+            self.assertTrue(html.startswith("<!doctype html>"))
+            self.assertIn('data-proofline-report="mechanism-metrics"', html)
+            self.assertIn("Artifact Contract Compliance", html)
+
+    def test_trace_metrics_script_writes_json_report(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = _write_manifest(root)
+            _write_existing_paths(root)
+            _write_trace(root / "runs" / "sample" / "TRACE.jsonl", [_event("closeout.completed", status="PASS")])
+            output_path = root / "runs" / "sample" / "artifacts" / "mechanism-metrics.json"
+            repo_root = Path(__file__).resolve().parents[1]
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/trace_metrics.py",
+                    str(manifest_path),
+                    "--root",
+                    str(root),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=repo_root,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            payload = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertIn("stage_coverage", payload)
 
 
 def _write_manifest(root: Path) -> Path:

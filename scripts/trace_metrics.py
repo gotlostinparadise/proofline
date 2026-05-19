@@ -10,8 +10,10 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from scripts.html_report import render_html_document, render_table
     from scripts.verify_manifest import load_manifest, path_exists
 except ModuleNotFoundError:  # pragma: no cover - exercised by direct script execution.
+    from html_report import render_html_document, render_table
     from verify_manifest import load_manifest, path_exists
 
 
@@ -36,6 +38,36 @@ def calculate_metrics(
         "validation_coverage": _validation_coverage(manifest, events),
         "recovery_completion": _recovery_completion(events),
     }
+
+
+def render_metrics_html(metrics: dict[str, float], manifest_path: Path | str) -> str:
+    rows = [[_titleize(key), _format_metric(value)] for key, value in sorted(metrics.items())]
+    return render_html_document(
+        title="CIPH Mechanism Metrics",
+        heading="CIPH Mechanism Metrics",
+        report_kind="mechanism-metrics",
+        summary_items=[
+            ("Manifest", str(manifest_path)),
+            ("Metrics", str(len(metrics))),
+        ],
+        sections=[
+            {
+                "id": "metrics",
+                "title": "Metrics",
+                "body_html": render_table(["Metric", "Value"], rows),
+            }
+        ],
+    )
+
+
+def write_metrics_report(metrics: dict[str, float], manifest_path: Path | str, output_path: Path | str) -> Path:
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    if output.suffix == ".html":
+        output.write_text(render_metrics_html(metrics, manifest_path), encoding="utf-8")
+    else:
+        output.write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return output
 
 
 def _trace_path_from_manifest(manifest: dict[str, Any]) -> str | None:
@@ -191,15 +223,28 @@ def _ratio(numerator: int, denominator: int) -> float:
     return round(numerator / denominator, 6)
 
 
+def _titleize(value: str) -> str:
+    return value.replace("_", " ").title()
+
+
+def _format_metric(value: float) -> str:
+    return f"{value:.6g}"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Calculate CIPH mechanism metrics.")
     parser.add_argument("manifest", type=Path, help="Path to MANIFEST.json")
     parser.add_argument("--root", type=Path, default=None, help="Repository root for manifest references")
     parser.add_argument("--trace", type=Path, default=None, help="Override trace path")
+    parser.add_argument("--output", type=Path, default=None, help="Write JSON or HTML report to this path")
     args = parser.parse_args(argv)
 
     metrics = calculate_metrics(args.manifest, trace_path=args.trace, root=args.root)
-    print(json.dumps(metrics, indent=2, sort_keys=True))
+    if args.output is not None:
+        path = write_metrics_report(metrics, args.manifest, args.output)
+        print(f"Wrote CIPH mechanism metrics: {path}")
+    else:
+        print(json.dumps(metrics, indent=2, sort_keys=True))
     return 0
 
 
