@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIPH Task</title>
+<style>
+body{margin:0;background:#faf9f5;color:#141413;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;padding:44px 28px 88px}
+main{max-width:980px;margin:0 auto}
+h1,h2{font-family:ui-serif,Georgia,serif;font-weight:500}
+h1{font-size:40px;margin:0 0 18px}
+h2{font-size:24px;margin:0 0 12px}
+section{background:#fff;border:1px solid #d1cfc5;border-radius:8px;padding:18px;margin:16px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #d1cfc5;padding:8px;text-align:left;vertical-align:top}
+th{font:11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#66635c;background:#f0eee6}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
+</style>
+</head>
+<body data-proofline-kind="task">
+<main>
+<h1>CIPH Task</h1>
+
+<section id="objective" data-proofline-section="objective">
+<h2>Objective</h2>
+<p>Implement CIPH v0.13 mechanism metrics: deterministic metrics over MANIFEST.json and TRACE.jsonl, JSON/HTML report output, candidate score integration, documentation, bundled Proofline asset sync, and dogfood closeout evidence.</p>
+</section>
+
+<section id="acceptance-object" data-proofline-section="acceptance-object">
+<h2>Acceptance Object</h2>
+<p>The work is acceptable when mechanism metrics are computed deterministically from <code>MANIFEST.json</code> and <code>TRACE.jsonl</code>, emitted as JSON and HTML, included in candidate summaries, mirrored into bundled Proofline assets, documented, and closed out with runner-produced evidence for all required checks.</p>
+</section>
+
+<section id="constraints" data-proofline-section="constraints">
+<h2>Constraints</h2>
+<ul>
+<li>Repository rules: keep metrics read-only and deterministic.</li>
+<li>Files in scope: <code>scripts/</code>, <code>tests/</code>, <code>templates/</code>, <code>skills/proofline/</code>, docs, and this run directory.</li>
+<li>Files out of scope: provider APIs, real model runners, and external benchmark execution.</li>
+<li>Permissions: local file edits and local test commands only.</li>
+<li>Secrets handling: do not print secrets, environment values, tokens, or private headers in evidence.</li>
+</ul>
+</section>
+
+<section id="volatile-facts" data-proofline-section="volatile-facts">
+<h2>Volatile Facts To Verify</h2>
+<p>List API shapes, CLI flags, config keys, pricing, product limits, schemas, required fields, or other facts that need authoritative sources before implementation depends on them.</p>
+</section>
+
+<section id="policy-modules" data-proofline-section="policy-modules">
+<h2>Policy Modules</h2>
+<p>List any active harness policy modules from <code>harness/policies/</code>. Policy modules describe strategy; deterministic scripts still own exact validation and scoring.</p>
+</section>
+
+<section id="trace-ledger" data-proofline-section="trace-ledger">
+<h2>Trace Ledger</h2>
+<p>Research runs use <code>runs/ciph-v0.13-mechanism-metrics/TRACE.jsonl</code> for raw events. Validate it with <code>scripts/lint_trace.py</code> before closeout.</p>
+</section>
+
+<section id="deliverables" data-proofline-section="deliverables">
+<h2>Deliverables</h2>
+<table>
+<thead><tr><th>ID</th><th>Requirement</th><th>Artifact paths</th><th>Evidence paths</th></tr></thead>
+<tbody>
+<tr><td>metrics-core</td><td>Deterministic mechanism metrics over manifest and trace data.</td><td><code>scripts/trace_metrics.py</code>, <code>tests/test_trace_metrics.py</code></td><td><code>runs/ciph-v0.13-mechanism-metrics/artifacts/checks/trace-metrics-tests.txt</code></td></tr>
+<tr><td>metrics-reports</td><td>JSON and HTML mechanism metrics reports.</td><td><code>scripts/trace_metrics.py</code>, <code>mechanism-metrics.html</code></td><td><code>runs/ciph-v0.13-mechanism-metrics/artifacts/checks/trace-metrics-report.txt</code></td></tr>
+<tr><td>candidate-summary-metrics</td><td>Candidate summary reports expose mechanism metric fields.</td><td><code>scripts/candidate_summary.py</code>, <code>tests/test_candidate_summary.py</code></td><td><code>runs/ciph-v0.13-mechanism-metrics/artifacts/checks/candidate-summary-tests.txt</code></td></tr>
+<tr><td>proofline-skill-sync</td><td>Bundled Proofline assets mirror mechanism metrics behavior.</td><td><code>skills/proofline/</code></td><td><code>runs/ciph-v0.13-mechanism-metrics/artifacts/checks/proofline-skill-tests.txt</code></td></tr>
+<tr><td>docs-and-closeout</td><td>Docs and dogfood closeout evidence are complete.</td><td><code>README.md</code>, <code>harness/CIPH.md</code>, <code>status.html</code>, <code>closeout.html</code></td><td><code>runs/ciph-v0.13-mechanism-metrics/artifacts/checks/full-unit-tests.txt</code></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="risks" data-proofline-section="risks">
+<h2>Risks And Blockers</h2>
+<ul>
+<li>Metrics must remain deterministic derived views, not new authority over run truth.</li>
+<li>Candidate summary changes must remain backward-compatible with existing score files.</li>
+<li>Bundled Proofline assets and installed skill must stay synchronized.</li>
+</ul>
+</section>
+
+<section id="closeout-commands" data-proofline-section="closeout-commands">
+<h2>Closeout Commands</h2>
+<pre><code>python3 scripts/lint_manifest.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root .
+python3 scripts/lint_trace.py runs/ciph-v0.13-mechanism-metrics/TRACE.jsonl --root .
+python3 scripts/run_checks.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root .
+python3 scripts/verify_manifest.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root .
+python3 scripts/run_status.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root . --output runs/ciph-v0.13-mechanism-metrics/artifacts/status.html
+python3 scripts/closeout_check.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root . --output runs/ciph-v0.13-mechanism-metrics/artifacts/closeout.html</code></pre>
+</section>
+</main>
+</body>
+</html>

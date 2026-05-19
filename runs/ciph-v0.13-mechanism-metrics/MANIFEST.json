@@ -1,0 +1,208 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.13-mechanism-metrics",
+  "objective": "Implement CIPH v0.13 mechanism metrics: deterministic metrics over MANIFEST.json and TRACE.jsonl, JSON/HTML report output, candidate score integration, documentation, bundled Proofline asset sync, and dogfood closeout evidence.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.13-mechanism-metrics/TRACE.jsonl"
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "metrics-core",
+      "requirement": "Add deterministic mechanism metrics over manifests and trace ledgers.",
+      "artifact_paths": [
+        "scripts/trace_metrics.py",
+        "tests/test_trace_metrics.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/trace-metrics-tests.txt"
+      ]
+    },
+    {
+      "id": "metrics-reports",
+      "requirement": "Support JSON and HTML mechanism metrics reporting.",
+      "artifact_paths": [
+        "scripts/trace_metrics.py",
+        "runs/ciph-v0.13-mechanism-metrics/artifacts/mechanism-metrics.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/trace-metrics-report.txt"
+      ]
+    },
+    {
+      "id": "candidate-summary-metrics",
+      "requirement": "Expose mechanism metrics in candidate summaries while preserving existing score fields.",
+      "artifact_paths": [
+        "scripts/candidate_summary.py",
+        "tests/test_candidate_summary.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/candidate-summary-tests.txt"
+      ]
+    },
+    {
+      "id": "proofline-skill-sync",
+      "requirement": "Mirror mechanism metrics scripts, docs, templates, and skill instructions into bundled Proofline assets.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/trace_metrics.py",
+        "skills/proofline/assets/proofline/scripts/candidate_summary.py",
+        "skills/proofline/assets/proofline/templates/TASK.html",
+        "skills/proofline/assets/proofline/templates/TASK.md",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-closeout",
+      "requirement": "Document mechanism metrics and close out the dogfood run with generated evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "templates/TASK.html",
+        "templates/TASK.md",
+        "docs/plans/2026-05-20-ciph-v0.13-mechanism-metrics.md",
+        "runs/ciph-v0.13-mechanism-metrics/TASK.html",
+        "runs/ciph-v0.13-mechanism-metrics/MANIFEST.json",
+        "runs/ciph-v0.13-mechanism-metrics/TRACE.jsonl",
+        "runs/ciph-v0.13-mechanism-metrics/artifacts/status.html",
+        "runs/ciph-v0.13-mechanism-metrics/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/trace_metrics.py",
+      "description": "Mechanism metrics CLI and library.",
+      "required": true
+    },
+    {
+      "path": "tests/test_trace_metrics.py",
+      "description": "Mechanism metrics tests.",
+      "required": true
+    },
+    {
+      "path": "scripts/candidate_summary.py",
+      "description": "Candidate summary with mechanism metric columns.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/assets/proofline/scripts/trace_metrics.py",
+      "description": "Bundled Proofline metrics script.",
+      "required": true
+    },
+    {
+      "path": "README.md",
+      "description": "Operator documentation for metrics.",
+      "required": true
+    },
+    {
+      "path": "harness/CIPH.md",
+      "description": "Harness procedure documentation for metrics.",
+      "required": true
+    },
+    {
+      "path": "docs/plans/2026-05-20-ciph-v0.13-mechanism-metrics.md",
+      "description": "Implementation plan for v0.13.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.13-mechanism-metrics/TASK.html",
+      "description": "Dogfood task contract for v0.13.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.13-mechanism-metrics/MANIFEST.json",
+      "description": "Dogfood manifest for v0.13.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.13-mechanism-metrics/TRACE.jsonl",
+      "description": "Dogfood trace ledger for v0.13.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.13-mechanism-metrics/artifacts/mechanism-metrics.html",
+      "description": "Dogfood HTML mechanism metrics report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.13-mechanism-metrics/artifacts/status.html",
+      "description": "Generated status report for the dogfood run.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.13-mechanism-metrics/artifacts/closeout.html",
+      "description": "Generated closeout report for the dogfood run.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/full-unit-tests.txt",
+      "description": "Runner-produced full unit test evidence.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "trace-metrics-tests",
+      "command": "python3 -m unittest tests.test_trace_metrics",
+      "required": true,
+      "evidence": "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/trace-metrics-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-metrics-report",
+      "command": "python3 scripts/trace_metrics.py runs/ciph-v0.13-mechanism-metrics/MANIFEST.json --root . --output runs/ciph-v0.13-mechanism-metrics/artifacts/mechanism-metrics.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/trace-metrics-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "candidate-summary-tests",
+      "command": "python3 -m unittest tests.test_candidate_summary",
+      "required": true,
+      "evidence": "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/candidate-summary-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-ledger-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.13-mechanism-metrics/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/trace-ledger-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.13-mechanism-metrics/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Metrics must remain deterministic derived views, not new authority over run truth.",
+    "Candidate summary changes must remain backward-compatible with existing score files.",
+    "Bundled Proofline assets and installed skill must stay synchronized."
+  ]
+}
