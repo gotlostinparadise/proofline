@@ -45,20 +45,37 @@ def initialize_candidate(
     if candidate_dir.exists() and not force:
         raise FileExistsError(f"Candidate already exists: runs/{task_id}/candidates/{candidate_id}")
 
+    policy_dir = candidate_dir / "policy"
+    source_dir = candidate_dir / "source"
+    artifacts_dir = candidate_dir / "artifacts"
     trace_dir = candidate_dir / "trace"
     trace_dir.mkdir(parents=True, exist_ok=True)
+    policy_dir.mkdir(parents=True, exist_ok=True)
+    source_dir.mkdir(parents=True, exist_ok=True)
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
     (candidate_dir / "patch.diff").write_text("", encoding="utf-8")
     (candidate_dir / "NOTES.md").write_text(_render_notes(candidate_id), encoding="utf-8")
+    (candidate_dir / "TRACE.jsonl").write_text("", encoding="utf-8")
+    (policy_dir / "README.md").write_text(_render_policy_readme(candidate_id), encoding="utf-8")
+    (source_dir / "README.md").write_text(_render_source_readme(candidate_id), encoding="utf-8")
+    (artifacts_dir / ".gitkeep").write_text("", encoding="utf-8")
     (trace_dir / "prompts.jsonl").write_text("", encoding="utf-8")
     (trace_dir / "tools.jsonl").write_text("", encoding="utf-8")
     (trace_dir / "failures.md").write_text("# Candidate Failures\n\n- None recorded.\n", encoding="utf-8")
 
+    display_root = f"runs/{task_id}/candidates/{candidate_id}"
     score_path = candidate_dir / "score.json"
     score_path.write_text(
         json.dumps(
             {
+                "schema_version": "ciph.candidate.v1",
                 "candidate_id": candidate_id,
+                "hypothesis": "State what this candidate is testing.",
                 "parent_ids": parent_ids or [],
+                "lineage": {
+                    "parents": parent_ids or [],
+                    "generation": 0,
+                },
                 "changed_modules": changed_modules or [],
                 "search_scores": {
                     "task_success": None,
@@ -67,11 +84,21 @@ def initialize_candidate(
                     "wall_minutes": None,
                     "defect_escape_rate": None,
                 },
+                "candidate_trace": f"{display_root}/TRACE.jsonl",
                 "trace_paths": [
-                    f"runs/{task_id}/candidates/{candidate_id}/trace/prompts.jsonl",
-                    f"runs/{task_id}/candidates/{candidate_id}/trace/tools.jsonl",
-                    f"runs/{task_id}/candidates/{candidate_id}/trace/failures.md",
+                    f"{display_root}/TRACE.jsonl",
+                    f"{display_root}/trace/prompts.jsonl",
+                    f"{display_root}/trace/tools.jsonl",
+                    f"{display_root}/trace/failures.md",
                 ],
+                "artifact_paths": [
+                    f"{display_root}/policy/README.md",
+                    f"{display_root}/source/README.md",
+                    f"{display_root}/artifacts/.gitkeep",
+                    f"{display_root}/patch.diff",
+                    f"{display_root}/NOTES.md",
+                ],
+                "mechanism_metrics": {},
                 "pareto_status": "unscored",
             },
             indent=2,
@@ -109,6 +136,20 @@ State what this candidate is testing.
 ## Result
 
 Unscored.
+"""
+
+
+def _render_policy_readme(candidate_id: str) -> str:
+    return f"""# Candidate Policy Snapshot: {candidate_id}
+
+Copy or describe changed policy modules here. Keep one candidate focused on one hypothesis or ablation.
+"""
+
+
+def _render_source_readme(candidate_id: str) -> str:
+    return f"""# Candidate Source Snapshot: {candidate_id}
+
+Record source files, prompt variants, config fragments, or patch references that define this candidate.
 """
 
 
