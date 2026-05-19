@@ -1,0 +1,14 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "policy-module-tests", "command": "python3 -m unittest tests.test_policy_modules", "exit_code": 0, "finished_at_utc": "2026-05-19T19:59:21+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-19T19:59:21+00:00", "status": "PASS"}
+
+## STDOUT
+
+<empty>
+
+## STDERR
+
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK

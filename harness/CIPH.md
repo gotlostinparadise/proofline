@@ -29,6 +29,14 @@ Every required check must have an evidence path. Evidence can be a local file or
 
 Facts about APIs, configuration keys, CLI flags, pricing, schemas, product behavior, or other volatile details must be sourced from the most authoritative available documentation before code or setup instructions depend on them.
 
+### Policy Module Contract
+
+Research-grade runs declare active `policy_modules` in `MANIFEST.json`. Policy modules live under `harness/policies/` and describe editable strategy for state, context, verification, recovery, delegation, candidate search, and stopping. They are not exact validators; deterministic scripts own exact behavior.
+
+### Trace Contract
+
+Research-grade runs include `TRACE.jsonl` with schema version `ciph.trace.v1`. The trace ledger records raw events, while status and closeout reports are derived views. Validate trace ledgers with `scripts/lint_trace.py` before closeout.
+
 ### Delegation Contract
 
 Delegated work requires a bounded task packet, clear write ownership, expected output paths, and local verification after return. Child-agent self-report is not completion evidence.
@@ -52,6 +60,12 @@ python3 scripts/lint_manifest.py runs/<run-id>/MANIFEST.json --root .
 ```
 
 Lint manifests before running checks so placeholders, missing evidence links, and weak required-check evidence paths fail early.
+
+Lint a trace ledger:
+
+```bash
+python3 scripts/lint_trace.py runs/<run-id>/TRACE.jsonl --root .
+```
 
 Run executable checks:
 
@@ -105,6 +119,7 @@ python3 scripts/check_repo.py
 runs/<run-id>/
   TASK.html
   MANIFEST.json
+  TRACE.jsonl
   artifacts/
     checks/
       <check-name>.txt

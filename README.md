@@ -16,10 +16,12 @@ Edit the generated files:
 runs/my-run/
   TASK.html
   MANIFEST.json
+  TRACE.jsonl
   artifacts/
 ```
 
 Record each explicit requirement from the prompt in `MANIFEST.json`. Point each requirement at concrete artifact paths and evidence paths.
+Research-grade runs also declare active `policy_modules` and trace metadata in `MANIFEST.json`.
 
 Lint the manifest for weak contracts:
 
@@ -75,6 +77,7 @@ python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/
 
 - `harness/CIPH.md`: harness lifecycle and contracts.
 - `harness/runtime-charter.md`: runtime rules for facts, evidence, delegation, and closeout.
+- `harness/policies/`: natural-language policy modules for state, context, verification, recovery, delegation, candidate search, and stopping.
 - `templates/TASK.html`: HTML-first task template used by the initializer.
 - `templates/TASK.md`: legacy Markdown fallback task template.
 - `templates/MANIFEST.json`: manifest template used by the initializer.
@@ -90,6 +93,10 @@ python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/
 - `scripts/verify_manifest.py`: validates manifest structure and required local paths.
 - `scripts/run_status.py`: writes a concise run status report.
 - `scripts/closeout_check.py`: prints the prompt-to-artifact closeout checklist.
+
+## Research Harness Layer
+
+Policy modules under `harness/policies/` describe editable harness strategy. They are intentionally readable and ablatable; exact checks remain in scripts. `TRACE.jsonl` stores raw research events such as stage, state, tool, handoff, validation, candidate, recovery, budget, and closeout events. Validate traces with `scripts/lint_trace.py`; generated reports should be treated as views over manifest and trace evidence.
 
 ## Development Checks
 
