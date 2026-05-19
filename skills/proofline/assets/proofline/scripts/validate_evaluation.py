@@ -129,11 +129,21 @@ def _validate_splits(payload: dict[str, Any], result: EvaluationValidationResult
     else:
         result.messages.append("PASS search/holdout split separation")
 
+    phase = payload.get("phase")
     holdout_set = payload.get("holdout_set")
-    if isinstance(holdout_set, dict) and holdout_set.get("sealed") is True:
-        result.messages.append("PASS holdout sealed")
-    else:
-        result.errors.append("holdout_set.sealed must be true")
+    if not isinstance(holdout_set, dict):
+        return
+    holdout_sealed = holdout_set.get("sealed")
+    if phase == "search":
+        if holdout_sealed is True:
+            result.messages.append("PASS holdout sealed")
+        else:
+            result.errors.append("holdout_set.sealed must be true during search")
+    elif phase == "holdout_released":
+        if holdout_sealed is False:
+            result.messages.append("PASS holdout released")
+        else:
+            result.errors.append("holdout_set.sealed must be false after holdout release")
 
 
 def _validate_budget(payload: dict[str, Any], result: EvaluationValidationResult) -> None:
@@ -200,6 +210,8 @@ def _validate_phase_rules(
 
     if phase == "holdout_released" and not frontier_ids:
         result.errors.append("holdout_released phase requires at least one frontier candidate")
+    if phase == "holdout_released":
+        _validate_holdout_releases(payload, frontier_ids, result)
 
     if phase != "search":
         return
@@ -217,6 +229,49 @@ def _validate_phase_rules(
         score = _load_json_object(root_path / score_path, result, str(score_path))
         if isinstance(score, dict) and "holdout_scores" in score:
             result.errors.append(f"search phase forbids holdout_scores in {score_path}")
+
+
+def _validate_holdout_releases(
+    payload: dict[str, Any],
+    frontier_ids: list[str],
+    result: EvaluationValidationResult,
+) -> None:
+    releases = payload.get("holdout_releases")
+    if not isinstance(releases, list) or not releases:
+        result.errors.append("holdout_releases must contain at least one release after holdout release")
+        return
+
+    budget = payload.get("budget")
+    max_releases = None
+    if isinstance(budget, dict) and isinstance(budget.get("max_holdout_releases"), int):
+        max_releases = budget["max_holdout_releases"]
+    if isinstance(max_releases, int) and max_releases > 0 and len(releases) > max_releases:
+        result.errors.append(
+            f"holdout_releases count exceeds budget.max_holdout_releases: {len(releases)}/{max_releases}"
+        )
+
+    known_frontier_ids = set(frontier_ids)
+    for index, release in enumerate(releases):
+        label = f"holdout_releases[{index}]"
+        if not isinstance(release, dict):
+            result.errors.append(f"{label} must be an object")
+            continue
+
+        release_index = release.get("release_index")
+        if not isinstance(release_index, int) or release_index <= 0:
+            result.errors.append(f"{label}.release_index must be a positive integer")
+        if not _non_empty_string(release.get("released_at")):
+            result.errors.append(f"{label}.released_at must be a non-empty string")
+
+        release_frontier_ids = _string_list(release.get("frontier_candidate_ids"))
+        if not release_frontier_ids:
+            result.errors.append(f"{label}.frontier_candidate_ids must contain at least one candidate")
+        for candidate_id in release_frontier_ids:
+            if candidate_id not in known_frontier_ids:
+                result.errors.append(f"{label}.frontier_candidate_ids includes unlisted frontier candidate: {candidate_id}")
+
+        if isinstance(release_index, int) and release_index > 0 and release_frontier_ids:
+            result.messages.append(f"PASS holdout release {release_index}")
 
 
 def _candidate_records(payload: dict[str, Any], result: EvaluationValidationResult) -> dict[str, dict[str, Any]]:

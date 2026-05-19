@@ -32,6 +32,7 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((vendor / "scripts" / "init_candidate.py").is_file())
             self.assertTrue((vendor / "scripts" / "validate_candidate.py").is_file())
             self.assertTrue((vendor / "scripts" / "validate_evaluation.py").is_file())
+            self.assertTrue((vendor / "scripts" / "release_holdout.py").is_file())
             self.assertTrue((vendor / "scripts" / "lint_trace.py").is_file())
             self.assertTrue((vendor / "scripts" / "trace_metrics.py").is_file())
             self.assertTrue((vendor / "harness" / "policies" / "README.md").is_file())
@@ -39,6 +40,7 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue(os.access(vendor / "scripts" / "init_candidate.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "validate_candidate.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "validate_evaluation.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "release_holdout.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "lint_trace.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "trace_metrics.py", os.X_OK))
 
@@ -104,6 +106,29 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((candidate_dir / "score.json").is_file())
             self.assertTrue((candidate_dir / "TRACE.jsonl").is_file())
 
+            init_frontier = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/init_candidate.py",
+                    "vendor/proofline/runs/sample-run/MANIFEST.json",
+                    "frontier",
+                    "--root",
+                    str(target),
+                    "--changed-module",
+                    "holdout-release",
+                    "--parent",
+                    "baseline",
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(init_frontier.returncode, 0, init_frontier.stderr)
+            frontier_dir = vendor / "runs" / "sample-run" / "candidates" / "frontier"
+            self.assertTrue((frontier_dir / "score.json").is_file())
+
             validate_candidate = subprocess.run(
                 [
                     sys.executable,
@@ -131,13 +156,19 @@ class ProoflineSkillTests(unittest.TestCase):
                         "search_set": {"scenario_ids": ["search-1"]},
                         "holdout_set": {"scenario_ids": ["holdout-1"], "sealed": True},
                         "budget": {"max_candidates": 3, "max_holdout_releases": 1},
-                        "frontier_candidate_ids": [],
+                        "frontier_candidate_ids": ["frontier"],
                         "candidates": [
                             {
                                 "candidate_id": "baseline",
                                 "role": "baseline",
                                 "evaluation_phase": "search",
                                 "score_path": "vendor/proofline/runs/sample-run/candidates/baseline/score.json",
+                            },
+                            {
+                                "candidate_id": "frontier",
+                                "role": "frontier",
+                                "evaluation_phase": "search",
+                                "score_path": "vendor/proofline/runs/sample-run/candidates/frontier/score.json",
                             }
                         ],
                     },
@@ -163,6 +194,28 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(validate_evaluation.returncode, 0, validate_evaluation.stderr)
             self.assertIn("PASS evaluation", validate_evaluation.stdout)
 
+            release_holdout = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/release_holdout.py",
+                    "vendor/proofline/runs/sample-run",
+                    "--root",
+                    str(target),
+                    "--released-at",
+                    "2026-05-20T04:00:00Z",
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(release_holdout.returncode, 0, release_holdout.stderr)
+            self.assertIn("PASS holdout release", release_holdout.stdout)
+            evaluation = json.loads((vendor / "runs" / "sample-run" / "EVALUATION.json").read_text(encoding="utf-8"))
+            self.assertEqual(evaluation["phase"], "holdout_released")
+            self.assertFalse(evaluation["holdout_set"]["sealed"])
+
     def test_bundled_assets_are_trace_aware(self):
         skill_text = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
         manifest = (SKILL_DIR / "assets" / "proofline" / "templates" / "MANIFEST.json").read_text(encoding="utf-8")
@@ -172,6 +225,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertIn("trace_metrics.py", skill_text)
         self.assertIn("validate_candidate.py", skill_text)
         self.assertIn("validate_evaluation.py", skill_text)
+        self.assertIn("release_holdout.py", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)
@@ -180,6 +234,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "trace_metrics.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_candidate.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_evaluation.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "release_holdout.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "harness" / "policies" / "state.md").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):

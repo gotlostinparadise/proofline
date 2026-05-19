@@ -64,10 +64,11 @@ python3 vendor/proofline/scripts/validate_candidate.py vendor/proofline/runs/<ru
 python3 vendor/proofline/scripts/candidate_summary.py vendor/proofline/runs/<run-id> --output vendor/proofline/runs/<run-id>/artifacts/candidate-summary.html
 ```
 
-For search-set / holdout research runs, validate the evaluation protocol:
+For search-set / holdout research runs, validate the evaluation protocol and release holdout only through the gate:
 
 ```bash
 python3 vendor/proofline/scripts/validate_evaluation.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/evaluation-report.html
+python3 vendor/proofline/scripts/release_holdout.py vendor/proofline/runs/<run-id> --root . --released-at 2026-05-20T04:00:00Z --output vendor/proofline/runs/<run-id>/artifacts/holdout-release.html
 ```
 
 ## Verify And Close
@@ -100,7 +101,8 @@ Only claim completion when closeout maps every explicit requirement to existing 
 | Forgetting trace linting on research-grade runs | Run `lint_trace.py` against `TRACE.jsonl`. |
 | Treating mechanism metrics as completion proof | Run `trace_metrics.py` for diagnostics, then keep `verify_manifest.py` and closeout evidence authoritative. |
 | Summarizing candidate scores before validating records | Run `validate_candidate.py` for each candidate first. |
-| Releasing holdout scores during search | Record split state in `EVALUATION.json` and run `validate_evaluation.py`. |
+| Releasing holdout scores during search | Record split state in `EVALUATION.json`, run `validate_evaluation.py`, then use `release_holdout.py`. |
+| Manually flipping `phase` or `holdout_set.sealed` | Use `release_holdout.py` so frontier validation, release budget, and release history are checked. |
 | Treating chat or child-agent output as proof | Record command evidence or source references in the manifest. |
 | Forgetting generated reports | Write `status.html` and `closeout.html` before final verification. |
 | Installing over an existing harness casually | Use installer `--force` only with explicit approval. |

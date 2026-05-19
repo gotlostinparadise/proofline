@@ -86,6 +86,12 @@ Validate an evaluation protocol:
 python3 scripts/validate_evaluation.py runs/my-run --root . --output runs/my-run/artifacts/evaluation-report.html
 ```
 
+Release holdout only after frontier selection and validation are clean:
+
+```bash
+python3 scripts/release_holdout.py runs/my-run --root . --released-at 2026-05-20T04:00:00Z --output runs/my-run/artifacts/holdout-release.html
+```
+
 ## Files
 
 - `harness/CIPH.md`: harness lifecycle and contracts.
@@ -99,6 +105,7 @@ python3 scripts/validate_evaluation.py runs/my-run --root . --output runs/my-run
 - `scripts/init_candidate.py`: creates Meta-Harness candidate records.
 - `scripts/validate_candidate.py`: validates candidate records and writes validation reports.
 - `scripts/validate_evaluation.py`: validates search-set versus holdout evaluation protocols.
+- `scripts/release_holdout.py`: gates the transition from search to holdout release.
 - `scripts/candidate_summary.py`: writes a candidate score summary.
 - `scripts/check_repo.py`: runs the repository health gate.
 - `scripts/lint_manifest.py`: catches placeholders and weak manifest contracts.
@@ -112,7 +119,7 @@ python3 scripts/validate_evaluation.py runs/my-run --root . --output runs/my-run
 
 ## Research Harness Layer
 
-Policy modules under `harness/policies/` describe editable harness strategy. They are intentionally readable and ablatable; exact checks remain in scripts. `TRACE.jsonl` stores raw research events such as stage, state, tool, handoff, validation, candidate, recovery, budget, and closeout events. Candidate records under `runs/<run-id>/candidates/` preserve policy snapshots, source notes, raw candidate traces, score contracts, and artifacts. `EVALUATION.json` records baseline, search-set, holdout-set, budget, frontier, and candidate phase state. Validate traces with `scripts/lint_trace.py`, candidates with `scripts/validate_candidate.py`, evaluation protocols with `scripts/validate_evaluation.py`, then derive run metrics with `scripts/trace_metrics.py`; generated reports are views over manifest and trace evidence.
+Policy modules under `harness/policies/` describe editable harness strategy. They are intentionally readable and ablatable; exact checks remain in scripts. `TRACE.jsonl` stores raw research events such as stage, state, tool, handoff, validation, candidate, recovery, budget, and closeout events. Candidate records under `runs/<run-id>/candidates/` preserve policy snapshots, source notes, raw candidate traces, score contracts, and artifacts. `EVALUATION.json` records baseline, search-set, holdout-set, budget, frontier, release budget, and candidate phase state. Validate traces with `scripts/lint_trace.py`, candidates with `scripts/validate_candidate.py`, evaluation protocols with `scripts/validate_evaluation.py`, release holdout with `scripts/release_holdout.py`, then derive run metrics with `scripts/trace_metrics.py`; generated reports are views over manifest and trace evidence.
 
 ## Development Checks
 

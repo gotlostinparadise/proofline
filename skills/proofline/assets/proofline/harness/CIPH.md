@@ -47,7 +47,7 @@ Candidate records live under `runs/<run-id>/candidates/<candidate-id>/`. Each re
 
 ### Evaluation Protocol Contract
 
-Research-grade optimization runs can include `EVALUATION.json` at the run root. It records baseline candidate, search-set IDs, sealed holdout IDs, fixed budget, current phase, selected frontier candidates, and candidate score paths. Validate it with `scripts/validate_evaluation.py` before holdout release or final comparison.
+Research-grade optimization runs can include `EVALUATION.json` at the run root. It records baseline candidate, search-set IDs, sealed holdout IDs, fixed budget, current phase, selected frontier candidates, release history, and candidate score paths. Validate it with `scripts/validate_evaluation.py` before holdout release or final comparison. Transition from `search` to `holdout_released` only through `scripts/release_holdout.py`; do not manually flip phase or unseal holdout state.
 
 ### Delegation Contract
 
@@ -130,6 +130,12 @@ Validate evaluation protocol:
 
 ```bash
 python3 scripts/validate_evaluation.py runs/<run-id> --root . --output runs/<run-id>/artifacts/evaluation-report.html
+```
+
+Release holdout:
+
+```bash
+python3 scripts/release_holdout.py runs/<run-id> --root . --released-at 2026-05-20T04:00:00Z --output runs/<run-id>/artifacts/holdout-release.html
 ```
 
 Run the repository gate:
