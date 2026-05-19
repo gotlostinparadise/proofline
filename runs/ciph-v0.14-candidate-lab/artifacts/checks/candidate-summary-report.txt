@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "candidate-summary-report", "command": "python3 scripts/candidate_summary.py runs/ciph-v0.14-candidate-lab --output runs/ciph-v0.14-candidate-lab/artifacts/candidate-summary.html", "exit_code": 0, "finished_at_utc": "2026-05-19T22:17:33+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-19T22:17:33+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH candidate summary: runs/ciph-v0.14-candidate-lab/artifacts/candidate-summary.html
+
+## STDERR
+
+<empty>

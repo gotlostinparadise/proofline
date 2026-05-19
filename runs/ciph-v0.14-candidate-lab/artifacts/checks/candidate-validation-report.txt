@@ -1,0 +1,32 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "candidate-validation-report", "command": "python3 scripts/validate_candidate.py runs/ciph-v0.14-candidate-lab/candidates/baseline --root . --output runs/ciph-v0.14-candidate-lab/artifacts/candidate-validation.html", "exit_code": 0, "finished_at_utc": "2026-05-19T22:17:33+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-19T22:17:33+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH candidate validation: runs/ciph-v0.14-candidate-lab/artifacts/candidate-validation.html
+PASS candidate runs/ciph-v0.14-candidate-lab/candidates/baseline
+PASS required file score.json
+PASS required file NOTES.md
+PASS required file patch.diff
+PASS required file TRACE.jsonl
+PASS required file policy/README.md
+PASS required file source/README.md
+PASS required file artifacts/.gitkeep
+PASS required file trace/prompts.jsonl
+PASS required file trace/tools.jsonl
+PASS required file trace/failures.md
+PASS candidate_id baseline
+PASS trace path runs/ciph-v0.14-candidate-lab/candidates/baseline/TRACE.jsonl
+PASS trace path runs/ciph-v0.14-candidate-lab/candidates/baseline/trace/prompts.jsonl
+PASS trace path runs/ciph-v0.14-candidate-lab/candidates/baseline/trace/tools.jsonl
+PASS trace path runs/ciph-v0.14-candidate-lab/candidates/baseline/trace/failures.md
+PASS artifact path runs/ciph-v0.14-candidate-lab/candidates/baseline/policy/README.md
+PASS artifact path runs/ciph-v0.14-candidate-lab/candidates/baseline/source/README.md
+PASS artifact path runs/ciph-v0.14-candidate-lab/candidates/baseline/artifacts/.gitkeep
+PASS artifact path runs/ciph-v0.14-candidate-lab/candidates/baseline/patch.diff
+PASS artifact path runs/ciph-v0.14-candidate-lab/candidates/baseline/NOTES.md
+PASS candidate trace runs/ciph-v0.14-candidate-lab/candidates/baseline/TRACE.jsonl
+
+## STDERR
+
+<empty>
