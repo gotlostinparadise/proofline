@@ -1,0 +1,211 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.12-policy-trace",
+  "objective": "Implement the research-grade harness optimizer v0.12 foundation: policy modules, trace schema linting, trace-aware run initialization, manifest validation, bundled Proofline asset sync, and documentation.",
+  "deliverables": [
+    {
+      "id": "policy-modules",
+      "requirement": "Add readable, versioned, ablatable harness policy modules for the research-grade optimizer layer.",
+      "artifact_paths": [
+        "harness/policies/README.md",
+        "harness/policies/state.md",
+        "harness/policies/context.md",
+        "harness/policies/verification.md",
+        "harness/policies/recovery.md",
+        "harness/policies/delegation.md",
+        "harness/policies/candidate-search.md",
+        "harness/policies/stopping.md",
+        "tests/test_policy_modules.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.12-policy-trace/artifacts/checks/policy-module-tests.txt"
+      ]
+    },
+    {
+      "id": "trace-linter",
+      "requirement": "Add a strict JSONL trace schema linter for research run ledgers.",
+      "artifact_paths": [
+        "scripts/lint_trace.py",
+        "tests/test_lint_trace.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.12-policy-trace/artifacts/checks/trace-lint-tests.txt"
+      ]
+    },
+    {
+      "id": "trace-aware-init",
+      "requirement": "Create trace ledgers for new runs and expose trace policy in generated manifests and task templates.",
+      "artifact_paths": [
+        "scripts/init_run.py",
+        "templates/MANIFEST.json",
+        "templates/TASK.html",
+        "templates/TASK.md",
+        "tests/test_init_run.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.12-policy-trace/artifacts/checks/init-run-trace-tests.txt"
+      ]
+    },
+    {
+      "id": "manifest-trace-validation",
+      "requirement": "Validate trace references in manifests without breaking historical manifests.",
+      "artifact_paths": [
+        "scripts/verify_manifest.py",
+        "scripts/lint_manifest.py",
+        "tests/test_verify_manifest.py",
+        "tests/test_lint_manifest.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.12-policy-trace/artifacts/checks/manifest-trace-tests.txt"
+      ]
+    },
+    {
+      "id": "proofline-skill-sync",
+      "requirement": "Mirror trace-aware scripts, templates, policy modules, and skill instructions into the bundled Proofline assets.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/init_run.py",
+        "skills/proofline/assets/proofline/scripts/lint_trace.py",
+        "skills/proofline/assets/proofline/templates/MANIFEST.json",
+        "skills/proofline/assets/proofline/templates/TASK.html",
+        "skills/proofline/assets/proofline/templates/TASK.md",
+        "skills/proofline/assets/proofline/harness/policies/",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.12-policy-trace/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-closeout",
+      "requirement": "Document policy modules, trace ledgers, trace linting, and close out the dogfood run with generated evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "runs/ciph-v0.12-policy-trace/TASK.html",
+        "runs/ciph-v0.12-policy-trace/MANIFEST.json",
+        "runs/ciph-v0.12-policy-trace/artifacts/status.html",
+        "runs/ciph-v0.12-policy-trace/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.12-policy-trace/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "harness/policies/README.md",
+      "description": "Policy module index and runtime boundary.",
+      "required": true
+    },
+    {
+      "path": "scripts/lint_trace.py",
+      "description": "Strict trace JSONL linter.",
+      "required": true
+    },
+    {
+      "path": "tests/test_lint_trace.py",
+      "description": "Trace linter tests.",
+      "required": true
+    },
+    {
+      "path": "tests/test_policy_modules.py",
+      "description": "Policy module completeness tests.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/assets/proofline/scripts/lint_trace.py",
+      "description": "Bundled Proofline trace linter asset.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/assets/proofline/harness/policies/",
+      "description": "Bundled Proofline policy module assets.",
+      "required": true
+    },
+    {
+      "path": "README.md",
+      "description": "Operator documentation for policy modules and traces.",
+      "required": true
+    },
+    {
+      "path": "harness/CIPH.md",
+      "description": "Harness lifecycle documentation for policy modules and traces.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.12-policy-trace/TASK.html",
+      "description": "Dogfood task contract for v0.12.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.12-policy-trace/MANIFEST.json",
+      "description": "Dogfood manifest for v0.12.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.12-policy-trace/artifacts/status.html",
+      "description": "Generated status report for the dogfood run.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.12-policy-trace/artifacts/closeout.html",
+      "description": "Generated closeout report for the dogfood run.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.12-policy-trace/artifacts/checks/full-unit-tests.txt",
+      "description": "Runner-produced full unit test evidence.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "policy-module-tests",
+      "command": "python3 -m unittest tests.test_policy_modules",
+      "required": true,
+      "evidence": "runs/ciph-v0.12-policy-trace/artifacts/checks/policy-module-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-lint-tests",
+      "command": "python3 -m unittest tests.test_lint_trace",
+      "required": true,
+      "evidence": "runs/ciph-v0.12-policy-trace/artifacts/checks/trace-lint-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "init-run-trace-tests",
+      "command": "python3 -m unittest tests.test_init_run",
+      "required": true,
+      "evidence": "runs/ciph-v0.12-policy-trace/artifacts/checks/init-run-trace-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "manifest-trace-tests",
+      "command": "python3 -m unittest tests.test_verify_manifest tests.test_lint_manifest",
+      "required": true,
+      "evidence": "runs/ciph-v0.12-policy-trace/artifacts/checks/manifest-trace-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.12-policy-trace/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.12-policy-trace/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Trace validation must not break historical manifests that predate trace ledgers.",
+    "Policy modules must stay readable strategy documents, not imprecise replacements for deterministic validation.",
+    "Bundled Proofline assets must be synchronized with repo-level behavior."
+  ]
+}
