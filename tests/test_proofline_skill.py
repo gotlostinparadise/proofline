@@ -33,6 +33,8 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((vendor / "scripts" / "validate_candidate.py").is_file())
             self.assertTrue((vendor / "scripts" / "validate_evaluation.py").is_file())
             self.assertTrue((vendor / "scripts" / "release_holdout.py").is_file())
+            self.assertTrue((vendor / "scripts" / "ingest_holdout_scores.py").is_file())
+            self.assertTrue((vendor / "scripts" / "final_comparison.py").is_file())
             self.assertTrue((vendor / "scripts" / "lint_trace.py").is_file())
             self.assertTrue((vendor / "scripts" / "trace_metrics.py").is_file())
             self.assertTrue((vendor / "harness" / "policies" / "README.md").is_file())
@@ -41,6 +43,8 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue(os.access(vendor / "scripts" / "validate_candidate.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "validate_evaluation.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "release_holdout.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "ingest_holdout_scores.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "final_comparison.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "lint_trace.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "trace_metrics.py", os.X_OK))
 
@@ -216,6 +220,68 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(evaluation["phase"], "holdout_released")
             self.assertFalse(evaluation["holdout_set"]["sealed"])
 
+            _write_installed_search_score(frontier_dir / "score.json", "frontier")
+            incoming_holdout = vendor / "runs" / "sample-run" / "artifacts" / "frontier-holdout-input.json"
+            incoming_holdout.parent.mkdir(parents=True, exist_ok=True)
+            incoming_holdout.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "ciph.holdout-score.v1",
+                        "candidate_id": "frontier",
+                        "release_index": 1,
+                        "scored_at": "2026-05-20T05:00:00Z",
+                        "scenario_ids": ["holdout-1"],
+                        "holdout_scores": {
+                            "task_success": 0.95,
+                            "audit_completeness": 0.94,
+                            "cost_tokens": 130,
+                            "wall_minutes": 3,
+                            "defect_escape_rate": 0.01,
+                        },
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            ingest_holdout = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/ingest_holdout_scores.py",
+                    "vendor/proofline/runs/sample-run",
+                    "vendor/proofline/runs/sample-run/artifacts/frontier-holdout-input.json",
+                    "--root",
+                    str(target),
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(ingest_holdout.returncode, 0, ingest_holdout.stderr)
+            self.assertIn("PASS holdout ingest", ingest_holdout.stdout)
+
+            final_comparison = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/final_comparison.py",
+                    "vendor/proofline/runs/sample-run",
+                    "--root",
+                    str(target),
+                    "--output",
+                    "vendor/proofline/runs/sample-run/artifacts/final-comparison.html",
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(final_comparison.returncode, 0, final_comparison.stderr)
+            self.assertIn("PASS final comparison", final_comparison.stdout)
+            self.assertTrue((vendor / "runs" / "sample-run" / "artifacts" / "final-comparison.html").is_file())
+
     def test_bundled_assets_are_trace_aware(self):
         skill_text = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
         manifest = (SKILL_DIR / "assets" / "proofline" / "templates" / "MANIFEST.json").read_text(encoding="utf-8")
@@ -226,6 +292,8 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertIn("validate_candidate.py", skill_text)
         self.assertIn("validate_evaluation.py", skill_text)
         self.assertIn("release_holdout.py", skill_text)
+        self.assertIn("ingest_holdout_scores.py", skill_text)
+        self.assertIn("final_comparison.py", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)
@@ -235,6 +303,8 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_candidate.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_evaluation.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "release_holdout.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "ingest_holdout_scores.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "final_comparison.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "harness" / "policies" / "state.md").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):
@@ -267,6 +337,19 @@ def _run_installer(target: Path, *extra_args: str) -> subprocess.CompletedProces
         capture_output=True,
         check=False,
     )
+
+
+def _write_installed_search_score(score_path: Path, candidate_id: str) -> None:
+    score = json.loads(score_path.read_text(encoding="utf-8"))
+    score["candidate_id"] = candidate_id
+    score["search_scores"] = {
+        "task_success": 0.9,
+        "audit_completeness": 0.9,
+        "cost_tokens": 100,
+        "wall_minutes": 2,
+        "defect_escape_rate": 0.02,
+    }
+    score_path.write_text(json.dumps(score, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -47,7 +47,7 @@ Candidate records live under `runs/<run-id>/candidates/<candidate-id>/`. Each re
 
 ### Evaluation Protocol Contract
 
-Research-grade optimization runs can include `EVALUATION.json` at the run root. It records baseline candidate, search-set IDs, sealed holdout IDs, fixed budget, current phase, selected frontier candidates, release history, and candidate score paths. Validate it with `scripts/validate_evaluation.py` before holdout release or final comparison. Transition from `search` to `holdout_released` only through `scripts/release_holdout.py`; do not manually flip phase or unseal holdout state.
+Research-grade optimization runs can include `EVALUATION.json` at the run root. It records baseline candidate, search-set IDs, sealed holdout IDs, fixed budget, current phase, selected frontier candidates, release history, candidate score paths, and post-release holdout score paths. Validate it with `scripts/validate_evaluation.py` before holdout release or final comparison. Transition from `search` to `holdout_released` only through `scripts/release_holdout.py`; do not manually flip phase or unseal holdout state. After release, ingest externally produced holdout score files through `scripts/ingest_holdout_scores.py`; keep search scores and holdout scores as separate records.
 
 ### Delegation Contract
 
@@ -136,6 +136,13 @@ Release holdout:
 
 ```bash
 python3 scripts/release_holdout.py runs/<run-id> --root . --released-at 2026-05-20T04:00:00Z --output runs/<run-id>/artifacts/holdout-release.html
+```
+
+Ingest holdout scores and compare finalists:
+
+```bash
+python3 scripts/ingest_holdout_scores.py runs/<run-id> runs/<run-id>/artifacts/frontier-holdout-input.json --root . --output runs/<run-id>/artifacts/holdout-ingest.html
+python3 scripts/final_comparison.py runs/<run-id> --root . --output runs/<run-id>/artifacts/final-comparison.html
 ```
 
 Run the repository gate:
