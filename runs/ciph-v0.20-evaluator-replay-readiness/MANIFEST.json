@@ -1,0 +1,132 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.20-evaluator-replay-readiness",
+  "objective": "Implement CIPH v0.20 Evaluator Replay Readiness: add metadata-only evaluator replay contracts for working directory, command argv, environment allowlist, local-only effect policy, expected output hashes, docs, Proofline bundle sync, and dogfood evidence.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.20-evaluator-replay-readiness/TRACE.jsonl"
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "evaluator-replay-validator",
+      "requirement": "Validate metadata-only evaluator replay contracts for working directory, argv, env allowlist, local-only policy, and expected output hashes.",
+      "artifact_paths": [
+        "scripts/validate_evaluator_replay.py",
+        "tests/test_validate_evaluator_replay.py",
+        "runs/ciph-v0.20-evaluator-replay-readiness/evaluators/search-evaluator.json",
+        "runs/ciph-v0.20-evaluator-replay-readiness/evaluators/holdout-evaluator.json",
+        "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/evaluator-replay.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/checks/evaluator-replay-tests.txt",
+        "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/checks/evaluator-replay-report.txt"
+      ]
+    },
+    {
+      "id": "proofline-skill-sync",
+      "requirement": "Mirror evaluator replay validation scripts, docs, and instructions into bundled Proofline assets.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/validate_evaluator_replay.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-closeout",
+      "requirement": "Document evaluator replay readiness and close out the dogfood run with generated evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "docs/plans/2026-05-20-ciph-v0.20-evaluator-replay-readiness-design.md",
+        "docs/plans/2026-05-20-ciph-v0.20-evaluator-replay-readiness.md",
+        "runs/ciph-v0.20-evaluator-replay-readiness/TASK.html",
+        "runs/ciph-v0.20-evaluator-replay-readiness/MANIFEST.json",
+        "runs/ciph-v0.20-evaluator-replay-readiness/TRACE.jsonl",
+        "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/status.html",
+        "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/closeout.html",
+        "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/mechanism-metrics.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/validate_evaluator_replay.py",
+      "description": "Evaluator replay readiness validator and report generator.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.20-evaluator-replay-readiness/evaluators/search-evaluator.json",
+      "description": "Dogfood search evaluator manifest with replay metadata.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.20-evaluator-replay-readiness/evaluators/holdout-evaluator.json",
+      "description": "Dogfood holdout evaluator manifest with replay metadata.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/evaluator-replay.html",
+      "description": "Generated evaluator replay readiness report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "evaluator-replay-tests",
+      "command": "python3 -m unittest tests.test_validate_evaluator_replay",
+      "required": true,
+      "evidence": "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/checks/evaluator-replay-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "evaluator-replay-report",
+      "command": "python3 scripts/validate_evaluator_replay.py runs/ciph-v0.20-evaluator-replay-readiness --root . --output runs/ciph-v0.20-evaluator-replay-readiness/artifacts/evaluator-replay.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/checks/evaluator-replay-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-ledger-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.20-evaluator-replay-readiness/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/checks/trace-ledger-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Replay readiness must not execute evaluator commands or call providers by default.",
+    "Environment allowlists must name variables only and must not capture values.",
+    "Historical runs must remain valid unless the new replay validator is explicitly run.",
+    "Bundled and installed Proofline assets must stay synchronized."
+  ]
+}
