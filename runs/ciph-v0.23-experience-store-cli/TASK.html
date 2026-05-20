@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIPH Task</title>
+<style>
+body{margin:0;background:#faf9f5;color:#141413;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;padding:44px 28px 88px}
+main{max-width:980px;margin:0 auto}
+h1,h2{font-family:ui-serif,Georgia,serif;font-weight:500}
+h1{font-size:40px;margin:0 0 18px}
+h2{font-size:24px;margin:0 0 12px}
+section{background:#fff;border:1px solid #d1cfc5;border-radius:8px;padding:18px;margin:16px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #d1cfc5;padding:8px;text-align:left;vertical-align:top}
+th{font:11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#66635c;background:#f0eee6}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
+</style>
+</head>
+<body data-proofline-kind="task">
+<main>
+<h1>CIPH Task</h1>
+
+<section id="objective" data-proofline-section="objective">
+<h2>Objective</h2>
+<p>Implement CIPH v0.23 Queryable Experience Store CLI: add a deterministic read-only command that indexes prior run traces, manifests, deliverables, checks, closeout status, and replay receipt evidence into queryable JSON/HTML reports with docs, Proofline bundle sync, and dogfood evidence.</p>
+</section>
+
+<section id="acceptance-object" data-proofline-section="acceptance-object">
+<h2>Acceptance Object</h2>
+<p>The work is acceptable when <code>scripts/query_experience_store.py</code> emits deterministic JSON and HTML projections over existing CIPH runs, supports status/event/text/replay filters, excludes secret-bearing evidence bodies, is mirrored into bundled and installed Proofline assets, and passes the run manifest checks plus the full repo gate.</p>
+</section>
+
+<section id="constraints" data-proofline-section="constraints">
+<h2>Constraints</h2>
+<ul>
+<li>Repository rules: keep run state durable in <code>TASK.html</code>, <code>MANIFEST.json</code>, <code>TRACE.jsonl</code>, plans, evidence files, and generated reports.</li>
+<li>Files in scope: <code>scripts/</code>, <code>tests/</code>, <code>README.md</code>, <code>harness/CIPH.md</code>, <code>skills/proofline/</code>, and this run directory.</li>
+<li>Files out of scope: historical run records except as read-only query input.</li>
+<li>Permissions: no external services or network facts are required.</li>
+<li>Secrets handling: do not print or serialize environment values, stdout/stderr bodies, headers, tokens, or raw evidence contents.</li>
+</ul>
+</section>
+
+<section id="volatile-facts" data-proofline-section="volatile-facts">
+<h2>Volatile Facts To Verify</h2>
+<p>No external volatile facts are required. This milestone depends on local repository schemas and scripts only.</p>
+</section>
+
+<section id="policy-modules" data-proofline-section="policy-modules">
+<h2>Policy Modules</h2>
+<p>Active modules: <code>state.md</code>, <code>context.md</code>, <code>verification.md</code>, <code>recovery.md</code>, <code>delegation.md</code>, <code>candidate-search.md</code>, and <code>stopping.md</code>.</p>
+</section>
+
+<section id="trace-ledger" data-proofline-section="trace-ledger">
+<h2>Trace Ledger</h2>
+<p>Research runs use <code>runs/ciph-v0.23-experience-store-cli/TRACE.jsonl</code> for raw events. Validate it with <code>scripts/lint_trace.py</code> before closeout.</p>
+</section>
+
+<section id="mechanism-metrics" data-proofline-section="mechanism-metrics">
+<h2>Mechanism Metrics</h2>
+<p>Research runs can derive mechanism metrics with <code>scripts/trace_metrics.py</code>. Use them to inspect harness behavior; keep manifest validation and closeout evidence as the source of completion truth.</p>
+</section>
+
+<section id="deliverables" data-proofline-section="deliverables">
+<h2>Deliverables</h2>
+<table>
+<thead><tr><th>ID</th><th>Requirement</th><th>Artifact paths</th><th>Evidence paths</th></tr></thead>
+<tbody>
+<tr><td>experience-store-cli</td><td>Read-only query CLI for manifests, traces, closeout state, checks, and replay receipts.</td><td><code>scripts/query_experience_store.py</code><br><code>tests/test_query_experience_store.py</code><br><code>runs/ciph-v0.23-experience-store-cli/artifacts/experience-store.json</code><br><code>runs/ciph-v0.23-experience-store-cli/artifacts/experience-store.html</code></td><td><code>runs/ciph-v0.23-experience-store-cli/artifacts/checks/experience-store-tests.txt</code><br><code>runs/ciph-v0.23-experience-store-cli/artifacts/checks/experience-store-json.txt</code><br><code>runs/ciph-v0.23-experience-store-cli/artifacts/checks/experience-store-html.txt</code></td></tr>
+<tr><td>proofline-skill-sync</td><td>Bundled and installed Proofline assets expose the query CLI and guidance.</td><td><code>skills/proofline/SKILL.md</code><br><code>skills/proofline/assets/proofline/scripts/query_experience_store.py</code><br><code>tests/test_proofline_skill.py</code></td><td><code>runs/ciph-v0.23-experience-store-cli/artifacts/checks/proofline-skill-tests.txt</code><br><code>runs/ciph-v0.23-experience-store-cli/artifacts/checks/installed-proofline-query.txt</code></td></tr>
+<tr><td>docs-and-closeout</td><td>Document and close out the milestone with generated reports.</td><td><code>README.md</code><br><code>harness/CIPH.md</code><br><code>docs/plans/2026-05-21-ciph-v0.23-experience-store-cli-design.md</code><br><code>runs/ciph-v0.23-experience-store-cli/artifacts/status.html</code><br><code>runs/ciph-v0.23-experience-store-cli/artifacts/closeout.html</code></td><td><code>runs/ciph-v0.23-experience-store-cli/artifacts/checks/full-unit-tests.txt</code><br><code>runs/ciph-v0.23-experience-store-cli/artifacts/checks/check-repo.txt</code></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="risks" data-proofline-section="risks">
+<h2>Risks And Blockers</h2>
+<ul>
+<li>The query surface could accidentally become a mutable database; keep it a projection only.</li>
+<li>Evidence files may contain command output; index paths and metadata only, not raw bodies.</li>
+<li>Historical run schemas vary; missing optional fields should produce stable defaults instead of crashes.</li>
+</ul>
+</section>
+
+<section id="closeout-commands" data-proofline-section="closeout-commands">
+<h2>Closeout Commands</h2>
+<pre><code>python3 scripts/lint_manifest.py runs/ciph-v0.23-experience-store-cli/MANIFEST.json --root .
+python3 scripts/lint_trace.py runs/ciph-v0.23-experience-store-cli/TRACE.jsonl --root .
+python3 scripts/run_checks.py runs/ciph-v0.23-experience-store-cli/MANIFEST.json --root .
+python3 scripts/verify_manifest.py runs/ciph-v0.23-experience-store-cli/MANIFEST.json --root .
+python3 scripts/trace_metrics.py runs/ciph-v0.23-experience-store-cli/MANIFEST.json --root . --output runs/ciph-v0.23-experience-store-cli/artifacts/mechanism-metrics.html
+python3 scripts/run_status.py runs/ciph-v0.23-experience-store-cli/MANIFEST.json --root . --output runs/ciph-v0.23-experience-store-cli/artifacts/status.html
+python3 scripts/closeout_check.py runs/ciph-v0.23-experience-store-cli/MANIFEST.json --root . --output runs/ciph-v0.23-experience-store-cli/artifacts/closeout.html</code></pre>
+</section>
+</main>
+</body>
+</html>
