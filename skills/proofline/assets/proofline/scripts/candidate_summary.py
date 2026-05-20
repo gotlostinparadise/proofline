@@ -36,8 +36,8 @@ def render_candidate_summary(run_dir: Path | str) -> str:
         "",
         f"Run: {run_path}",
         "",
-        "| Candidate | Pareto | Eval Phase | Holdout | Task Success | Audit | Cost Tokens | Wall Minutes | Defect Escape | Artifact Contract | Stage Coverage | Ordered Workflow | Tool Success | Handoff Recall | Validation Coverage |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| Candidate | Pareto | Eval Phase | Holdout | Task Success | Audit | Cost Tokens | Wall Minutes | Defect Escape | Artifact Contract | Stage Coverage | Ordered Workflow | Tool Success | Handoff Recall | Validation Coverage | Search Evaluator |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for candidate in sorted(candidates, key=lambda item: str(item.get("candidate_id", ""))):
         candidate_id = str(candidate.get("candidate_id", "<missing>"))
@@ -48,6 +48,7 @@ def render_candidate_summary(run_dir: Path | str) -> str:
         mechanism = candidate.get("mechanism_metrics", {})
         if not isinstance(mechanism, dict):
             mechanism = {}
+        search_evaluator = _evaluator_id(candidate)
         lines.append(
             "| "
             + " | ".join(
@@ -62,12 +63,13 @@ def render_candidate_summary(run_dir: Path | str) -> str:
                     _fmt(scores.get("wall_minutes")),
                     _fmt(scores.get("defect_escape_rate")),
                     *[_fmt(mechanism.get(key)) for key, _label in MECHANISM_METRICS],
+                    search_evaluator,
                 ]
             )
             + " |"
         )
     if not candidates:
-        lines.append("| None | unscored | - | - | - | - | - | - | - | - | - | - | - | - | - |")
+        lines.append("| None | unscored | - | - | - | - | - | - | - | - | - | - | - | - | - | - |")
     return "\n".join(lines) + "\n"
 
 
@@ -86,6 +88,7 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
         mechanism = candidate.get("mechanism_metrics", {})
         if not isinstance(mechanism, dict):
             mechanism = {}
+        search_evaluator = _evaluator_id(candidate)
         rows.append(
             [
                 candidate_id,
@@ -98,10 +101,11 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
                 _fmt(scores.get("wall_minutes")),
                 _fmt(scores.get("defect_escape_rate")),
                 *[_fmt(mechanism.get(key)) for key, _label in MECHANISM_METRICS],
+                search_evaluator,
             ]
         )
     if not rows:
-        rows.append(["None", "unscored", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
+        rows.append(["None", "unscored", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
 
     return render_html_document(
         title="CIPH Candidate Summary",
@@ -124,6 +128,7 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
                         "Wall Minutes",
                         "Defect Escape",
                         *[label for _key, label in MECHANISM_METRICS],
+                        "Search Evaluator",
                     ],
                     rows,
                 ),
@@ -229,6 +234,14 @@ def _fmt(value: Any) -> str:
     if value is None:
         return "-"
     return str(value)
+
+
+def _evaluator_id(score: dict[str, Any]) -> str:
+    provenance = score.get("score_provenance")
+    if not isinstance(provenance, dict):
+        return "-"
+    evaluator_id = provenance.get("evaluator_id")
+    return evaluator_id if isinstance(evaluator_id, str) and evaluator_id.strip() else "-"
 
 
 def _string_list(value: Any) -> list[str]:

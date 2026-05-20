@@ -35,6 +35,7 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((vendor / "scripts" / "release_holdout.py").is_file())
             self.assertTrue((vendor / "scripts" / "ingest_holdout_scores.py").is_file())
             self.assertTrue((vendor / "scripts" / "final_comparison.py").is_file())
+            self.assertTrue((vendor / "scripts" / "validate_score_provenance.py").is_file())
             self.assertTrue((vendor / "scripts" / "lint_trace.py").is_file())
             self.assertTrue((vendor / "scripts" / "trace_metrics.py").is_file())
             self.assertTrue((vendor / "harness" / "policies" / "README.md").is_file())
@@ -45,6 +46,7 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue(os.access(vendor / "scripts" / "release_holdout.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "ingest_holdout_scores.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "final_comparison.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "validate_score_provenance.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "lint_trace.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "trace_metrics.py", os.X_OK))
 
@@ -220,6 +222,8 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(evaluation["phase"], "holdout_released")
             self.assertFalse(evaluation["holdout_set"]["sealed"])
 
+            _write_installed_evaluator_files(vendor)
+            _write_installed_search_score(candidate_dir / "score.json", "baseline")
             _write_installed_search_score(frontier_dir / "score.json", "frontier")
             incoming_holdout = vendor / "runs" / "sample-run" / "artifacts" / "frontier-holdout-input.json"
             incoming_holdout.parent.mkdir(parents=True, exist_ok=True)
@@ -238,6 +242,7 @@ class ProoflineSkillTests(unittest.TestCase):
                             "wall_minutes": 3,
                             "defect_escape_rate": 0.01,
                         },
+                        "score_provenance": _installed_score_provenance("holdout-evaluator", "holdout"),
                     },
                     indent=2,
                 )
@@ -282,6 +287,23 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertIn("PASS final comparison", final_comparison.stdout)
             self.assertTrue((vendor / "runs" / "sample-run" / "artifacts" / "final-comparison.html").is_file())
 
+            validate_provenance = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/validate_score_provenance.py",
+                    "vendor/proofline/runs/sample-run",
+                    "--root",
+                    str(target),
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(validate_provenance.returncode, 0, validate_provenance.stderr)
+            self.assertIn("PASS score provenance", validate_provenance.stdout)
+
     def test_bundled_assets_are_trace_aware(self):
         skill_text = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
         manifest = (SKILL_DIR / "assets" / "proofline" / "templates" / "MANIFEST.json").read_text(encoding="utf-8")
@@ -294,6 +316,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertIn("release_holdout.py", skill_text)
         self.assertIn("ingest_holdout_scores.py", skill_text)
         self.assertIn("final_comparison.py", skill_text)
+        self.assertIn("validate_score_provenance.py", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)
@@ -305,6 +328,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "release_holdout.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "ingest_holdout_scores.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "final_comparison.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_score_provenance.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "harness" / "policies" / "state.md").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):
@@ -349,7 +373,73 @@ def _write_installed_search_score(score_path: Path, candidate_id: str) -> None:
         "wall_minutes": 2,
         "defect_escape_rate": 0.02,
     }
+    score["score_provenance"] = _installed_score_provenance("search-evaluator", "search")
     score_path.write_text(json.dumps(score, indent=2) + "\n", encoding="utf-8")
+
+
+def _write_installed_evaluator_files(vendor: Path) -> None:
+    run_dir = vendor / "runs" / "sample-run"
+    artifacts = run_dir / "artifacts"
+    artifacts.mkdir(parents=True, exist_ok=True)
+    (artifacts / "search-input.json").write_text("{}\n", encoding="utf-8")
+    (artifacts / "holdout-input.json").write_text("{}\n", encoding="utf-8")
+    (artifacts / "search-evidence.txt").write_text("search evidence\n", encoding="utf-8")
+    (artifacts / "holdout-evidence.txt").write_text("holdout evidence\n", encoding="utf-8")
+    evaluators = run_dir / "evaluators"
+    evaluators.mkdir(parents=True, exist_ok=True)
+    _write_installed_evaluator_manifest(
+        evaluators / "search-evaluator.json",
+        "search-evaluator",
+        "search",
+        [
+            "vendor/proofline/runs/sample-run/candidates/baseline/score.json",
+            "vendor/proofline/runs/sample-run/candidates/frontier/score.json",
+        ],
+    )
+    _write_installed_evaluator_manifest(
+        evaluators / "holdout-evaluator.json",
+        "holdout-evaluator",
+        "holdout",
+        ["vendor/proofline/runs/sample-run/holdout_scores/frontier.json"],
+    )
+
+
+def _write_installed_evaluator_manifest(path: Path, evaluator_id: str, phase: str, output_paths: list[str]) -> None:
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": "ciph.evaluator-manifest.v1",
+                "evaluator_id": evaluator_id,
+                "evaluation_phase": phase,
+                "command": f"python3 tools/evaluate.py --phase {phase}",
+                "input_paths": [f"vendor/proofline/runs/sample-run/artifacts/{phase}-input.json"],
+                "output_paths": output_paths,
+                "evidence_paths": [f"vendor/proofline/runs/sample-run/artifacts/{phase}-evidence.txt"],
+                "metric_keys": [
+                    "task_success",
+                    "audit_completeness",
+                    "cost_tokens",
+                    "wall_minutes",
+                    "defect_escape_rate",
+                ],
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def _installed_score_provenance(evaluator_id: str, phase: str) -> dict[str, object]:
+    return {
+        "schema_version": "ciph.score-provenance.v1",
+        "evaluator_id": evaluator_id,
+        "evaluator_manifest_path": f"vendor/proofline/runs/sample-run/evaluators/{evaluator_id}.json",
+        "evaluation_phase": phase,
+        "produced_at": "2026-05-20T07:00:00Z",
+        "input_paths": [f"vendor/proofline/runs/sample-run/artifacts/{phase}-input.json"],
+        "evidence_paths": [f"vendor/proofline/runs/sample-run/artifacts/{phase}-evidence.txt"],
+    }
 
 
 if __name__ == "__main__":
