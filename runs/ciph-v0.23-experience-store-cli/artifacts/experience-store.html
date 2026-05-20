@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIPH Experience Store</title>
+<style>
+:root{--bg:#faf9f5;--paper:#fff;--ink:#141413;--muted:#66635c;--line:#d1cfc5;--soft:#f0eee6;--accent:#b85c3e;--ok:#5f7f49;--bad:#b85c3e;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;--serif:ui-serif,Georgia,serif;}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;padding:48px 28px 96px;}main{max-width:1040px;margin:0 auto}header{margin-bottom:32px}h1{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1.12;margin:0 0 10px}h2{font-family:var(--serif);font-weight:500;font-size:24px;margin:0 0 14px}.eyebrow{font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:24px 0 34px}.summary div,section{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px}.k{font:11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}.v{font-weight:650}section{margin:18px 0}ul{margin:0;padding-left:20px}li{margin:6px 0}code,pre{font-family:var(--mono)}table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}th{font:11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--soft)}.status-pass,.covered{color:var(--ok);font-weight:700}.status-fail,.missing{color:var(--bad);font-weight:700}.muted{color:var(--muted)}
+</style>
+</head>
+<body data-proofline-report="experience-store">
+<main>
+<header>
+<div class="eyebrow">Proofline artifact</div>
+<h1>CIPH Experience Store</h1>
+</header>
+<div class="summary"><div><div class="k">Total Runs</div><div class="v">23</div></div><div><div class="k">Filtered Runs</div><div class="v">1</div></div><div><div class="k">Pass Runs</div><div class="v">11</div></div><div><div class="k">Replay Runs</div><div class="v">1</div></div></div>
+<section id="filters" data-proofline-section="filters">
+<h2>Filters</h2>
+<ul><li>runs_dir: runs</li><li>has_replay_receipts: True</li></ul>
+</section>
+<section id="runs" data-proofline-section="runs">
+<h2>Runs</h2>
+<table><thead><tr><th>Run</th><th>Status</th><th>Events</th><th>Receipts</th><th>Objective</th></tr></thead><tbody><tr><td>ciph-v0.22-replay-result-attestation</td><td>PASS</td><td>32</td><td>2</td><td>Implement CIPH v0.22 Replay Result Attestation: persist normalized replay receipts for dry-run and executed evaluator replays with command digest, sandbox mode, timeout, env allowlist names, pre/post output hashes, status, docs, Proofline bundle sync, and dogfood evidence.</td></tr></tbody></table>
+</section>
+<section id="replay-receipts" data-proofline-section="replay-receipts">
+<h2>Replay Receipts</h2>
+<table><thead><tr><th>Run</th><th>Evaluator</th><th>Mode</th><th>Status</th><th>Receipt Path</th></tr></thead><tbody><tr><td>ciph-v0.22-replay-result-attestation</td><td>search-evaluator</td><td>dry-run</td><td>DRY_RUN</td><td>runs/ciph-v0.22-replay-result-attestation/replay_receipts/search-evaluator-dry-run.json</td></tr><tr><td>ciph-v0.22-replay-result-attestation</td><td>search-evaluator</td><td>execute</td><td>PASS</td><td>runs/ciph-v0.22-replay-result-attestation/replay_receipts/search-evaluator-execute.json</td></tr></tbody></table>
+</section>
+</main>
+</body>
+</html>

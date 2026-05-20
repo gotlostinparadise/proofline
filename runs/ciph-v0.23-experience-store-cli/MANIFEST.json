@@ -61,8 +61,7 @@
         "runs/ciph-v0.23-experience-store-cli/artifacts/mechanism-metrics.html"
       ],
       "evidence_paths": [
-        "runs/ciph-v0.23-experience-store-cli/artifacts/checks/full-unit-tests.txt",
-        "runs/ciph-v0.23-experience-store-cli/artifacts/checks/check-repo.txt"
+        "runs/ciph-v0.23-experience-store-cli/artifacts/checks/full-unit-tests.txt"
       ]
     }
   ],
