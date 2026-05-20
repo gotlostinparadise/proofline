@@ -69,6 +69,10 @@ Local replay execution is explicit and fail-closed. `scripts/execute_evaluator_r
 
 Replay dry-runs and executions write JSON receipts with schema `ciph.replay-receipt.v1` under `runs/<run-id>/replay_receipts/` by default, or under `--receipt-dir`. Receipts record evaluator ID, manifest path, mode, status, command digest, sandbox mode, timeout, env allowlist names, expected/pre/post output hashes, exit code, output byte counts, errors, report path, and timestamps. Receipts must not contain environment values or command stdout/stderr content.
 
+### Queryable Experience Store
+
+Prior runs are queried through a read-only projection, not a mutable database. `scripts/query_experience_store.py` scans run manifests, traces, closeout events, check paths, artifact paths, and replay receipts, then emits schema `ciph.experience-store.v1` as JSON or HTML. Use filters such as `--status PASS`, `--event-type validation.completed`, `--contains replay`, `--has-replay-receipts`, and `--limit 10` to inspect accumulated harness experience. The projection must not serialize raw evidence bodies, command stdout/stderr content, or environment values.
+
 ### Delegation Contract
 
 Delegated work requires a bounded task packet, clear write ownership, expected output paths, and local verification after return. Child-agent self-report is not completion evidence.
@@ -168,6 +172,7 @@ python3 scripts/validate_evaluator_replay.py runs/<run-id> --root . --output run
 python3 scripts/execute_evaluator_replay.py runs/<run-id> --root . --receipt-dir runs/<run-id>/replay_receipts --output runs/<run-id>/artifacts/evaluator-replay-dry-run.html
 python3 scripts/execute_evaluator_replay.py runs/<run-id> --root . --execute --allow-argv0 python3 --timeout-seconds 30 --receipt-dir runs/<run-id>/replay_receipts --output runs/<run-id>/artifacts/evaluator-replay-execution.html
 python3 scripts/final_comparison.py runs/<run-id> --root . --output runs/<run-id>/artifacts/final-comparison.html
+python3 scripts/query_experience_store.py --root . --runs-dir runs --status PASS --format json --output runs/<run-id>/artifacts/experience-store.json
 ```
 
 Run the repository gate:

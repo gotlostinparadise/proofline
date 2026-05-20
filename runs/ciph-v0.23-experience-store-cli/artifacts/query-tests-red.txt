@@ -1,0 +1,17 @@
+E
+======================================================================
+ERROR: test_query_experience_store (unittest.loader._FailedTest.test_query_experience_store)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_query_experience_store
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+  File "/home/bm/.config/superpowers/worktrees/Harness/ciph-v0.23-experience-store-cli/tests/test_query_experience_store.py", line 8, in <module>
+    from scripts.query_experience_store import query_experience_store
+ModuleNotFoundError: No module named 'scripts.query_experience_store'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

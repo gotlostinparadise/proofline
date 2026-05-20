@@ -104,6 +104,13 @@ python3 scripts/execute_evaluator_replay.py runs/my-run --root . --execute --all
 python3 scripts/final_comparison.py runs/my-run --root . --output runs/my-run/artifacts/final-comparison.html
 ```
 
+Query prior run experience:
+
+```bash
+python3 scripts/query_experience_store.py --root . --runs-dir runs --status PASS --format json --output runs/my-run/artifacts/experience-store.json
+python3 scripts/query_experience_store.py --root . --runs-dir runs --has-replay-receipts --format html --output runs/my-run/artifacts/experience-store.html
+```
+
 ## Files
 
 - `harness/CIPH.md`: harness lifecycle and contracts.
@@ -123,6 +130,7 @@ python3 scripts/final_comparison.py runs/my-run --root . --output runs/my-run/ar
 - `scripts/validate_score_integrity.py`: validates evaluator manifest hashes for score inputs, evidence, and outputs.
 - `scripts/validate_evaluator_replay.py`: validates evaluator replay readiness metadata without executing evaluator commands.
 - `scripts/execute_evaluator_replay.py`: dry-runs or explicitly executes approved local replay commands with no-network isolation, output hash verification, and replay receipt JSON.
+- `scripts/query_experience_store.py`: queries prior run manifests, traces, closeout status, checks, and replay receipts as JSON or HTML.
 - `scripts/final_comparison.py`: writes final search-versus-holdout comparison reports.
 - `scripts/candidate_summary.py`: writes a candidate score summary.
 - `scripts/check_repo.py`: runs the repository health gate.
@@ -137,7 +145,7 @@ python3 scripts/final_comparison.py runs/my-run --root . --output runs/my-run/ar
 
 ## Research Harness Layer
 
-Policy modules under `harness/policies/` describe editable harness strategy. They are intentionally readable and ablatable; exact checks remain in scripts. `TRACE.jsonl` stores raw research events such as stage, state, tool, handoff, validation, candidate, recovery, budget, and closeout events. Candidate records under `runs/<run-id>/candidates/` preserve policy snapshots, source notes, raw candidate traces, score contracts, and artifacts. `EVALUATION.json` records baseline, search-set, holdout-set, budget, frontier, release budget, holdout score paths, and candidate phase state. Evaluator manifests under `runs/<run-id>/evaluators/` describe the command, inputs, outputs, evidence, metric keys, optional SHA-256 integrity hashes, and optional metadata-only replay readiness behind score records. Validate traces with `scripts/lint_trace.py`, candidates with `scripts/validate_candidate.py`, evaluation protocols with `scripts/validate_evaluation.py`, score provenance with `scripts/validate_score_provenance.py`, score integrity with `scripts/validate_score_integrity.py`, evaluator replay readiness with `scripts/validate_evaluator_replay.py`, and local replay execution with `scripts/execute_evaluator_replay.py`. The executor dry-runs by default; actual execution requires `--execute`, exact `--allow-argv0` approval, Bubblewrap no-network isolation, and post-run output hash verification. Replay receipts under `runs/<run-id>/replay_receipts/` record machine-readable status, command digest, sandbox mode, timeout, env allowlist names, pre/post output hashes, exit code, and output byte counts without storing env values or command output. Release holdout with `scripts/release_holdout.py`, ingest released scores with `scripts/ingest_holdout_scores.py`, then compare final outcomes with `scripts/final_comparison.py`; generated reports are views over manifest and trace evidence.
+Policy modules under `harness/policies/` describe editable harness strategy. They are intentionally readable and ablatable; exact checks remain in scripts. `TRACE.jsonl` stores raw research events such as stage, state, tool, handoff, validation, candidate, recovery, budget, and closeout events. Candidate records under `runs/<run-id>/candidates/` preserve policy snapshots, source notes, raw candidate traces, score contracts, and artifacts. `EVALUATION.json` records baseline, search-set, holdout-set, budget, frontier, release budget, holdout score paths, and candidate phase state. Evaluator manifests under `runs/<run-id>/evaluators/` describe the command, inputs, outputs, evidence, metric keys, optional SHA-256 integrity hashes, and optional metadata-only replay readiness behind score records. Validate traces with `scripts/lint_trace.py`, candidates with `scripts/validate_candidate.py`, evaluation protocols with `scripts/validate_evaluation.py`, score provenance with `scripts/validate_score_provenance.py`, score integrity with `scripts/validate_score_integrity.py`, evaluator replay readiness with `scripts/validate_evaluator_replay.py`, and local replay execution with `scripts/execute_evaluator_replay.py`. The executor dry-runs by default; actual execution requires `--execute`, exact `--allow-argv0` approval, Bubblewrap no-network isolation, and post-run output hash verification. Replay receipts under `runs/<run-id>/replay_receipts/` record machine-readable status, command digest, sandbox mode, timeout, env allowlist names, pre/post output hashes, exit code, and output byte counts without storing env values or command output. `scripts/query_experience_store.py` projects prior runs into queryable JSON/HTML records without reading or serializing raw evidence bodies. Release holdout with `scripts/release_holdout.py`, ingest released scores with `scripts/ingest_holdout_scores.py`, then compare final outcomes with `scripts/final_comparison.py`; generated reports are views over manifest and trace evidence.
 
 ## Development Checks
 

@@ -78,6 +78,13 @@ python3 vendor/proofline/scripts/execute_evaluator_replay.py vendor/proofline/ru
 python3 vendor/proofline/scripts/final_comparison.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/final-comparison.html
 ```
 
+To inspect prior run experience without mutating it:
+
+```bash
+python3 vendor/proofline/scripts/query_experience_store.py --root . --runs-dir vendor/proofline/runs --status PASS --format json --output vendor/proofline/runs/<run-id>/artifacts/experience-store.json
+python3 vendor/proofline/scripts/query_experience_store.py --root . --runs-dir vendor/proofline/runs --has-replay-receipts --format html --output vendor/proofline/runs/<run-id>/artifacts/experience-store.html
+```
+
 ## Verify And Close
 
 Run required checks and write evidence:
@@ -116,6 +123,7 @@ Only claim completion when closeout maps every explicit requirement to existing 
 | Treating replay as safe because a command string exists | Add metadata-only replay contracts and run `validate_evaluator_replay.py`. |
 | Executing replay commands because metadata exists | Use `execute_evaluator_replay.py`; keep dry-run as default and require `--execute`, exact `--allow-argv0`, timeout, no-network sandboxing, and replay receipts. |
 | Picking a final winner from search scores | Use `final_comparison.py` after holdout score ingestion. |
+| Treating prior chat memory as the run database | Use `query_experience_store.py`; query manifests, traces, checks, closeout events, and replay receipts from repo evidence. |
 | Treating chat or child-agent output as proof | Record command evidence or source references in the manifest. |
 | Forgetting generated reports | Write `status.html` and `closeout.html` before final verification. |
 | Installing over an existing harness casually | Use installer `--force` only with explicit approval. |

@@ -40,6 +40,7 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((vendor / "scripts" / "validate_score_integrity.py").is_file())
             self.assertTrue((vendor / "scripts" / "validate_evaluator_replay.py").is_file())
             self.assertTrue((vendor / "scripts" / "execute_evaluator_replay.py").is_file())
+            self.assertTrue((vendor / "scripts" / "query_experience_store.py").is_file())
             self.assertTrue((vendor / "scripts" / "lint_trace.py").is_file())
             self.assertTrue((vendor / "scripts" / "trace_metrics.py").is_file())
             self.assertTrue((vendor / "harness" / "policies" / "README.md").is_file())
@@ -54,6 +55,7 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue(os.access(vendor / "scripts" / "validate_score_integrity.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "validate_evaluator_replay.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "execute_evaluator_replay.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "query_experience_store.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "lint_trace.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "trace_metrics.py", os.X_OK))
 
@@ -371,6 +373,32 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(receipt["status"], "DRY_RUN")
             self.assertNotIn("env", receipt)
 
+            query_experience = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/query_experience_store.py",
+                    "--root",
+                    str(target),
+                    "--runs-dir",
+                    "vendor/proofline/runs",
+                    "--has-replay-receipts",
+                    "--format",
+                    "json",
+                    "--output",
+                    "vendor/proofline/runs/sample-run/artifacts/experience-store.json",
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(query_experience.returncode, 0, query_experience.stderr)
+            self.assertIn("Wrote CIPH experience store query", query_experience.stdout)
+            experience = json.loads((vendor / "runs" / "sample-run" / "artifacts" / "experience-store.json").read_text(encoding="utf-8"))
+            self.assertEqual(experience["schema_version"], "ciph.experience-store.v1")
+            self.assertEqual(experience["runs"][0]["run_id"], "sample-run")
+
     def test_bundled_assets_are_trace_aware(self):
         skill_text = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
         manifest = (SKILL_DIR / "assets" / "proofline" / "templates" / "MANIFEST.json").read_text(encoding="utf-8")
@@ -387,7 +415,9 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertIn("validate_score_integrity.py", skill_text)
         self.assertIn("validate_evaluator_replay.py", skill_text)
         self.assertIn("execute_evaluator_replay.py", skill_text)
+        self.assertIn("query_experience_store.py", skill_text)
         self.assertIn("--receipt-dir", skill_text)
+        self.assertIn("--has-replay-receipts", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)
@@ -403,6 +433,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_score_integrity.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_evaluator_replay.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "execute_evaluator_replay.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "query_experience_store.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "harness" / "policies" / "state.md").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):
