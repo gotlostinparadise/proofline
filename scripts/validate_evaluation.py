@@ -19,7 +19,9 @@ except ModuleNotFoundError:  # pragma: no cover - exercised by direct script exe
 
 
 EVALUATION_SCHEMA_VERSION = "ciph.evaluation.v1"
+HOLDOUT_SCORE_SCHEMA_VERSION = "ciph.holdout-score.v1"
 VALID_PHASES = {"search", "holdout_released"}
+OBJECTIVE_METRICS = ["task_success", "audit_completeness", "cost_tokens", "wall_minutes", "defect_escape_rate"]
 
 
 @dataclass
@@ -212,6 +214,7 @@ def _validate_phase_rules(
         result.errors.append("holdout_released phase requires at least one frontier candidate")
     if phase == "holdout_released":
         _validate_holdout_releases(payload, frontier_ids, result)
+        _validate_holdout_score_paths(payload, candidate_records, root_path, result)
 
     if phase != "search":
         return
@@ -229,6 +232,89 @@ def _validate_phase_rules(
         score = _load_json_object(root_path / score_path, result, str(score_path))
         if isinstance(score, dict) and "holdout_scores" in score:
             result.errors.append(f"search phase forbids holdout_scores in {score_path}")
+
+
+def _validate_holdout_score_paths(
+    payload: dict[str, Any],
+    candidate_records: dict[str, dict[str, Any]],
+    root_path: Path,
+    result: EvaluationValidationResult,
+) -> None:
+    holdout_ids = _scenario_ids(payload.get("holdout_set"), "holdout_set", result)
+    releases = _holdout_release_records(payload)
+    for candidate_id, record in candidate_records.items():
+        holdout_score_path = record.get("holdout_score_path")
+        if record.get("evaluation_phase") == "holdout" and not _non_empty_string(holdout_score_path):
+            result.errors.append(f"candidate {candidate_id} evaluation_phase holdout requires holdout_score_path")
+            continue
+        if not _non_empty_string(holdout_score_path):
+            continue
+        if not path_exists(root_path, holdout_score_path):
+            result.errors.append(f"candidate {candidate_id} holdout_score_path does not exist: {holdout_score_path}")
+            continue
+        score = _load_json_object(root_path / str(holdout_score_path), result, str(holdout_score_path))
+        if score is None:
+            continue
+        _validate_holdout_score_payload(candidate_id, score, holdout_ids, releases, result)
+
+
+def _validate_holdout_score_payload(
+    candidate_id: str,
+    score: dict[str, Any],
+    holdout_ids: set[str],
+    releases: dict[int, set[str]],
+    result: EvaluationValidationResult,
+) -> None:
+    if score.get("schema_version") != HOLDOUT_SCORE_SCHEMA_VERSION:
+        result.errors.append(f"candidate {candidate_id} holdout score schema_version must be {HOLDOUT_SCORE_SCHEMA_VERSION}")
+
+    if score.get("candidate_id") != candidate_id:
+        result.errors.append(f"candidate {candidate_id} holdout score candidate_id mismatch")
+
+    release_index = score.get("release_index")
+    if not isinstance(release_index, int) or release_index <= 0:
+        result.errors.append(f"candidate {candidate_id} holdout score release_index must be a positive integer")
+    elif candidate_id not in releases.get(release_index, set()):
+        result.errors.append(f"candidate {candidate_id} was not in holdout release {release_index} frontier")
+
+    if not _non_empty_string(score.get("scored_at")):
+        result.errors.append(f"candidate {candidate_id} holdout score scored_at must be a non-empty string")
+
+    scenario_ids = _string_list(score.get("scenario_ids"))
+    if not scenario_ids:
+        result.errors.append(f"candidate {candidate_id} holdout score scenario_ids must contain at least one scenario id")
+    else:
+        invalid = sorted(set(scenario_ids) - holdout_ids)
+        if invalid:
+            result.errors.append(
+                f"candidate {candidate_id} holdout score scenario_ids must be within holdout_set: {', '.join(invalid)}"
+            )
+
+    holdout_scores = score.get("holdout_scores")
+    if not isinstance(holdout_scores, dict):
+        result.errors.append(f"candidate {candidate_id} holdout_scores must be an object")
+        return
+    for metric in OBJECTIVE_METRICS:
+        if not isinstance(holdout_scores.get(metric), (int, float)):
+            result.errors.append(f"candidate {candidate_id} holdout_scores.{metric} must be numeric")
+
+    if not any(error.startswith(f"candidate {candidate_id} holdout") or error.startswith(f"candidate {candidate_id} was not") for error in result.errors):
+        result.messages.append(f"PASS holdout score {candidate_id}")
+
+
+def _holdout_release_records(payload: dict[str, Any]) -> dict[int, set[str]]:
+    releases = payload.get("holdout_releases")
+    if not isinstance(releases, list):
+        return {}
+    records: dict[int, set[str]] = {}
+    for release in releases:
+        if not isinstance(release, dict):
+            continue
+        release_index = release.get("release_index")
+        if not isinstance(release_index, int):
+            continue
+        records[release_index] = set(_string_list(release.get("frontier_candidate_ids")))
+    return records
 
 
 def _validate_holdout_releases(
