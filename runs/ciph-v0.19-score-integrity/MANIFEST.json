@@ -1,0 +1,131 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.19-score-integrity",
+  "objective": "Implement CIPH v0.19 Score Integrity: add tamper-evident evaluator artifact hashes for search and holdout scores, validate them, document the contract, sync Proofline assets, and dogfood the workflow.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.19-score-integrity/TRACE.jsonl"
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "score-integrity-validator",
+      "requirement": "Validate score integrity links from search and holdout scores to evaluator manifest SHA-256 digest maps.",
+      "artifact_paths": [
+        "scripts/validate_score_integrity.py",
+        "tests/test_validate_score_integrity.py",
+        "runs/ciph-v0.19-score-integrity/evaluators/search-evaluator.json",
+        "runs/ciph-v0.19-score-integrity/evaluators/holdout-evaluator.json",
+        "runs/ciph-v0.19-score-integrity/artifacts/score-integrity.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.19-score-integrity/artifacts/checks/score-integrity-tests.txt",
+        "runs/ciph-v0.19-score-integrity/artifacts/checks/score-integrity-report.txt"
+      ]
+    },
+    {
+      "id": "proofline-skill-sync",
+      "requirement": "Mirror score integrity validation scripts, docs, and instructions into bundled Proofline assets.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/validate_score_integrity.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.19-score-integrity/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-closeout",
+      "requirement": "Document evaluator integrity and close out the dogfood run with generated evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "docs/plans/2026-05-20-ciph-v0.19-score-integrity-design.md",
+        "docs/plans/2026-05-20-ciph-v0.19-score-integrity.md",
+        "runs/ciph-v0.19-score-integrity/TASK.html",
+        "runs/ciph-v0.19-score-integrity/MANIFEST.json",
+        "runs/ciph-v0.19-score-integrity/TRACE.jsonl",
+        "runs/ciph-v0.19-score-integrity/artifacts/status.html",
+        "runs/ciph-v0.19-score-integrity/artifacts/closeout.html",
+        "runs/ciph-v0.19-score-integrity/artifacts/mechanism-metrics.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.19-score-integrity/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/validate_score_integrity.py",
+      "description": "Score integrity validator and report generator.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.19-score-integrity/evaluators/search-evaluator.json",
+      "description": "Dogfood search evaluator manifest with integrity hashes.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.19-score-integrity/evaluators/holdout-evaluator.json",
+      "description": "Dogfood holdout evaluator manifest with integrity hashes.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.19-score-integrity/artifacts/score-integrity.html",
+      "description": "Generated score integrity validation report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "score-integrity-tests",
+      "command": "python3 -m unittest tests.test_validate_score_integrity",
+      "required": true,
+      "evidence": "runs/ciph-v0.19-score-integrity/artifacts/checks/score-integrity-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "score-integrity-report",
+      "command": "python3 scripts/validate_score_integrity.py runs/ciph-v0.19-score-integrity --root . --output runs/ciph-v0.19-score-integrity/artifacts/score-integrity.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.19-score-integrity/artifacts/checks/score-integrity-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.19-score-integrity/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-ledger-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.19-score-integrity/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/ciph-v0.19-score-integrity/artifacts/checks/trace-ledger-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.19-score-integrity/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Integrity must avoid self-referential score hashes.",
+    "Historical runs must remain valid unless the new integrity validator is explicitly run.",
+    "Bundled and installed Proofline assets must stay synchronized."
+  ]
+}

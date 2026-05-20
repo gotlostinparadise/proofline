@@ -1,0 +1,4 @@
+{"schema_version":"ciph.trace.v1","event_id":"contract-stage-started","occurred_at":"2026-05-20T08:10:00Z","event_type":"stage.started","stage":"contract"}
+{"schema_version":"ciph.trace.v1","event_id":"contract-design-written","occurred_at":"2026-05-20T08:11:00Z","event_type":"state.written","path":"docs/plans/2026-05-20-ciph-v0.19-score-integrity-design.md"}
+{"schema_version":"ciph.trace.v1","event_id":"contract-plan-written","occurred_at":"2026-05-20T08:12:00Z","event_type":"state.written","path":"docs/plans/2026-05-20-ciph-v0.19-score-integrity.md"}
+{"schema_version":"ciph.trace.v1","event_id":"contract-stage-completed","occurred_at":"2026-05-20T08:13:00Z","event_type":"stage.completed","stage":"contract","status":"PASS"}
