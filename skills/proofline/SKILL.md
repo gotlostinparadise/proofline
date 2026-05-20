@@ -73,8 +73,8 @@ python3 vendor/proofline/scripts/ingest_holdout_scores.py vendor/proofline/runs/
 python3 vendor/proofline/scripts/validate_score_provenance.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/score-provenance.html
 python3 vendor/proofline/scripts/validate_score_integrity.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/score-integrity.html
 python3 vendor/proofline/scripts/validate_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay.html
-python3 vendor/proofline/scripts/execute_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay-dry-run.html
-python3 vendor/proofline/scripts/execute_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --execute --allow-argv0 python3 --timeout-seconds 30 --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay-execution.html
+python3 vendor/proofline/scripts/execute_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --receipt-dir vendor/proofline/runs/<run-id>/replay_receipts --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay-dry-run.html
+python3 vendor/proofline/scripts/execute_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --execute --allow-argv0 python3 --timeout-seconds 30 --receipt-dir vendor/proofline/runs/<run-id>/replay_receipts --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay-execution.html
 python3 vendor/proofline/scripts/final_comparison.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/final-comparison.html
 ```
 
@@ -114,7 +114,7 @@ Only claim completion when closeout maps every explicit requirement to existing 
 | Treating score numbers as self-proving | Add evaluator manifests and run `validate_score_provenance.py`. |
 | Treating evaluator artifacts as immutable | Add SHA-256 integrity maps and run `validate_score_integrity.py`. |
 | Treating replay as safe because a command string exists | Add metadata-only replay contracts and run `validate_evaluator_replay.py`. |
-| Executing replay commands because metadata exists | Use `execute_evaluator_replay.py`; keep dry-run as default and require `--execute`, exact `--allow-argv0`, timeout, and no-network sandboxing. |
+| Executing replay commands because metadata exists | Use `execute_evaluator_replay.py`; keep dry-run as default and require `--execute`, exact `--allow-argv0`, timeout, no-network sandboxing, and replay receipts. |
 | Picking a final winner from search scores | Use `final_comparison.py` after holdout score ingestion. |
 | Treating chat or child-agent output as proof | Record command evidence or source references in the manifest. |
 | Forgetting generated reports | Write `status.html` and `closeout.html` before final verification. |

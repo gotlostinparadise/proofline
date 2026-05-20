@@ -352,6 +352,8 @@ class ProoflineSkillTests(unittest.TestCase):
                     "vendor/proofline/runs/sample-run",
                     "--root",
                     str(target),
+                    "--receipt-dir",
+                    "vendor/proofline/runs/sample-run/replay_receipts",
                 ],
                 cwd=target,
                 text=True,
@@ -362,6 +364,12 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(execute_replay.returncode, 0, execute_replay.stderr)
             self.assertIn("PASS evaluator replay execution", execute_replay.stdout)
             self.assertIn("DRY-RUN evaluator search-evaluator command not executed", execute_replay.stdout)
+            receipt_path = vendor / "runs" / "sample-run" / "replay_receipts" / "search-evaluator-dry-run.json"
+            self.assertTrue(receipt_path.is_file())
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+            self.assertEqual(receipt["schema_version"], "ciph.replay-receipt.v1")
+            self.assertEqual(receipt["status"], "DRY_RUN")
+            self.assertNotIn("env", receipt)
 
     def test_bundled_assets_are_trace_aware(self):
         skill_text = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
@@ -379,6 +387,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertIn("validate_score_integrity.py", skill_text)
         self.assertIn("validate_evaluator_replay.py", skill_text)
         self.assertIn("execute_evaluator_replay.py", skill_text)
+        self.assertIn("--receipt-dir", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)

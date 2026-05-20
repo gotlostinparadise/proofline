@@ -1,0 +1,6 @@
+Expected RED was observed before implementation:
+
+- receipt files were not created by replay dry-run/execution paths
+- `--receipt-dir` was not accepted by the CLI
+
+The corresponding green evidence is recorded in `replay-receipt-tests.txt`.
