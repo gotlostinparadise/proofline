@@ -1,0 +1,47 @@
+{
+  "schema_version": "ciph.candidate.v1",
+  "candidate_id": "frontier",
+  "hypothesis": "Separated holdout score ingestion and final comparison improve optimizer hygiene.",
+  "parent_ids": [
+    "baseline"
+  ],
+  "lineage": {
+    "parents": [
+      "baseline"
+    ],
+    "generation": 0
+  },
+  "changed_modules": [
+    "holdout-final-comparison"
+  ],
+  "search_scores": {
+    "task_success": 0.94,
+    "audit_completeness": 0.95,
+    "cost_tokens": 1280,
+    "wall_minutes": 22,
+    "defect_escape_rate": 0.01
+  },
+  "candidate_trace": "runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/TRACE.jsonl",
+  "trace_paths": [
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/TRACE.jsonl",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/trace/prompts.jsonl",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/trace/tools.jsonl",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/trace/failures.md"
+  ],
+  "artifact_paths": [
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/policy/README.md",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/source/README.md",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/artifacts/.gitkeep",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/patch.diff",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/NOTES.md"
+  ],
+  "mechanism_metrics": {
+    "artifact_contract_compliance": 1.0,
+    "stage_coverage": 0.98,
+    "ordered_workflow_compliance": 0.98,
+    "tool_call_success": 1.0,
+    "handoff_recall": 0.94,
+    "validation_coverage": 0.96
+  },
+  "pareto_status": "frontier"
+}

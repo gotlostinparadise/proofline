@@ -1,0 +1,47 @@
+{
+  "schema_version": "ciph.candidate.v1",
+  "candidate_id": "baseline",
+  "hypothesis": "Baseline evaluation protocol without post-release score ingestion.",
+  "parent_ids": [
+    "seed"
+  ],
+  "lineage": {
+    "parents": [
+      "seed"
+    ],
+    "generation": 0
+  },
+  "changed_modules": [
+    "baseline"
+  ],
+  "search_scores": {
+    "task_success": 0.81,
+    "audit_completeness": 0.84,
+    "cost_tokens": 980,
+    "wall_minutes": 17,
+    "defect_escape_rate": 0.04
+  },
+  "candidate_trace": "runs/ciph-v0.17-holdout-final-comparison/candidates/baseline/TRACE.jsonl",
+  "trace_paths": [
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/baseline/TRACE.jsonl",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/baseline/trace/prompts.jsonl",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/baseline/trace/tools.jsonl",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/baseline/trace/failures.md"
+  ],
+  "artifact_paths": [
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/baseline/policy/README.md",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/baseline/source/README.md",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/baseline/artifacts/.gitkeep",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/baseline/patch.diff",
+    "runs/ciph-v0.17-holdout-final-comparison/candidates/baseline/NOTES.md"
+  ],
+  "mechanism_metrics": {
+    "artifact_contract_compliance": 0.9,
+    "stage_coverage": 0.86,
+    "ordered_workflow_compliance": 0.88,
+    "tool_call_success": 1.0,
+    "handoff_recall": 0.76,
+    "validation_coverage": 0.82
+  },
+  "pareto_status": "dominated"
+}

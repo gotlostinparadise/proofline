@@ -1,0 +1,12 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "holdout-ingest-report", "command": "python3 scripts/ingest_holdout_scores.py runs/ciph-v0.17-holdout-final-comparison runs/ciph-v0.17-holdout-final-comparison/artifacts/frontier-holdout-input.json --root . --output runs/ciph-v0.17-holdout-final-comparison/artifacts/holdout-ingest.html", "exit_code": 0, "finished_at_utc": "2026-05-20T07:18:40+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T07:18:40+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH holdout ingest report: runs/ciph-v0.17-holdout-final-comparison/artifacts/holdout-ingest.html
+PASS holdout ingest runs/ciph-v0.17-holdout-final-comparison
+PASS holdout score already ingested frontier
+
+## STDERR
+
+<empty>

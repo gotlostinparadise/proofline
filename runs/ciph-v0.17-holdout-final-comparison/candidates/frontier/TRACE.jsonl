@@ -1,0 +1,2 @@
+{"schema_version":"ciph.trace.v1","event_id":"frontier-created","occurred_at":"2026-05-20T05:20:00Z","event_type":"candidate.created","candidate_id":"frontier"}
+{"schema_version":"ciph.trace.v1","event_id":"frontier-scored","occurred_at":"2026-05-20T05:25:00Z","event_type":"candidate.scored","candidate_id":"frontier","score_path":"runs/ciph-v0.17-holdout-final-comparison/candidates/frontier/score.json"}
