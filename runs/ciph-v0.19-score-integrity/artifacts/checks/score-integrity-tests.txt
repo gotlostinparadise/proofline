@@ -1,0 +1,14 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "score-integrity-tests", "command": "python3 -m unittest tests.test_validate_score_integrity", "exit_code": 0, "finished_at_utc": "2026-05-20T08:00:30+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T08:00:30+00:00", "status": "PASS"}
+
+## STDOUT
+
+<empty>
+
+## STDERR
+
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.048s
+
+OK

@@ -1,0 +1,3 @@
+# Candidate Failures
+
+- None recorded.

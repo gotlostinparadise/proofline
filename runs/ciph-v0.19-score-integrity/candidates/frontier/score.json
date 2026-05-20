@@ -1,0 +1,60 @@
+{
+  "schema_version": "ciph.candidate.v1",
+  "candidate_id": "frontier",
+  "hypothesis": "Evaluator manifest SHA-256 maps make score inputs, evidence, and outputs tamper-evident without adding execution-engine scope.",
+  "parent_ids": [
+    "baseline"
+  ],
+  "lineage": {
+    "parents": [
+      "baseline"
+    ],
+    "generation": 0
+  },
+  "changed_modules": [
+    "score-integrity"
+  ],
+  "search_scores": {
+    "task_success": 0.96,
+    "audit_completeness": 0.98,
+    "cost_tokens": 1600,
+    "wall_minutes": 35,
+    "defect_escape_rate": 0.01
+  },
+  "candidate_trace": "runs/ciph-v0.19-score-integrity/candidates/frontier/TRACE.jsonl",
+  "trace_paths": [
+    "runs/ciph-v0.19-score-integrity/candidates/frontier/TRACE.jsonl",
+    "runs/ciph-v0.19-score-integrity/candidates/frontier/trace/prompts.jsonl",
+    "runs/ciph-v0.19-score-integrity/candidates/frontier/trace/tools.jsonl",
+    "runs/ciph-v0.19-score-integrity/candidates/frontier/trace/failures.md"
+  ],
+  "artifact_paths": [
+    "runs/ciph-v0.19-score-integrity/candidates/frontier/policy/README.md",
+    "runs/ciph-v0.19-score-integrity/candidates/frontier/source/README.md",
+    "runs/ciph-v0.19-score-integrity/candidates/frontier/artifacts/.gitkeep",
+    "runs/ciph-v0.19-score-integrity/candidates/frontier/patch.diff",
+    "runs/ciph-v0.19-score-integrity/candidates/frontier/NOTES.md"
+  ],
+  "mechanism_metrics": {
+    "artifact_contract_compliance": 0.98,
+    "stage_coverage": 0.96,
+    "ordered_workflow_compliance": 0.97,
+    "tool_call_success": 1.0,
+    "handoff_recall": 0.94,
+    "validation_coverage": 0.98
+  },
+  "pareto_status": "frontier",
+  "score_provenance": {
+    "schema_version": "ciph.score-provenance.v1",
+    "evaluator_id": "search-evaluator",
+    "evaluator_manifest_path": "runs/ciph-v0.19-score-integrity/evaluators/search-evaluator.json",
+    "evaluation_phase": "search",
+    "produced_at": "2026-05-20T08:45:00Z",
+    "input_paths": [
+      "runs/ciph-v0.19-score-integrity/artifacts/search-input.json"
+    ],
+    "evidence_paths": [
+      "runs/ciph-v0.19-score-integrity/artifacts/search-evidence.txt"
+    ]
+  }
+}

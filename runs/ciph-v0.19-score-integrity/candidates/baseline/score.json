@@ -1,0 +1,60 @@
+{
+  "schema_version": "ciph.candidate.v1",
+  "candidate_id": "baseline",
+  "hypothesis": "Score provenance without integrity can identify evaluators but cannot detect post-evaluation byte drift.",
+  "parent_ids": [
+    "seed"
+  ],
+  "lineage": {
+    "parents": [
+      "seed"
+    ],
+    "generation": 0
+  },
+  "changed_modules": [
+    "baseline"
+  ],
+  "search_scores": {
+    "task_success": 0.89,
+    "audit_completeness": 0.86,
+    "cost_tokens": 1500,
+    "wall_minutes": 33,
+    "defect_escape_rate": 0.04
+  },
+  "candidate_trace": "runs/ciph-v0.19-score-integrity/candidates/baseline/TRACE.jsonl",
+  "trace_paths": [
+    "runs/ciph-v0.19-score-integrity/candidates/baseline/TRACE.jsonl",
+    "runs/ciph-v0.19-score-integrity/candidates/baseline/trace/prompts.jsonl",
+    "runs/ciph-v0.19-score-integrity/candidates/baseline/trace/tools.jsonl",
+    "runs/ciph-v0.19-score-integrity/candidates/baseline/trace/failures.md"
+  ],
+  "artifact_paths": [
+    "runs/ciph-v0.19-score-integrity/candidates/baseline/policy/README.md",
+    "runs/ciph-v0.19-score-integrity/candidates/baseline/source/README.md",
+    "runs/ciph-v0.19-score-integrity/candidates/baseline/artifacts/.gitkeep",
+    "runs/ciph-v0.19-score-integrity/candidates/baseline/patch.diff",
+    "runs/ciph-v0.19-score-integrity/candidates/baseline/NOTES.md"
+  ],
+  "mechanism_metrics": {
+    "artifact_contract_compliance": 0.87,
+    "stage_coverage": 0.84,
+    "ordered_workflow_compliance": 0.86,
+    "tool_call_success": 0.96,
+    "handoff_recall": 0.83,
+    "validation_coverage": 0.81
+  },
+  "pareto_status": "baseline",
+  "score_provenance": {
+    "schema_version": "ciph.score-provenance.v1",
+    "evaluator_id": "search-evaluator",
+    "evaluator_manifest_path": "runs/ciph-v0.19-score-integrity/evaluators/search-evaluator.json",
+    "evaluation_phase": "search",
+    "produced_at": "2026-05-20T08:45:00Z",
+    "input_paths": [
+      "runs/ciph-v0.19-score-integrity/artifacts/search-input.json"
+    ],
+    "evidence_paths": [
+      "runs/ciph-v0.19-score-integrity/artifacts/search-evidence.txt"
+    ]
+  }
+}

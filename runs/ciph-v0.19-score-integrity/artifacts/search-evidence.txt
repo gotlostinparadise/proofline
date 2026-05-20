@@ -1,0 +1,1 @@
+Search evaluator inspected the score integrity validator, digest mismatch tests, docs, bundled Proofline assets, and focused test evidence.

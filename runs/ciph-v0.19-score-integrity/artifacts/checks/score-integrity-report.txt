@@ -1,0 +1,28 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "score-integrity-report", "command": "python3 scripts/validate_score_integrity.py runs/ciph-v0.19-score-integrity --root . --output runs/ciph-v0.19-score-integrity/artifacts/score-integrity.html", "exit_code": 0, "finished_at_utc": "2026-05-20T08:00:30+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T08:00:30+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH score integrity report: runs/ciph-v0.19-score-integrity/artifacts/score-integrity.html
+PASS score integrity runs/ciph-v0.19-score-integrity
+PASS evaluator search-evaluator integrity.input_hashes runs/ciph-v0.19-score-integrity/artifacts/search-input.json
+PASS evaluator search-evaluator integrity.evidence_hashes runs/ciph-v0.19-score-integrity/artifacts/search-evidence.txt
+PASS evaluator search-evaluator integrity.output_hashes runs/ciph-v0.19-score-integrity/candidates/baseline/score.json
+PASS evaluator search-evaluator integrity.output_hashes runs/ciph-v0.19-score-integrity/candidates/frontier/score.json
+PASS evaluator integrity search-evaluator
+PASS score integrity baseline search
+PASS evaluator search-evaluator integrity.input_hashes runs/ciph-v0.19-score-integrity/artifacts/search-input.json
+PASS evaluator search-evaluator integrity.evidence_hashes runs/ciph-v0.19-score-integrity/artifacts/search-evidence.txt
+PASS evaluator search-evaluator integrity.output_hashes runs/ciph-v0.19-score-integrity/candidates/baseline/score.json
+PASS evaluator search-evaluator integrity.output_hashes runs/ciph-v0.19-score-integrity/candidates/frontier/score.json
+PASS evaluator integrity search-evaluator
+PASS score integrity frontier search
+PASS evaluator holdout-evaluator integrity.input_hashes runs/ciph-v0.19-score-integrity/artifacts/holdout-input.json
+PASS evaluator holdout-evaluator integrity.evidence_hashes runs/ciph-v0.19-score-integrity/artifacts/holdout-evidence.txt
+PASS evaluator holdout-evaluator integrity.output_hashes runs/ciph-v0.19-score-integrity/holdout_scores/frontier.json
+PASS evaluator integrity holdout-evaluator
+PASS score integrity frontier holdout
+
+## STDERR
+
+<empty>
