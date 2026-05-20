@@ -1,0 +1,14 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "full-unit-tests", "command": "python3 -m unittest discover", "exit_code": 0, "finished_at_utc": "2026-05-20T23:06:35+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T23:06:32+00:00", "status": "PASS"}
+
+## STDOUT
+
+<empty>
+
+## STDERR
+
+....................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 180 tests in 2.795s
+
+OK

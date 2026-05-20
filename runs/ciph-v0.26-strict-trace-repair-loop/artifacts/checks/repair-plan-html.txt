@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "repair-plan-html", "command": "python3 scripts/repair_trace_strictness.py runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-strictness.json --format html --output runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-repair-plan.html", "exit_code": 0, "finished_at_utc": "2026-05-20T22:50:22+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T22:50:22+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH trace repair plan: runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-repair-plan.html
+
+## STDERR
+
+<empty>

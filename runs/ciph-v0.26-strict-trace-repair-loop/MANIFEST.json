@@ -1,0 +1,150 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.26-strict-trace-repair-loop",
+  "objective": "Add a report-first strict trace repair loop: generate structured repair suggestions from trace strictness reports, sync Proofline assets, and dogfood JSON/HTML repair plans without mutating historical traces.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.26-strict-trace-repair-loop/TRACE.jsonl",
+    "strict": true
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "repair-plan-cli",
+      "requirement": "Provide a report-first strict trace repair planner that converts strictness report errors and warnings into structured suggestions without mutating traces.",
+      "artifact_paths": [
+        "scripts/repair_trace_strictness.py",
+        "tests/test_repair_trace_strictness.py",
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-repair-plan.json",
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-repair-plan.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/repair-trace-tests.txt",
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/repair-plan-json.txt",
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/repair-plan-html.txt"
+      ]
+    },
+    {
+      "id": "docs-proofline-sync",
+      "requirement": "Document the repair loop and mirror the command into bundled Proofline assets and installer smoke coverage.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/repair_trace_strictness.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "dogfood-closeout",
+      "requirement": "Dogfood trace strictness, repair planning, status, closeout, and full repo verification for the v0.26 run.",
+      "artifact_paths": [
+        "runs/ciph-v0.26-strict-trace-repair-loop/MANIFEST.json",
+        "runs/ciph-v0.26-strict-trace-repair-loop/TRACE.jsonl",
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-strictness.json",
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/status.html",
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/strict-trace-lint.txt",
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/full-unit-tests.txt",
+        "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/check-repo.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-strictness.json",
+      "description": "Dogfood trace strictness JSON input for repair planning.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-repair-plan.json",
+      "description": "Dogfood JSON repair plan.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-repair-plan.html",
+      "description": "Dogfood HTML repair plan.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/status.html",
+      "description": "Dogfood status report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/closeout.html",
+      "description": "Dogfood closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "repair-trace-tests",
+      "command": "python3 -m unittest tests.test_repair_trace_strictness",
+      "required": true,
+      "evidence": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/repair-trace-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "repair-plan-json",
+      "command": "python3 scripts/trace_strictness_report.py --root . --runs-dir runs --format json --output runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-strictness.json && python3 scripts/repair_trace_strictness.py runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-strictness.json --format json --output runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-repair-plan.json",
+      "required": true,
+      "evidence": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/repair-plan-json.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "repair-plan-html",
+      "command": "python3 scripts/repair_trace_strictness.py runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-strictness.json --format html --output runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-repair-plan.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/repair-plan-html.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "strict-trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.26-strict-trace-repair-loop/TRACE.jsonl --root . --strict",
+      "required": true,
+      "evidence": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/strict-trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "check-repo",
+      "command": "python3 scripts/check_repo.py --skip-diff-check",
+      "required": true,
+      "evidence": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/checks/check-repo.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Repair planning must not mutate historical traces by default.",
+    "Suggestions must remain explicit enough for manual review before any future apply mode.",
+    "The report must tolerate unhandled strict lint messages without failing."
+  ]
+}

@@ -159,6 +159,86 @@ class ValidateManifestTests(unittest.TestCase):
 
             self.assertIn("Missing trace ledger: runs/sample/TRACE.jsonl", result.errors)
 
+    def test_trace_strict_must_be_boolean(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = root / "MANIFEST.json"
+            _write_valid_manifest_files(root)
+            manifest = valid_manifest()
+            manifest["trace"] = {
+                "schema_version": "ciph.trace.v1",
+                "path": "runs/sample/TRACE.jsonl",
+                "strict": "yes",
+            }
+            write_json(manifest_path, manifest)
+
+            result = validate_manifest(manifest_path, root)
+
+            self.assertIn("trace.strict must be a boolean when present", result.errors)
+
+    def test_strict_trace_manifest_runs_strict_lint(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = root / "MANIFEST.json"
+            _write_valid_manifest_files(root)
+            trace_path = root / "runs" / "sample" / "TRACE.jsonl"
+            trace_path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "ciph.trace.v1",
+                        "event_id": "scored",
+                        "occurred_at": "2026-05-20T00:00:00Z",
+                        "event_type": "candidate.scored",
+                        "candidate_id": "frontier",
+                        "score_path": "runs/sample/candidates/frontier/score.json",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            manifest = valid_manifest()
+            manifest["trace"] = {
+                "schema_version": "ciph.trace.v1",
+                "path": "runs/sample/TRACE.jsonl",
+                "strict": True,
+            }
+            write_json(manifest_path, manifest)
+
+            result = validate_manifest(manifest_path, root)
+
+            self.assertIn("trace lint failed: line 1 candidate scored before creation: frontier", result.errors)
+
+    def test_non_strict_trace_manifest_keeps_historical_sequence_compatible(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = root / "MANIFEST.json"
+            _write_valid_manifest_files(root)
+            trace_path = root / "runs" / "sample" / "TRACE.jsonl"
+            trace_path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "ciph.trace.v1",
+                        "event_id": "scored",
+                        "occurred_at": "2026-05-20T00:00:00Z",
+                        "event_type": "candidate.scored",
+                        "candidate_id": "frontier",
+                        "score_path": "runs/sample/candidates/frontier/score.json",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            manifest = valid_manifest()
+            manifest["trace"] = {
+                "schema_version": "ciph.trace.v1",
+                "path": "runs/sample/TRACE.jsonl",
+            }
+            write_json(manifest_path, manifest)
+
+            result = validate_manifest(manifest_path, root)
+
+            self.assertTrue(result.ok, result.messages)
+
 
 if __name__ == "__main__":
     unittest.main()

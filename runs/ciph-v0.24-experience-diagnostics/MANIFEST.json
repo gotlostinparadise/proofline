@@ -1,0 +1,206 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.24-experience-diagnostics",
+  "objective": "Harden CIPH diagnostics into an execution control layer: strict trace enforcement, diagnostics fail-on-high, richer mechanism metrics, candidate provenance and ablation guards, next-candidate planning, Proofline asset sync, and dogfood reports.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.24-experience-diagnostics/TRACE.jsonl"
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "trace-diagnostics-control",
+      "requirement": "Make trace linting and experience diagnostics enforceable closeout controls with strict trace checks and high-severity diagnostics gating.",
+      "artifact_paths": [
+        "scripts/lint_trace.py",
+        "scripts/verify_manifest.py",
+        "scripts/diagnose_experience_store.py",
+        "tests/test_lint_trace.py",
+        "tests/test_diagnose_experience_store.py",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/experience-diagnostics.json",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/experience-diagnostics.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/diagnostics-tests.txt",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/trace-lint-tests.txt",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/diagnostics-json.txt",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/diagnostics-html.txt"
+      ]
+    },
+    {
+      "id": "candidate-optimizer-loop",
+      "requirement": "Add optimizer-specific candidate metadata and deterministic candidate planning from diagnostics output.",
+      "artifact_paths": [
+        "scripts/init_candidate.py",
+        "scripts/validate_candidate.py",
+        "scripts/validate_evaluation.py",
+        "scripts/plan_next_candidates.py",
+        "tests/test_init_candidate.py",
+        "tests/test_validate_candidate.py",
+        "tests/test_validate_evaluation.py",
+        "tests/test_plan_next_candidates.py",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/next-candidates.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/candidate-loop-tests.txt",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/next-candidates-html.txt"
+      ]
+    },
+    {
+      "id": "metrics-docs-proofline",
+      "requirement": "Expand mechanism metrics and sync the root docs plus bundled Proofline assets with executable examples.",
+      "artifact_paths": [
+        "scripts/trace_metrics.py",
+        "scripts/candidate_summary.py",
+        "tests/test_trace_metrics.py",
+        "tests/test_candidate_summary.py",
+        "README.md",
+        "harness/CIPH.md",
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/plan_next_candidates.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/experience-store.json",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/experience-store.html",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/status.html",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/proofline-skill-tests.txt",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/experience-store-json.txt",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/experience-store-html.txt",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/full-unit-tests.txt",
+        "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/check-repo.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "runs/ciph-v0.24-experience-diagnostics/artifacts/experience-store.json",
+      "description": "Dogfood JSON queryable experience-store report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.24-experience-diagnostics/artifacts/experience-store.html",
+      "description": "Dogfood HTML queryable experience-store report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.24-experience-diagnostics/artifacts/experience-diagnostics.json",
+      "description": "Dogfood JSON diagnostics report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.24-experience-diagnostics/artifacts/experience-diagnostics.html",
+      "description": "Dogfood HTML diagnostics report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.24-experience-diagnostics/artifacts/next-candidates.html",
+      "description": "Dogfood next-candidate planning report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.24-experience-diagnostics/artifacts/status.html",
+      "description": "Dogfood status report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.24-experience-diagnostics/artifacts/closeout.html",
+      "description": "Dogfood closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "diagnostics-tests",
+      "command": "python3 -m unittest tests.test_diagnose_experience_store",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/diagnostics-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-lint-tests",
+      "command": "python3 -m unittest tests.test_lint_trace tests.test_verify_manifest",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/trace-lint-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "candidate-loop-tests",
+      "command": "python3 -m unittest tests.test_init_candidate tests.test_validate_candidate tests.test_validate_evaluation tests.test_plan_next_candidates",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/candidate-loop-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "diagnostics-json",
+      "command": "python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --min-severity low --format json --output runs/ciph-v0.24-experience-diagnostics/artifacts/experience-diagnostics.json",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/diagnostics-json.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "diagnostics-html",
+      "command": "python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --min-severity medium --format html --output runs/ciph-v0.24-experience-diagnostics/artifacts/experience-diagnostics.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/diagnostics-html.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "next-candidates-html",
+      "command": "python3 scripts/plan_next_candidates.py runs/ciph-v0.24-experience-diagnostics/artifacts/experience-diagnostics.json --format html --output runs/ciph-v0.24-experience-diagnostics/artifacts/next-candidates.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/next-candidates-html.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "experience-store-json",
+      "command": "python3 scripts/query_experience_store.py --root . --runs-dir runs --status PASS --limit 10 --format json --output runs/ciph-v0.24-experience-diagnostics/artifacts/experience-store.json",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/experience-store-json.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "experience-store-html",
+      "command": "python3 scripts/query_experience_store.py --root . --runs-dir runs --has-replay-receipts --format html --output runs/ciph-v0.24-experience-diagnostics/artifacts/experience-store.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/experience-store-html.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "check-repo",
+      "command": "python3 scripts/check_repo.py --skip-diff-check",
+      "required": true,
+      "evidence": "runs/ciph-v0.24-experience-diagnostics/artifacts/checks/check-repo.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Strict trace validation must remain compatible with existing historical run records.",
+    "Diagnostics gating must fail only on high-severity findings after filtering.",
+    "Candidate planning must emit suggestions only and must not execute or mutate candidates.",
+    "Bundled Proofline assets must stay synchronized with root scripts and docs."
+  ]
+}

@@ -40,6 +40,10 @@ class InitCandidateTests(unittest.TestCase):
             self.assertEqual("baseline", score["candidate_id"])
             self.assertEqual(["seed"], score["parent_ids"])
             self.assertEqual(["verification", "delegation"], score["changed_modules"])
+            self.assertEqual("policy", score["ablation"]["changed_class"])
+            self.assertEqual(["policy:verification", "policy:delegation"], score["ablation"]["changed_dimensions"])
+            self.assertEqual(["verification", "delegation"], [item["module"] for item in score["policy_provenance"]])
+            self.assertEqual([], score["source_provenance"])
             self.assertEqual(["seed"], score["lineage"]["parents"])
             self.assertEqual("State what this candidate is testing.", score["hypothesis"])
             self.assertEqual("runs/sample/candidates/baseline/TRACE.jsonl", score["candidate_trace"])
@@ -70,6 +74,30 @@ class InitCandidateTests(unittest.TestCase):
             score = json.loads((candidate_dir / "score.json").read_text(encoding="utf-8"))
             self.assertEqual("vendor/proofline/runs/sample/candidates/baseline/TRACE.jsonl", score["candidate_trace"])
 
+    def test_initialize_source_candidate_records_source_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = _write_manifest(root)
+
+            initialize_candidate(
+                manifest_path,
+                "source-candidate",
+                root=root,
+                changed_modules=["runner"],
+                change_class="source",
+            )
+
+            candidate_dir = root / "runs" / "sample" / "candidates" / "source-candidate"
+            score = json.loads((candidate_dir / "score.json").read_text(encoding="utf-8"))
+            self.assertEqual("source", score["ablation"]["changed_class"])
+            self.assertEqual(["source:runner"], score["ablation"]["changed_dimensions"])
+            self.assertEqual(1, len(score["source_provenance"]))
+            snapshot = score["source_provenance"][0]
+            self.assertEqual("runs/sample/candidates/source-candidate/source/README.md", snapshot["path"])
+            self.assertTrue(snapshot["exists"])
+            self.assertTrue(snapshot["sha256"].startswith("sha256:"))
+            self.assertTrue(snapshot["loaded_at"])
+
     def test_initialize_candidate_rejects_unsafe_candidate_id(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -96,6 +124,8 @@ class InitCandidateTests(unittest.TestCase):
                     "reports",
                     "--parent",
                     "seed",
+                    "--source-path",
+                    "runs/sample/candidates/cli-candidate/source/README.md",
                 ],
                 cwd=repo_root,
                 text=True,

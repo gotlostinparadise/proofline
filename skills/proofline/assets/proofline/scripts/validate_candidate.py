@@ -151,6 +151,8 @@ def _validate_score_shape(
         result.errors.append("score lineage must be an object")
     elif not isinstance(score["lineage"].get("parents"), list):
         result.errors.append("score lineage.parents must be a list")
+    elif isinstance(score.get("parent_ids"), list) and score["lineage"].get("parents") != score.get("parent_ids"):
+        result.errors.append("score lineage.parents must match parent_ids")
 
     for field_name in ["parent_ids", "changed_modules", "trace_paths", "artifact_paths"]:
         if not isinstance(score.get(field_name), list):
@@ -160,11 +162,88 @@ def _validate_score_shape(
         if not isinstance(score.get(field_name), dict):
             result.errors.append(f"score {field_name} must be an object")
 
+    _validate_ablation(score, result)
+    _validate_policy_provenance(score, root_path, result)
+    _validate_source_provenance(score, root_path, result)
+
     candidate_trace = score.get("candidate_trace")
     if not _non_empty_string(candidate_trace):
         result.errors.append("score candidate_trace must be a non-empty string")
     elif not path_exists(root_path, candidate_trace):
         result.errors.append(f"candidate_trace does not exist: {candidate_trace}")
+
+
+def _validate_ablation(score: dict[str, Any], result: CandidateValidationResult) -> None:
+    ablation = score.get("ablation")
+    if not isinstance(ablation, dict):
+        result.errors.append("score ablation must be an object")
+        return
+    changed_class = ablation.get("changed_class")
+    if changed_class not in {"policy", "source", "config", "evaluator", "baseline"}:
+        result.errors.append("score ablation.changed_class must be one of: baseline, config, evaluator, policy, source")
+    dimensions = ablation.get("changed_dimensions")
+    if not isinstance(dimensions, list) or not all(isinstance(item, str) and item.strip() for item in dimensions):
+        result.errors.append("score ablation.changed_dimensions must be a list of non-empty strings")
+    elif len({item.split(":", 1)[0] for item in dimensions}) > 1:
+        result.errors.append("score ablation.changed_dimensions must describe one changed class")
+    else:
+        result.messages.append("PASS ablation metadata")
+
+
+def _validate_policy_provenance(score: dict[str, Any], root_path: Path, result: CandidateValidationResult) -> None:
+    snapshots = score.get("policy_provenance")
+    if not isinstance(snapshots, list):
+        result.errors.append("score policy_provenance must be a list")
+        return
+    for index, snapshot in enumerate(snapshots):
+        if not isinstance(snapshot, dict):
+            result.errors.append(f"score policy_provenance[{index}] must be an object")
+            continue
+        if not _non_empty_string(snapshot.get("module")):
+            result.errors.append(f"score policy_provenance[{index}].module must be a non-empty string")
+        path = snapshot.get("path")
+        digest = snapshot.get("sha256")
+        if path is not None and not _non_empty_string(path):
+            result.errors.append(f"score policy_provenance[{index}].path must be a non-empty string when present")
+        elif isinstance(path, str) and not path_exists(root_path, path):
+            result.errors.append(f"score policy_provenance[{index}].path does not exist: {path}")
+        if digest is not None and (not isinstance(digest, str) or not digest.startswith("sha256:")):
+            result.errors.append(f"score policy_provenance[{index}].sha256 must use sha256:<hex>")
+        if not _non_empty_string(snapshot.get("loaded_at")):
+            result.errors.append(f"score policy_provenance[{index}].loaded_at must be a non-empty string")
+
+
+def _validate_source_provenance(score: dict[str, Any], root_path: Path, result: CandidateValidationResult) -> None:
+    snapshots = score.get("source_provenance")
+    if not isinstance(snapshots, list):
+        result.errors.append("score source_provenance must be a list")
+        return
+
+    existing_snapshots = 0
+    for index, snapshot in enumerate(snapshots):
+        if not isinstance(snapshot, dict):
+            result.errors.append(f"score source_provenance[{index}] must be an object")
+            continue
+        path = snapshot.get("path")
+        if not _non_empty_string(path):
+            result.errors.append(f"score source_provenance[{index}].path must be a non-empty string")
+        exists = snapshot.get("exists")
+        if not isinstance(exists, bool):
+            result.errors.append(f"score source_provenance[{index}].exists must be a boolean")
+        elif exists is True and isinstance(path, str) and path_exists(root_path, path):
+            existing_snapshots += 1
+        elif exists is True and isinstance(path, str):
+            result.errors.append(f"score source_provenance[{index}].path does not exist: {path}")
+        digest = snapshot.get("sha256")
+        if digest is not None and (not isinstance(digest, str) or not digest.startswith("sha256:")):
+            result.errors.append(f"score source_provenance[{index}].sha256 must use sha256:<hex>")
+        if not _non_empty_string(snapshot.get("loaded_at")):
+            result.errors.append(f"score source_provenance[{index}].loaded_at must be a non-empty string")
+
+    if _score_changed_class(score) == "source" and existing_snapshots == 0:
+        result.errors.append("score source_provenance must include at least one existing source snapshot for source ablations")
+    else:
+        result.messages.append("PASS source provenance metadata")
 
 
 def _validate_declared_paths(score: dict[str, Any], root_path: Path, result: CandidateValidationResult) -> None:
@@ -198,6 +277,14 @@ def _string_list(value: Any) -> list[str]:
 
 def _non_empty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
+
+
+def _score_changed_class(score: dict[str, Any]) -> str | None:
+    ablation = score.get("ablation")
+    if not isinstance(ablation, dict):
+        return None
+    changed_class = ablation.get("changed_class")
+    return changed_class if isinstance(changed_class, str) else None
 
 
 def main(argv: list[str] | None = None) -> int:

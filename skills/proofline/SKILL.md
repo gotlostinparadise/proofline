@@ -42,6 +42,9 @@ Lint the contract before coding:
 ```bash
 python3 vendor/proofline/scripts/lint_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
 python3 vendor/proofline/scripts/lint_trace.py vendor/proofline/runs/<run-id>/TRACE.jsonl --root .
+python3 vendor/proofline/scripts/lint_trace.py vendor/proofline/runs/<run-id>/TRACE.jsonl --root . --strict
+python3 vendor/proofline/scripts/trace_strictness_report.py --root . --runs-dir vendor/proofline/runs --format html --output vendor/proofline/runs/<run-id>/artifacts/trace-strictness.html
+python3 vendor/proofline/scripts/repair_trace_strictness.py vendor/proofline/runs/<run-id>/artifacts/trace-strictness.json --format html --output vendor/proofline/runs/<run-id>/artifacts/trace-repair-plan.html
 ```
 
 Show the user the run contract for approval when the user asked to approve plans or when the scope is ambiguous. Otherwise proceed if they clearly asked for implementation.
@@ -60,9 +63,12 @@ For competing approaches, scaffold and validate candidates:
 
 ```bash
 python3 vendor/proofline/scripts/init_candidate.py vendor/proofline/runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
+python3 vendor/proofline/scripts/init_candidate.py vendor/proofline/runs/<run-id>/MANIFEST.json <candidate-id> --change-class source --changed-module <module> --source-path vendor/proofline/runs/<run-id>/candidates/<candidate-id>/source/README.md
 python3 vendor/proofline/scripts/validate_candidate.py vendor/proofline/runs/<run-id>/candidates/<candidate-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/candidate-validation.html
 python3 vendor/proofline/scripts/candidate_summary.py vendor/proofline/runs/<run-id> --output vendor/proofline/runs/<run-id>/artifacts/candidate-summary.html
 ```
+
+Candidate records include ablation metadata, `policy_provenance`, and `source_provenance`. Source ablations must point at at least one existing source snapshot, and evaluation lineage must stay one-dimension-at-a-time unless a parent is explicitly the baseline.
 
 For search-set / holdout research runs, validate the evaluation protocol and release holdout only through the gate:
 
@@ -83,6 +89,15 @@ To inspect prior run experience without mutating it:
 ```bash
 python3 vendor/proofline/scripts/query_experience_store.py --root . --runs-dir vendor/proofline/runs --status PASS --format json --output vendor/proofline/runs/<run-id>/artifacts/experience-store.json
 python3 vendor/proofline/scripts/query_experience_store.py --root . --runs-dir vendor/proofline/runs --has-replay-receipts --format html --output vendor/proofline/runs/<run-id>/artifacts/experience-store.html
+```
+
+To prioritize follow-up remediation work from run history:
+
+```bash
+python3 vendor/proofline/scripts/diagnose_experience_store.py --root . --runs-dir vendor/proofline/runs --min-severity medium --format json --output vendor/proofline/runs/<run-id>/artifacts/experience-diagnostics.json
+python3 vendor/proofline/scripts/diagnose_experience_store.py --root . --runs-dir vendor/proofline/runs --min-severity low --format html --output vendor/proofline/runs/<run-id>/artifacts/experience-diagnostics.html
+python3 vendor/proofline/scripts/diagnose_experience_store.py --root . --runs-dir vendor/proofline/runs --min-severity high --fail-on-high
+python3 vendor/proofline/scripts/plan_next_candidates.py vendor/proofline/runs/<run-id>/artifacts/experience-diagnostics.json --format html --output vendor/proofline/runs/<run-id>/artifacts/next-candidates.html
 ```
 
 ## Verify And Close
@@ -113,9 +128,15 @@ Only claim completion when closeout maps every explicit requirement to existing 
 | Coding before `TASK.html` and `MANIFEST.json` exist | Create and lint the run contract first. |
 | Listing vague deliverables | Use concrete file paths and exact evidence paths. |
 | Forgetting trace linting on research-grade runs | Run `lint_trace.py` against `TRACE.jsonl`. |
+| Treating trace shape as enough for closeout | Use `lint_trace.py --strict` so duplicate IDs, unsafe paths, and ordering regressions are blocked. |
+| Enforcing strict trace mode across all history at once | Add `trace.strict: true` only to repaired/new runs and use `trace_strictness_report.py` for the migration list. |
+| Rewriting old traces blindly | Generate `repair_trace_strictness.py` reports first and apply only reviewed, bounded repairs. |
 | Treating mechanism metrics as completion proof | Run `trace_metrics.py` for diagnostics, then keep `verify_manifest.py` and closeout evidence authoritative. |
 | Summarizing candidate scores before validating records | Run `validate_candidate.py` for each candidate first. |
+| Treating a source candidate as policy-only | Use `--change-class source` plus `--source-path`, then validate `source_provenance`. |
 | Releasing holdout scores during search | Record split state in `EVALUATION.json`, run `validate_evaluation.py`, then use `release_holdout.py`. |
+| Running diagnostics without acting on priorities | Run `diagnose_experience_store.py` and map high-severity findings to next-step commands before rerunning evidence checks. |
+| Closing out with high diagnostics still present | Use `diagnose_experience_store.py --fail-on-high` and plan the next bounded candidate with `plan_next_candidates.py`. |
 | Manually flipping `phase` or `holdout_set.sealed` | Use `release_holdout.py` so frontier validation, release budget, and release history are checked. |
 | Writing holdout scores into `score.json` | Use `ingest_holdout_scores.py` so search and holdout records stay separate. |
 | Treating score numbers as self-proving | Add evaluator manifests and run `validate_score_provenance.py`. |

@@ -15,6 +15,14 @@ def _lint_trace(path: Path, root: Path):
     return module.lint_trace(path, root)
 
 
+def _lint_trace_strict(path: Path, root: Path):
+    try:
+        module = import_module("scripts.lint_trace")
+    except ModuleNotFoundError as exc:
+        raise AssertionError("scripts.lint_trace must be importable") from exc
+    return module.lint_trace(path, root, strict=True)
+
+
 class LintTraceTests(unittest.TestCase):
     def test_valid_trace_passes(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -125,6 +133,42 @@ class LintTraceTests(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stderr)
             self.assertIn("PASS trace", completed.stdout)
 
+    def test_strict_mode_rejects_duplicate_event_ids_and_unsafe_paths(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            trace_path = root / "runs" / "sample" / "TRACE.jsonl"
+            _write_trace(
+                trace_path,
+                [
+                    _event("state.written", event_id="same", path="runs/sample/state.json"),
+                    _event("state.loaded", event_id="same", path="../state.json"),
+                ],
+            )
+
+            result = _lint_trace_strict(trace_path, root)
+
+            self.assertFalse(result.ok)
+            self.assertTrue(any("event_id duplicates line 1" in error for error in result.errors))
+            self.assertIn("line 2 path must be a local path under the root: ../state.json", result.errors)
+
+    def test_strict_mode_rejects_sequence_regressions(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            trace_path = root / "runs" / "sample" / "TRACE.jsonl"
+            _write_trace(
+                trace_path,
+                [
+                    _event("stage.completed", stage="verify", status="PASS"),
+                    _event("candidate.scored", candidate_id="frontier", score_path="runs/sample/candidates/frontier/score.json"),
+                ],
+            )
+
+            result = _lint_trace_strict(trace_path, root)
+
+            self.assertFalse(result.ok)
+            self.assertIn("line 1 stage completed before start: verify", result.errors)
+            self.assertIn("line 2 candidate scored before creation: frontier", result.errors)
+
 
 def _event(event_type: str, **fields):
     payload = {
@@ -133,6 +177,9 @@ def _event(event_type: str, **fields):
         "occurred_at": "2026-05-20T00:00:00Z",
         "event_type": event_type,
     }
+    event_id = fields.pop("event_id", None)
+    if event_id is not None:
+        payload["event_id"] = event_id
     payload.update(fields)
     return payload
 

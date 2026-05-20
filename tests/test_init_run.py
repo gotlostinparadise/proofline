@@ -140,6 +140,7 @@ class InitRunTests(unittest.TestCase):
             {
                 "schema_version": "ciph.trace.v1",
                 "path": "runs/<run-id>/TRACE.jsonl",
+                "strict": True,
             },
             manifest["trace"],
         )

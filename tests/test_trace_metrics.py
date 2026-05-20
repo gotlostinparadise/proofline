@@ -21,6 +21,8 @@ class TraceMetricsTests(unittest.TestCase):
                     _event("stage.started", stage="inspect"),
                     _event("stage.completed", stage="inspect", status="PASS"),
                     _event("stage.started", stage="verify"),
+                    _event("model.call", role="planner", input_ref="runs/sample/artifacts/input.json", context_tokens=40),
+                    _event("model.result", role="planner", output_ref="runs/sample/artifacts/output.json", output_tokens=10),
                     _event("tool.result", tool="pytest", exit_code=0),
                     _event("tool.result", tool="lint", exit_code=2),
                     _event("stage.completed", stage="verify", status="PASS"),
@@ -28,7 +30,7 @@ class TraceMetricsTests(unittest.TestCase):
                     _event("handoff.returned", child_id="reviewer", response_path="runs/sample/children/reviewer/RESPONSE.html"),
                     _event("handoff.reviewed", child_id="reviewer", status="PASS"),
                     _event("validation.completed", check_name="unit-tests", status="PASS", evidence_path="runs/sample/artifacts/checks/unit-tests.txt"),
-                    _event("recovery.attempted", strategy="rerun", status="completed"),
+                    _event("recovery.attempted", strategy="rerun", status="completed", evidence_path="runs/sample/artifacts/checks/unit-tests.txt"),
                 ],
             )
 
@@ -42,6 +44,41 @@ class TraceMetricsTests(unittest.TestCase):
             self.assertEqual(1.0, metrics["handoff_recall"])
             self.assertEqual(1.0, metrics["validation_coverage"])
             self.assertEqual(1.0, metrics["recovery_completion"])
+            self.assertEqual(1.0, metrics["model_result_coverage"])
+            self.assertEqual(50.0, metrics["context_token_total"])
+            self.assertEqual(250.0, metrics["cost_proxy"])
+            self.assertEqual(0.0, metrics["declared_runtime_seconds"])
+            self.assertEqual(0.0, metrics["declared_cost_total"])
+            self.assertEqual(1.0, metrics["recovery_evidence_coverage"])
+
+    def test_calculate_metrics_reads_nested_usage_runtime_and_cost(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path = _write_manifest(root)
+            _write_existing_paths(root)
+            trace_path = root / "runs" / "sample" / "TRACE.jsonl"
+            _write_trace(
+                trace_path,
+                [
+                    _event(
+                        "model.result",
+                        usage={"prompt_tokens": 100, "completion_tokens": 25, "total_tokens": 125},
+                        metrics={"runtime_ms": 1500, "estimated_cost_usd": 0.42},
+                    ),
+                    _event(
+                        "tool.result",
+                        exit_code=0,
+                        metrics={"duration_seconds": 2.0, "cost_usd": 0.08},
+                    ),
+                ],
+            )
+
+            metrics = calculate_metrics(manifest_path, root=root)
+
+            self.assertEqual(125.0, metrics["context_token_total"])
+            self.assertEqual(225.0, metrics["cost_proxy"])
+            self.assertEqual(3.5, metrics["declared_runtime_seconds"])
+            self.assertEqual(0.5, metrics["declared_cost_total"])
 
     def test_metrics_detect_missing_artifacts_unfinished_stages_and_missing_validation(self):
         with tempfile.TemporaryDirectory() as tmp:

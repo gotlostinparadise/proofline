@@ -174,6 +174,7 @@ def _validate_candidates(
     elif isinstance(baseline_id, str):
         result.errors.append(f"baseline candidate must be listed: {baseline_id}")
 
+    loaded_scores: dict[str, dict[str, Any]] = {}
     for candidate_id, record in candidate_records.items():
         score_path = record.get("score_path")
         if not _non_empty_string(score_path):
@@ -190,10 +191,73 @@ def _validate_candidates(
             result.errors.append(f"candidate {candidate_id} score_path candidate_id mismatch")
         else:
             result.messages.append(f"PASS candidate score {candidate_id}")
+            loaded_scores[candidate_id] = score
+        _validate_candidate_ablation(candidate_id, score, result)
 
         candidate_dir = run_path / "candidates" / candidate_id
         if not candidate_dir.is_dir():
             result.errors.append(f"candidate directory does not exist: {candidate_dir}")
+
+    _validate_ablation_lineage(candidate_records, loaded_scores, result)
+
+
+def _validate_candidate_ablation(candidate_id: str, score: dict[str, Any], result: EvaluationValidationResult) -> None:
+    ablation = score.get("ablation")
+    if not isinstance(ablation, dict):
+        result.messages.append(f"SKIP candidate ablation {candidate_id}: metadata not declared")
+        return
+    changed_class = ablation.get("changed_class")
+    if changed_class not in {"policy", "source", "config", "evaluator", "baseline"}:
+        result.errors.append(f"candidate {candidate_id} ablation.changed_class must be one of: baseline, config, evaluator, policy, source")
+    dimensions = ablation.get("changed_dimensions")
+    if not isinstance(dimensions, list) or not dimensions:
+        result.errors.append(f"candidate {candidate_id} ablation.changed_dimensions must contain at least one dimension")
+        return
+    classes = {
+        item.split(":", 1)[0]
+        for item in dimensions
+        if isinstance(item, str) and item.strip()
+    }
+    if len(classes) != 1:
+        result.errors.append(f"candidate {candidate_id} must change one ablation class at a time")
+    elif isinstance(changed_class, str) and changed_class not in classes:
+        result.errors.append(f"candidate {candidate_id} ablation.changed_class must match changed_dimensions")
+    else:
+        result.messages.append(f"PASS candidate ablation {candidate_id}")
+
+
+def _validate_ablation_lineage(
+    candidate_records: dict[str, dict[str, Any]],
+    loaded_scores: dict[str, dict[str, Any]],
+    result: EvaluationValidationResult,
+) -> None:
+    for candidate_id, score in loaded_scores.items():
+        child_class = _score_changed_class(score)
+        if child_class is None:
+            continue
+        lineage = score.get("lineage")
+        if not isinstance(lineage, dict):
+            continue
+        parent_ids = _string_list(lineage.get("parents"))
+        if not parent_ids:
+            continue
+        for parent_id in parent_ids:
+            parent_score = loaded_scores.get(parent_id)
+            if parent_score is None:
+                if parent_id in candidate_records:
+                    result.errors.append(f"candidate {candidate_id} lineage parent score unavailable: {parent_id}")
+                continue
+            parent_class = _score_changed_class(parent_score)
+            parent_role = candidate_records.get(parent_id, {}).get("role")
+            if parent_role == "baseline" or parent_class in {None, "baseline"} or child_class == "baseline":
+                continue
+            if parent_class != child_class:
+                result.errors.append(
+                    f"candidate {candidate_id} ablation changed_class {child_class} compounds with parent "
+                    f"{parent_id} changed_class {parent_class}"
+                )
+            else:
+                result.messages.append(f"PASS candidate lineage {parent_id}->{candidate_id}")
 
 
 def _validate_phase_rules(
@@ -417,6 +481,14 @@ def _string_list(value: Any) -> list[str]:
 
 def _non_empty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
+
+
+def _score_changed_class(score: dict[str, Any]) -> str | None:
+    ablation = score.get("ablation")
+    if not isinstance(ablation, dict):
+        return None
+    changed_class = ablation.get("changed_class")
+    return changed_class if isinstance(changed_class, str) else None
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CIPH Plan Completion Audit</title>
+</head>
+<body>
+  <main data-proofline-report="completion-audit">
+    <h1>CIPH Plan Completion Audit</h1>
+    <p>This audit maps the original eight-milestone CIPH research optimizer plan to durable repository artifacts and verification evidence.</p>
+    <table>
+      <thead><tr><th>Milestone</th><th>Status</th><th>Artifacts and evidence</th></tr></thead>
+      <tbody>
+        <tr><td>1. Close the v0.24 evidence gap</td><td>Complete</td><td><code>runs/ciph-v0.24-experience-diagnostics/</code> contains experience store, diagnostics JSON/HTML, status, closeout, manifest checks, and trace evidence.</td></tr>
+        <tr><td>2. Make trace lint enforcement real</td><td>Complete</td><td><code>scripts/lint_trace.py</code>, <code>scripts/verify_manifest.py</code>, <code>scripts/trace_strictness_report.py</code>, <code>scripts/repair_trace_strictness.py</code>, v0.25/v0.26 runs, and strict trace evidence in this v0.27 run.</td></tr>
+        <tr><td>3. Promote diagnostics severity to execution control</td><td>Complete</td><td><code>scripts/diagnose_experience_store.py --fail-on-high</code>, docs, Proofline skill examples, tests, and v0.24 diagnostics artifacts.</td></tr>
+        <tr><td>4. Add Mechanism Metrics v2</td><td>Complete</td><td><code>scripts/trace_metrics.py</code> now covers model result coverage, token totals, timestamp wall time, declared runtime, declared cost, cost proxy, and recovery evidence coverage. Evidence: <code>tests/test_trace_metrics.py</code> and this run's metrics report.</td></tr>
+        <tr><td>5. Policy/source provenance for ablations</td><td>Complete</td><td><code>scripts/init_candidate.py</code> emits <code>policy_provenance</code> and <code>source_provenance</code>; <code>scripts/validate_candidate.py</code> validates both. Evidence: candidate provenance tests.</td></tr>
+        <tr><td>6. Ablation correctness guards</td><td>Complete</td><td><code>scripts/validate_candidate.py</code> checks one-class dimensions and parent lineage consistency; <code>scripts/validate_evaluation.py</code> rejects compound non-baseline lineage. Evidence: candidate and evaluation tests.</td></tr>
+        <tr><td>7. Candidate-selection loop utility</td><td>Complete</td><td><code>scripts/plan_next_candidates.py</code> generates next-candidate stubs from diagnostics without executing model output. Evidence: diagnostics/planning tests and Proofline skill parity tests.</td></tr>
+        <tr><td>8. Governance and docs proofing pass</td><td>Complete</td><td><code>README.md</code>, <code>harness/CIPH.md</code>, <code>skills/proofline/SKILL.md</code>, mirrored Proofline scripts, and <code>tests/test_proofline_skill.py</code> are updated and verified.</td></tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

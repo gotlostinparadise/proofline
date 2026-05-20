@@ -1,0 +1,160 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.25-trace-strictness-adoption",
+  "objective": "Adopt strict trace linting as an opt-in manifest contract: add trace.strict enforcement, a trace strictness migration report, default new runs to strict traces, sync Proofline assets, and dogfood the adoption path.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.25-trace-strictness-adoption/TRACE.jsonl",
+    "strict": true
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "strict-trace-opt-in",
+      "requirement": "Support trace.strict manifest opt-in so strict trace linting is enforceable for new or repaired runs without breaking historical manifests.",
+      "artifact_paths": [
+        "scripts/verify_manifest.py",
+        "tests/test_verify_manifest.py",
+        "templates/MANIFEST.json"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/verify-manifest-tests.txt"
+      ]
+    },
+    {
+      "id": "strictness-report",
+      "requirement": "Provide a deterministic report that lists strict-ready runs, strict opt-ins, and historical traces needing repair.",
+      "artifact_paths": [
+        "scripts/trace_strictness_report.py",
+        "tests/test_trace_strictness_report.py",
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/trace-strictness.json",
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/trace-strictness.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/trace-strictness-tests.txt",
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/trace-strictness-json.txt",
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/trace-strictness-html.txt"
+      ]
+    },
+    {
+      "id": "docs-proofline-closeout",
+      "requirement": "Document strict trace adoption, sync bundled Proofline assets, and close out with strict trace and repo-gate evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/trace_strictness_report.py",
+        "skills/proofline/assets/proofline/scripts/verify_manifest.py",
+        "skills/proofline/assets/proofline/templates/MANIFEST.json",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "tests/test_proofline_skill.py",
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/status.html",
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/proofline-skill-tests.txt",
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/strict-trace-lint.txt",
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/full-unit-tests.txt",
+        "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/check-repo.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/trace_strictness_report.py",
+      "description": "Trace strictness migration report CLI.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/trace-strictness.json",
+      "description": "Dogfood JSON trace strictness report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/trace-strictness.html",
+      "description": "Dogfood HTML trace strictness report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/status.html",
+      "description": "Dogfood status report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/closeout.html",
+      "description": "Dogfood closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "verify-manifest-tests",
+      "command": "python3 -m unittest tests.test_verify_manifest",
+      "required": true,
+      "evidence": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/verify-manifest-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-strictness-tests",
+      "command": "python3 -m unittest tests.test_trace_strictness_report",
+      "required": true,
+      "evidence": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/trace-strictness-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-strictness-json",
+      "command": "python3 scripts/trace_strictness_report.py --root . --runs-dir runs --format json --output runs/ciph-v0.25-trace-strictness-adoption/artifacts/trace-strictness.json",
+      "required": true,
+      "evidence": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/trace-strictness-json.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-strictness-html",
+      "command": "python3 scripts/trace_strictness_report.py --root . --runs-dir runs --format html --output runs/ciph-v0.25-trace-strictness-adoption/artifacts/trace-strictness.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/trace-strictness-html.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "strict-trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.25-trace-strictness-adoption/TRACE.jsonl --root . --strict",
+      "required": true,
+      "evidence": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/strict-trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "check-repo",
+      "command": "python3 scripts/check_repo.py --skip-diff-check",
+      "required": true,
+      "evidence": "runs/ciph-v0.25-trace-strictness-adoption/artifacts/checks/check-repo.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Strict trace adoption must not retroactively fail older run manifests.",
+    "The report must remain read-only and deterministic.",
+    "New run templates should opt into strict mode without making empty initial traces invalid."
+  ]
+}

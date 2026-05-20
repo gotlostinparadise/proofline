@@ -1,0 +1,440 @@
+{
+  "query": {
+    "runs_dir": "runs"
+  },
+  "runs": [
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/ciph-v0.10-vendor-layout/MANIFEST.json",
+      "run_id": "ciph-v0.10-vendor-layout",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    },
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/ciph-v0.11-html-artifacts/MANIFEST.json",
+      "run_id": "ciph-v0.11-html-artifacts",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.12-policy-trace/MANIFEST.json",
+      "run_id": "ciph-v0.12-policy-trace",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 0,
+      "trace_path": "runs/ciph-v0.12-policy-trace/TRACE.jsonl",
+      "warnings": []
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.13-mechanism-metrics/MANIFEST.json",
+      "run_id": "ciph-v0.13-mechanism-metrics",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 6,
+      "trace_path": "runs/ciph-v0.13-mechanism-metrics/TRACE.jsonl",
+      "warnings": [
+        "line 4 validation completed without validation.started: trace-metrics-tests",
+        "line 5 validation completed without validation.started: trace-metrics-report",
+        "line 6 validation completed without validation.started: candidate-summary-tests",
+        "line 7 validation completed without validation.started: proofline-skill-tests",
+        "line 8 validation completed without validation.started: trace-ledger-lint",
+        "line 9 validation completed without validation.started: full-unit-tests"
+      ]
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.14-candidate-lab/MANIFEST.json",
+      "run_id": "ciph-v0.14-candidate-lab",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 7,
+      "trace_path": "runs/ciph-v0.14-candidate-lab/TRACE.jsonl",
+      "warnings": [
+        "line 6 validation completed without validation.started: candidate-record-tests",
+        "line 7 validation completed without validation.started: candidate-validation-tests",
+        "line 8 validation completed without validation.started: candidate-validation-report",
+        "line 9 validation completed without validation.started: candidate-summary-report",
+        "line 10 validation completed without validation.started: proofline-skill-tests",
+        "line 11 validation completed without validation.started: trace-ledger-lint",
+        "line 12 validation completed without validation.started: full-unit-tests"
+      ]
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.15-evaluation-protocol/MANIFEST.json",
+      "run_id": "ciph-v0.15-evaluation-protocol",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 7,
+      "trace_path": "runs/ciph-v0.15-evaluation-protocol/TRACE.jsonl",
+      "warnings": [
+        "line 8 validation completed without validation.started: evaluation-validator-tests",
+        "line 9 validation completed without validation.started: evaluation-report",
+        "line 10 validation completed without validation.started: candidate-summary-tests",
+        "line 11 validation completed without validation.started: candidate-summary-report",
+        "line 12 validation completed without validation.started: proofline-skill-tests",
+        "line 13 validation completed without validation.started: trace-ledger-lint",
+        "line 14 validation completed without validation.started: full-unit-tests"
+      ]
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.16-holdout-release-gate/MANIFEST.json",
+      "run_id": "ciph-v0.16-holdout-release-gate",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 7,
+      "trace_path": "runs/ciph-v0.16-holdout-release-gate/TRACE.jsonl",
+      "warnings": [
+        "line 14 validation completed without validation.started: holdout-release-tests",
+        "line 15 validation completed without validation.started: holdout-release-report",
+        "line 16 validation completed without validation.started: evaluation-validator-tests",
+        "line 17 validation completed without validation.started: evaluation-report",
+        "line 18 validation completed without validation.started: proofline-skill-tests",
+        "line 19 validation completed without validation.started: trace-ledger-lint",
+        "line 20 validation completed without validation.started: full-unit-tests"
+      ]
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.17-holdout-final-comparison/MANIFEST.json",
+      "run_id": "ciph-v0.17-holdout-final-comparison",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 9,
+      "trace_path": "runs/ciph-v0.17-holdout-final-comparison/TRACE.jsonl",
+      "warnings": [
+        "line 18 validation completed without validation.started: holdout-ingest-tests",
+        "line 19 validation completed without validation.started: holdout-ingest-report",
+        "line 20 validation completed without validation.started: evaluation-validator-tests",
+        "line 21 validation completed without validation.started: evaluation-report",
+        "line 22 validation completed without validation.started: final-comparison-tests",
+        "line 23 validation completed without validation.started: final-comparison-report",
+        "line 24 validation completed without validation.started: proofline-skill-tests",
+        "line 25 validation completed without validation.started: trace-ledger-lint",
+        "line 26 validation completed without validation.started: full-unit-tests"
+      ]
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.18-score-provenance/MANIFEST.json",
+      "run_id": "ciph-v0.18-score-provenance",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 7,
+      "trace_path": "runs/ciph-v0.18-score-provenance/TRACE.jsonl",
+      "warnings": [
+        "line 26 validation completed without validation.started: score-provenance-tests",
+        "line 27 validation completed without validation.started: score-provenance-report",
+        "line 28 validation completed without validation.started: provenance-reporting-tests",
+        "line 29 validation completed without validation.started: final-comparison-report",
+        "line 30 validation completed without validation.started: proofline-skill-tests",
+        "line 31 validation completed without validation.started: trace-ledger-lint",
+        "line 32 validation completed without validation.started: full-unit-tests"
+      ]
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.19-score-integrity/MANIFEST.json",
+      "run_id": "ciph-v0.19-score-integrity",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 5,
+      "trace_path": "runs/ciph-v0.19-score-integrity/TRACE.jsonl",
+      "warnings": [
+        "line 27 validation completed without validation.started: score-integrity-tests",
+        "line 28 validation completed without validation.started: score-integrity-report",
+        "line 29 validation completed without validation.started: proofline-skill-tests",
+        "line 30 validation completed without validation.started: trace-ledger-lint",
+        "line 31 validation completed without validation.started: full-unit-tests"
+      ]
+    },
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/ciph-v0.2-init-run/MANIFEST.json",
+      "run_id": "ciph-v0.2-init-run",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.20-evaluator-replay-readiness/MANIFEST.json",
+      "run_id": "ciph-v0.20-evaluator-replay-readiness",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 5,
+      "trace_path": "runs/ciph-v0.20-evaluator-replay-readiness/TRACE.jsonl",
+      "warnings": [
+        "line 29 validation completed without validation.started: evaluator-replay-tests",
+        "line 30 validation completed without validation.started: evaluator-replay-report",
+        "line 31 validation completed without validation.started: proofline-skill-tests",
+        "line 32 validation completed without validation.started: trace-ledger-lint",
+        "line 33 validation completed without validation.started: full-unit-tests"
+      ]
+    },
+    {
+      "errors": [
+        "line 15 candidate scored before creation: frontier"
+      ],
+      "manifest_path": "runs/ciph-v0.21-local-replay-executor/MANIFEST.json",
+      "run_id": "ciph-v0.21-local-replay-executor",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "FAIL",
+      "strict_warnings": 10,
+      "trace_path": "runs/ciph-v0.21-local-replay-executor/TRACE.jsonl",
+      "warnings": [
+        "line 7 evidence_path does not exist: runs/ciph-v0.21-local-replay-executor/artifacts/checks/executor-tests-red.txt",
+        "line 7 validation completed without validation.started: executor-tests-red",
+        "line 9 validation completed without validation.started: executor-tests",
+        "line 11 validation completed without validation.started: proofline-skill-tests",
+        "line 17 validation completed without validation.started: evaluator-replay-readiness",
+        "line 18 validation completed without validation.started: executor-dry-run",
+        "line 19 validation completed without validation.started: executor-local-run",
+        "line 22 validation completed without validation.started: executor-tests",
+        "line 23 validation completed without validation.started: trace-ledger-lint",
+        "line 24 validation completed without validation.started: full-unit-tests"
+      ]
+    },
+    {
+      "errors": [
+        "line 15 candidate scored before creation: frontier"
+      ],
+      "manifest_path": "runs/ciph-v0.22-replay-result-attestation/MANIFEST.json",
+      "run_id": "ciph-v0.22-replay-result-attestation",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "FAIL",
+      "strict_warnings": 15,
+      "trace_path": "runs/ciph-v0.22-replay-result-attestation/TRACE.jsonl",
+      "warnings": [
+        "line 7 validation completed without validation.started: replay-receipt-tests-red",
+        "line 9 validation completed without validation.started: replay-receipt-tests",
+        "line 11 validation completed without validation.started: proofline-replay-receipt-tests",
+        "line 17 validation completed without validation.started: evaluator-replay-readiness",
+        "line 18 validation completed without validation.started: replay-receipt-dry-run",
+        "line 19 validation completed without validation.started: replay-receipt-execute",
+        "line 20 validation completed without validation.started: installed-proofline-replay",
+        "line 23 validation completed without validation.started: replay-receipt-tests",
+        "line 24 validation completed without validation.started: replay-receipt-dry-run",
+        "line 25 validation completed without validation.started: replay-receipt-execute",
+        "line 26 validation completed without validation.started: proofline-skill-tests",
+        "line 27 validation completed without validation.started: trace-ledger-lint",
+        "line 28 validation completed without validation.started: full-unit-tests",
+        "line 29 validation completed without validation.started: manifest-verify",
+        "line 30 validation completed without validation.started: check-repo"
+      ]
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.23-experience-store-cli/MANIFEST.json",
+      "run_id": "ciph-v0.23-experience-store-cli",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 12,
+      "trace_path": "runs/ciph-v0.23-experience-store-cli/TRACE.jsonl",
+      "warnings": [
+        "line 7 validation completed without validation.started: experience-store-tests-red",
+        "line 9 validation completed without validation.started: experience-store-tests",
+        "line 11 validation completed without validation.started: proofline-query-focused-tests",
+        "line 16 validation completed without validation.started: installed-proofline-query",
+        "line 19 validation completed without validation.started: experience-store-tests",
+        "line 20 validation completed without validation.started: experience-store-json",
+        "line 21 validation completed without validation.started: experience-store-html",
+        "line 22 validation completed without validation.started: proofline-skill-tests",
+        "line 23 validation completed without validation.started: trace-ledger-lint",
+        "line 24 validation completed without validation.started: full-unit-tests",
+        "line 25 validation completed without validation.started: manifest-verify",
+        "line 26 validation completed without validation.started: check-repo"
+      ]
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.24-experience-diagnostics/MANIFEST.json",
+      "run_id": "ciph-v0.24-experience-diagnostics",
+      "strict_errors": 0,
+      "strict_opt_in": false,
+      "strict_status": "PASS",
+      "strict_warnings": 11,
+      "trace_path": "runs/ciph-v0.24-experience-diagnostics/TRACE.jsonl",
+      "warnings": [
+        "line 7 validation completed without validation.started: diagnostics-tests",
+        "line 8 validation completed without validation.started: trace-lint-tests",
+        "line 9 validation completed without validation.started: candidate-loop-tests",
+        "line 10 validation completed without validation.started: diagnostics-json",
+        "line 11 validation completed without validation.started: diagnostics-html",
+        "line 12 validation completed without validation.started: next-candidates-html",
+        "line 13 validation completed without validation.started: experience-store-json",
+        "line 14 validation completed without validation.started: experience-store-html",
+        "line 15 validation completed without validation.started: proofline-skill-tests",
+        "line 16 validation completed without validation.started: full-unit-tests",
+        "line 17 validation completed without validation.started: check-repo"
+      ]
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.25-trace-strictness-adoption/MANIFEST.json",
+      "run_id": "ciph-v0.25-trace-strictness-adoption",
+      "strict_errors": 0,
+      "strict_opt_in": true,
+      "strict_status": "PASS",
+      "strict_warnings": 0,
+      "trace_path": "runs/ciph-v0.25-trace-strictness-adoption/TRACE.jsonl",
+      "warnings": []
+    },
+    {
+      "errors": [],
+      "manifest_path": "runs/ciph-v0.26-strict-trace-repair-loop/MANIFEST.json",
+      "run_id": "ciph-v0.26-strict-trace-repair-loop",
+      "strict_errors": 0,
+      "strict_opt_in": true,
+      "strict_status": "PASS",
+      "strict_warnings": 0,
+      "trace_path": "runs/ciph-v0.26-strict-trace-repair-loop/TRACE.jsonl",
+      "warnings": []
+    },
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/ciph-v0.3-run-checks/MANIFEST.json",
+      "run_id": "ciph-v0.3-run-checks",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    },
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/ciph-v0.4-manifest-lint/MANIFEST.json",
+      "run_id": "ciph-v0.4-manifest-lint",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    },
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/ciph-v0.5-usability-reports/MANIFEST.json",
+      "run_id": "ciph-v0.5-usability-reports",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    },
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/ciph-v0.6-child-tasks/MANIFEST.json",
+      "run_id": "ciph-v0.6-child-tasks",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    },
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/ciph-v0.7-candidates/MANIFEST.json",
+      "run_id": "ciph-v0.7-candidates",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    },
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/ciph-v0.8-repo-gate/MANIFEST.json",
+      "run_id": "ciph-v0.8-repo-gate",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    },
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/ciph-v0.9-codex-skill/MANIFEST.json",
+      "run_id": "ciph-v0.9-codex-skill",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    },
+    {
+      "errors": [
+        "trace.path missing"
+      ],
+      "manifest_path": "runs/example-harness-design/MANIFEST.json",
+      "run_id": "example-harness-design",
+      "strict_errors": 1,
+      "strict_opt_in": false,
+      "strict_status": "MISSING",
+      "strict_warnings": 0,
+      "trace_path": null,
+      "warnings": []
+    }
+  ],
+  "schema_version": "ciph.trace-strictness-report.v1",
+  "summary": {
+    "strict_error_runs": 13,
+    "strict_opt_in_runs": 2,
+    "strict_ready_runs": 13,
+    "strict_warning_runs": 12,
+    "total_runs": 26
+  }
+}

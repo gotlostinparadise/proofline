@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +38,13 @@ def calculate_metrics(
         "handoff_recall": _handoff_recall(events),
         "validation_coverage": _validation_coverage(manifest, events),
         "recovery_completion": _recovery_completion(events),
+        "model_result_coverage": _model_result_coverage(events),
+        "context_token_total": float(_context_token_total(events)),
+        "wall_time_seconds": float(_wall_time_seconds(events)),
+        "declared_runtime_seconds": float(_declared_runtime_seconds(events)),
+        "declared_cost_total": float(_declared_cost_total(events)),
+        "cost_proxy": float(_cost_proxy(events)),
+        "recovery_evidence_coverage": _recovery_evidence_coverage(events),
     }
 
 
@@ -203,6 +211,73 @@ def _recovery_completion(events: list[dict[str, Any]]) -> float:
     return _ratio(completed, len(attempts))
 
 
+def _model_result_coverage(events: list[dict[str, Any]]) -> float:
+    calls = [event for event in events if event.get("event_type") == "model.call"]
+    results = [event for event in events if event.get("event_type") == "model.result"]
+    if not calls:
+        return 1.0
+    return _ratio(len(results), len(calls))
+
+
+def _context_token_total(events: list[dict[str, Any]]) -> int:
+    total = 0.0
+    for event in events:
+        total += _event_token_total(event)
+    return int(total)
+
+
+def _wall_time_seconds(events: list[dict[str, Any]]) -> int:
+    timestamps = [_parse_time(event.get("occurred_at")) for event in events]
+    timestamps = [timestamp for timestamp in timestamps if timestamp is not None]
+    if len(timestamps) < 2:
+        return 0
+    return max(0, int((max(timestamps) - min(timestamps)).total_seconds()))
+
+
+def _cost_proxy(events: list[dict[str, Any]]) -> int:
+    tool_results = sum(1 for event in events if event.get("event_type") == "tool.result")
+    model_tokens = _context_token_total(events)
+    return model_tokens + tool_results * 100
+
+
+def _declared_runtime_seconds(events: list[dict[str, Any]]) -> float:
+    total = 0.0
+    for event in events:
+        total += _event_runtime_seconds(event)
+    return round(total, 6)
+
+
+def _declared_cost_total(events: list[dict[str, Any]]) -> float:
+    total = 0.0
+    for event in events:
+        total += _event_cost(event)
+    return round(total, 6)
+
+
+def _recovery_evidence_coverage(events: list[dict[str, Any]]) -> float:
+    recoveries = [event for event in events if event.get("event_type") == "recovery.attempted"]
+    if not recoveries:
+        return 1.0
+    covered = sum(
+        1
+        for event in recoveries
+        if isinstance(event.get("evidence_path"), str)
+        or isinstance(event.get("linked_event_id"), str)
+        or isinstance(event.get("failure_event_id"), str)
+    )
+    return _ratio(covered, len(recoveries))
+
+
+def _parse_time(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value:
+        return None
+    normalized = value.replace("Z", "+00:00")
+    try:
+        return datetime.fromisoformat(normalized)
+    except ValueError:
+        return None
+
+
 def _unique_field(events: list[dict[str, Any]], event_type: str, field_name: str) -> set[str]:
     return {
         str(event[field_name])
@@ -215,6 +290,76 @@ def _string_list(value: Any) -> list[str]:
     if not isinstance(value, list):
         return []
     return [item for item in value if isinstance(item, str) and item.strip()]
+
+
+def _event_token_total(event: dict[str, Any]) -> float:
+    mappings = _event_metric_mappings(event)
+    total_values = [
+        _positive_number(mapping.get(field_name))
+        for mapping in mappings
+        for field_name in ["total_tokens", "tokens_total"]
+    ]
+    total_values = [value for value in total_values if value is not None]
+    if total_values:
+        return max(total_values)
+
+    categories = [
+        ["context_tokens"],
+        ["input_tokens", "prompt_tokens"],
+        ["output_tokens", "completion_tokens"],
+    ]
+    total = 0.0
+    for category in categories:
+        values = [
+            _positive_number(mapping.get(field_name))
+            for mapping in mappings
+            for field_name in category
+        ]
+        values = [value for value in values if value is not None]
+        if values:
+            total += max(values)
+    return total
+
+
+def _event_runtime_seconds(event: dict[str, Any]) -> float:
+    values: list[float] = []
+    for mapping in _event_metric_mappings(event):
+        for field_name in ["duration_seconds", "elapsed_seconds", "runtime_seconds", "wall_seconds"]:
+            value = _positive_number(mapping.get(field_name))
+            if value is not None:
+                values.append(value)
+        for field_name in ["duration_ms", "elapsed_ms", "runtime_ms", "wall_time_ms"]:
+            value = _positive_number(mapping.get(field_name))
+            if value is not None:
+                values.append(value / 1000.0)
+    return max(values) if values else 0.0
+
+
+def _event_cost(event: dict[str, Any]) -> float:
+    values = [
+        _positive_number(mapping.get(field_name))
+        for mapping in _event_metric_mappings(event)
+        for field_name in ["cost_usd", "estimated_cost_usd", "cost"]
+    ]
+    values = [value for value in values if value is not None]
+    return max(values) if values else 0.0
+
+
+def _event_metric_mappings(event: dict[str, Any]) -> list[dict[str, Any]]:
+    mappings = [event]
+    for field_name in ["usage", "token_usage", "metrics"]:
+        value = event.get(field_name)
+        if isinstance(value, dict):
+            mappings.append(value)
+    return mappings
+
+
+def _positive_number(value: Any) -> float | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)) and value > 0:
+        return float(value)
+    return None
 
 
 def _ratio(numerator: int, denominator: int) -> float:

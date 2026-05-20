@@ -1,0 +1,604 @@
+{
+  "execution_control": {
+    "high_severity_blocker_count": 23,
+    "message": "High-severity diagnostics findings exist; closeout should remain blocked until they are resolved.",
+    "recommended_actions": [
+      {
+        "command_hint": "rerun diagnose_experience_store.py after repairing the linked findings",
+        "recommendation_id": "closeout-contract"
+      },
+      {
+        "command_hint": "rerun diagnose_experience_store.py after repairing the linked findings",
+        "recommendation_id": "trace-contract"
+      }
+    ],
+    "status": "BLOCKED"
+  },
+  "findings": [
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.10-vendor-layout/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.10-vendor-layout",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.10-vendor-layout/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "ciph-v0.10-vendor-layout",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.11-html-artifacts/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.11-html-artifacts",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.11-html-artifacts/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "ciph-v0.11-html-artifacts",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.12-policy-trace/TRACE.jsonl"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.12-policy-trace",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.2-init-run/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.2-init-run",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.2-init-run/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "ciph-v0.2-init-run",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.3-run-checks/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.3-run-checks",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.3-run-checks/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "ciph-v0.3-run-checks",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.4-manifest-lint/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.4-manifest-lint",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.4-manifest-lint/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "ciph-v0.4-manifest-lint",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.5-usability-reports/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.5-usability-reports",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.5-usability-reports/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "ciph-v0.5-usability-reports",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.6-child-tasks/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.6-child-tasks",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.6-child-tasks/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "ciph-v0.6-child-tasks",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.7-candidates/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.7-candidates",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.7-candidates/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "ciph-v0.7-candidates",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.8-repo-gate/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.8-repo-gate",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.8-repo-gate/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "ciph-v0.8-repo-gate",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.9-codex-skill/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "ciph-v0.9-codex-skill",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.9-codex-skill/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "ciph-v0.9-codex-skill",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/example-harness-design/MANIFEST.json"
+      ],
+      "id": "closeout-missing",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "recommendation_id": "closeout-contract",
+      "run_id": "example-harness-design",
+      "severity": "high",
+      "title": "Missing closeout status"
+    },
+    {
+      "evidence_paths": [
+        "runs/example-harness-design/MANIFEST.json"
+      ],
+      "id": "trace-missing",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "recommendation_id": "trace-contract",
+      "run_id": "example-harness-design",
+      "severity": "high",
+      "title": "Missing trace ledger"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.10-vendor-layout/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'local-skill-install' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.10-vendor-layout",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.11-html-artifacts/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'full-unit-tests' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.11-html-artifacts",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.12-policy-trace/TRACE.jsonl"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'full-unit-tests' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.12-policy-trace",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "ciph-v0.15-evaluation-protocol/EVALUATION.json",
+        "runs/ciph-v0.15-evaluation-protocol/MANIFEST.json"
+      ],
+      "id": "evaluation-no-replay-receipts",
+      "reason": "EVALUATION.json exists with candidates but no replay receipts were found.",
+      "recommendation_id": "replay-readiness",
+      "run_id": "ciph-v0.15-evaluation-protocol",
+      "severity": "medium",
+      "title": "Evaluation run lacks replay receipts"
+    },
+    {
+      "evidence_paths": [
+        "ciph-v0.16-holdout-release-gate/EVALUATION.json",
+        "runs/ciph-v0.16-holdout-release-gate/MANIFEST.json"
+      ],
+      "id": "evaluation-no-replay-receipts",
+      "reason": "EVALUATION.json exists with candidates but no replay receipts were found.",
+      "recommendation_id": "replay-readiness",
+      "run_id": "ciph-v0.16-holdout-release-gate",
+      "severity": "medium",
+      "title": "Evaluation run lacks replay receipts"
+    },
+    {
+      "evidence_paths": [
+        "ciph-v0.17-holdout-final-comparison/EVALUATION.json",
+        "runs/ciph-v0.17-holdout-final-comparison/MANIFEST.json"
+      ],
+      "id": "evaluation-no-replay-receipts",
+      "reason": "EVALUATION.json exists with candidates but no replay receipts were found.",
+      "recommendation_id": "replay-readiness",
+      "run_id": "ciph-v0.17-holdout-final-comparison",
+      "severity": "medium",
+      "title": "Evaluation run lacks replay receipts"
+    },
+    {
+      "evidence_paths": [
+        "ciph-v0.18-score-provenance/EVALUATION.json",
+        "runs/ciph-v0.18-score-provenance/MANIFEST.json"
+      ],
+      "id": "evaluation-no-replay-receipts",
+      "reason": "EVALUATION.json exists with candidates but no replay receipts were found.",
+      "recommendation_id": "replay-readiness",
+      "run_id": "ciph-v0.18-score-provenance",
+      "severity": "medium",
+      "title": "Evaluation run lacks replay receipts"
+    },
+    {
+      "evidence_paths": [
+        "ciph-v0.19-score-integrity/EVALUATION.json",
+        "runs/ciph-v0.19-score-integrity/MANIFEST.json"
+      ],
+      "id": "evaluation-no-replay-receipts",
+      "reason": "EVALUATION.json exists with candidates but no replay receipts were found.",
+      "recommendation_id": "replay-readiness",
+      "run_id": "ciph-v0.19-score-integrity",
+      "severity": "medium",
+      "title": "Evaluation run lacks replay receipts"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.2-init-run/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'focused-init-run-tests' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.2-init-run",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "ciph-v0.20-evaluator-replay-readiness/EVALUATION.json",
+        "runs/ciph-v0.20-evaluator-replay-readiness/MANIFEST.json"
+      ],
+      "id": "evaluation-no-replay-receipts",
+      "reason": "EVALUATION.json exists with candidates but no replay receipts were found.",
+      "recommendation_id": "replay-readiness",
+      "run_id": "ciph-v0.20-evaluator-replay-readiness",
+      "severity": "medium",
+      "title": "Evaluation run lacks replay receipts"
+    },
+    {
+      "evidence_paths": [
+        "ciph-v0.21-local-replay-executor/EVALUATION.json",
+        "runs/ciph-v0.21-local-replay-executor/MANIFEST.json"
+      ],
+      "id": "evaluation-no-replay-receipts",
+      "reason": "EVALUATION.json exists with candidates but no replay receipts were found.",
+      "recommendation_id": "replay-readiness",
+      "run_id": "ciph-v0.21-local-replay-executor",
+      "severity": "medium",
+      "title": "Evaluation run lacks replay receipts"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.3-run-checks/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'focused-run-checks-tests' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.3-run-checks",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.4-manifest-lint/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'focused-lint-tests' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.4-manifest-lint",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.5-usability-reports/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'focused-closeout-tests' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.5-usability-reports",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.6-child-tasks/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'child-help' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.6-child-tasks",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.7-candidates/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'focused-candidate-tests' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.7-candidates",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.8-repo-gate/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'focused-repo-gate-tests' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.8-repo-gate",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.9-codex-skill/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'local-skill-install' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "ciph-v0.9-codex-skill",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "runs/example-harness-design/MANIFEST.json"
+      ],
+      "id": "required-check-missing",
+      "reason": "Required check 'html-parse' has no validation.completed event.",
+      "recommendation_id": "validation-coverage",
+      "run_id": "example-harness-design",
+      "severity": "medium",
+      "title": "Required check not validated"
+    },
+    {
+      "evidence_paths": [
+        "runs/ciph-v0.12-policy-trace/TRACE.jsonl"
+      ],
+      "id": "stage-incomplete",
+      "reason": "Started but incomplete stages: implementation.",
+      "recommendation_id": "stage-coverage",
+      "run_id": "ciph-v0.12-policy-trace",
+      "severity": "low",
+      "title": "Started stage without completion"
+    }
+  ],
+  "query": {
+    "limit": null,
+    "min_severity": "low",
+    "runs_dir": "runs"
+  },
+  "recommendations": [
+    {
+      "confidence": "high",
+      "id": "trace-contract",
+      "reason": "Trace path is missing from manifest or does not exist on disk.",
+      "run_ids": [
+        "ciph-v0.10-vendor-layout",
+        "ciph-v0.11-html-artifacts",
+        "ciph-v0.2-init-run",
+        "ciph-v0.3-run-checks",
+        "ciph-v0.4-manifest-lint",
+        "ciph-v0.5-usability-reports",
+        "ciph-v0.6-child-tasks",
+        "ciph-v0.7-candidates",
+        "ciph-v0.8-repo-gate",
+        "ciph-v0.9-codex-skill",
+        "example-harness-design"
+      ],
+      "severity": "high",
+      "suggested_next_action": "Populate manifest.trace.path and write closeout-ready TRACE.jsonl with closeout.completed and validation events."
+    },
+    {
+      "confidence": "high",
+      "id": "closeout-contract",
+      "reason": "No closeout.completed event with PASS/FAIL status was recorded.",
+      "run_ids": [
+        "ciph-v0.10-vendor-layout",
+        "ciph-v0.11-html-artifacts",
+        "ciph-v0.12-policy-trace",
+        "ciph-v0.2-init-run",
+        "ciph-v0.3-run-checks",
+        "ciph-v0.4-manifest-lint",
+        "ciph-v0.5-usability-reports",
+        "ciph-v0.6-child-tasks",
+        "ciph-v0.7-candidates",
+        "ciph-v0.8-repo-gate",
+        "ciph-v0.9-codex-skill",
+        "example-harness-design"
+      ],
+      "severity": "high",
+      "suggested_next_action": "Emit a closeout.completed event with status PASS/FAIL for every run."
+    },
+    {
+      "confidence": "high",
+      "id": "validation-coverage",
+      "reason": "Required check 'local-skill-install' has no validation.completed event.",
+      "run_ids": [
+        "ciph-v0.10-vendor-layout",
+        "ciph-v0.11-html-artifacts",
+        "ciph-v0.12-policy-trace",
+        "ciph-v0.2-init-run",
+        "ciph-v0.3-run-checks",
+        "ciph-v0.4-manifest-lint",
+        "ciph-v0.5-usability-reports",
+        "ciph-v0.6-child-tasks",
+        "ciph-v0.7-candidates",
+        "ciph-v0.8-repo-gate",
+        "ciph-v0.9-codex-skill",
+        "example-harness-design"
+      ],
+      "severity": "medium",
+      "suggested_next_action": "Add validation.completed events for each required manifest check."
+    },
+    {
+      "confidence": "high",
+      "id": "replay-readiness",
+      "reason": "EVALUATION.json exists with candidates but no replay receipts were found.",
+      "run_ids": [
+        "ciph-v0.15-evaluation-protocol",
+        "ciph-v0.16-holdout-release-gate",
+        "ciph-v0.17-holdout-final-comparison",
+        "ciph-v0.18-score-provenance",
+        "ciph-v0.19-score-integrity",
+        "ciph-v0.20-evaluator-replay-readiness",
+        "ciph-v0.21-local-replay-executor"
+      ],
+      "severity": "medium",
+      "suggested_next_action": "Generate replay receipts for evaluation candidates and include mode and status for each attempt."
+    },
+    {
+      "confidence": "medium",
+      "id": "stage-coverage",
+      "reason": "Started but incomplete stages: implementation.",
+      "run_ids": [
+        "ciph-v0.12-policy-trace"
+      ],
+      "severity": "low",
+      "suggested_next_action": "Emit stage.completed for every recorded stage.started."
+    }
+  ],
+  "schema_version": "ciph.experience-diagnostics.v1",
+  "summary": {
+    "high_findings": 23,
+    "low_findings": 1,
+    "medium_findings": 19,
+    "recommendations": 5,
+    "runs_with_findings": 19,
+    "total_findings": 43,
+    "total_runs": 24
+  }
+}

@@ -59,6 +59,66 @@ class ValidateEvaluationTests(unittest.TestCase):
             self.assertFalse(result.ok)
             self.assertIn("search phase forbids holdout_scores in runs/sample/candidates/baseline/score.json", result.errors)
 
+    def test_validate_evaluation_rejects_multi_class_ablation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = _create_run(root)
+            score_path = run_dir / "candidates" / "baseline" / "score.json"
+            score = json.loads(score_path.read_text(encoding="utf-8"))
+            score["ablation"]["changed_dimensions"] = ["policy:verification", "source:runner"]
+            score_path.write_text(json.dumps(score, indent=2) + "\n", encoding="utf-8")
+            _write_evaluation(run_dir)
+
+            result = validate_evaluation(run_dir, root=root)
+
+            self.assertFalse(result.ok)
+            self.assertIn("candidate baseline must change one ablation class at a time", result.errors)
+
+    def test_validate_evaluation_rejects_compound_lineage_ablation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = _create_run(root)
+            initialize_candidate(
+                run_dir / "MANIFEST.json",
+                "frontier",
+                root=root,
+                changed_modules=["runner"],
+                parent_ids=["baseline"],
+                change_class="source",
+            )
+            _write_evaluation(run_dir, frontier_ids=["frontier"], extra_candidates=["frontier"])
+
+            result = validate_evaluation(run_dir, root=root)
+
+            self.assertFalse(result.ok)
+            self.assertIn(
+                "candidate frontier ablation changed_class source compounds with parent baseline changed_class policy",
+                result.errors,
+            )
+
+    def test_validate_evaluation_accepts_source_lineage_from_baseline_role(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = _create_run(root)
+            initialize_candidate(
+                run_dir / "MANIFEST.json",
+                "frontier",
+                root=root,
+                changed_modules=["runner"],
+                parent_ids=["baseline"],
+                change_class="source",
+            )
+            _write_evaluation(
+                run_dir,
+                frontier_ids=["frontier"],
+                extra_candidates=["frontier"],
+                baseline_role="baseline",
+            )
+
+            result = validate_evaluation(run_dir, root=root)
+
+            self.assertTrue(result.ok, result.errors)
+
     def test_validate_evaluation_rejects_holdout_phase_without_frontier(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -319,12 +379,14 @@ def _write_evaluation(
     holdout_sealed: bool = True,
     holdout_score_path: str | None = None,
     holdout_releases: list[dict[str, object]] | None = None,
+    extra_candidates: list[str] | None = None,
+    baseline_role: str = "candidate",
 ) -> None:
     run_id = run_dir.name
     candidate_path = f"runs/{run_id}/candidates/baseline/score.json"
     candidate = {
         "candidate_id": "baseline",
-        "role": "baseline",
+        "role": baseline_role,
         "evaluation_phase": "search",
         "score_path": candidate_path,
     }
@@ -342,6 +404,15 @@ def _write_evaluation(
         "frontier_candidate_ids": frontier_ids if frontier_ids is not None else [],
         "candidates": [candidate],
     }
+    for candidate_id in extra_candidates or []:
+        payload["candidates"].append(
+            {
+                "candidate_id": candidate_id,
+                "role": "candidate",
+                "evaluation_phase": "search",
+                "score_path": f"runs/{run_id}/candidates/{candidate_id}/score.json",
+            }
+        )
     if holdout_releases is not None:
         payload["holdout_releases"] = holdout_releases
     run_dir.joinpath("EVALUATION.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")

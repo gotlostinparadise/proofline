@@ -10,6 +10,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.lint_trace import lint_trace
+except ModuleNotFoundError:  # pragma: no cover - exercised by direct script execution.
+    from lint_trace import lint_trace
+
 
 SCHEMA_VERSION = "ciph.manifest.v1"
 TRACE_SCHEMA_VERSION = "ciph.trace.v1"
@@ -184,6 +189,11 @@ def _validate_trace(manifest: dict[str, Any], root: Path, result: ValidationResu
     if trace.get("schema_version") != TRACE_SCHEMA_VERSION:
         result.errors.append(f"trace.schema_version must be {TRACE_SCHEMA_VERSION}")
 
+    strict = trace.get("strict", False)
+    if not isinstance(strict, bool):
+        result.errors.append("trace.strict must be a boolean when present")
+        strict = False
+
     trace_path = trace.get("path")
     if not _non_empty_string(trace_path):
         result.errors.append("trace.path must be a non-empty string")
@@ -195,6 +205,13 @@ def _validate_trace(manifest: dict[str, Any], root: Path, result: ValidationResu
 
     if not (root / trace_path).exists():
         result.errors.append(f"Missing trace ledger: {trace_path}")
+        return
+
+    trace_result = lint_trace(root / trace_path, root=root, strict=strict)
+    for error in trace_result.errors:
+        result.errors.append(f"trace lint failed: {error}")
+    for warning in trace_result.warnings:
+        result.warnings.append(f"trace lint warning: {warning}")
 
 
 def _is_external_reference(reference: str) -> bool:

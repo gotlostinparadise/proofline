@@ -19,6 +19,8 @@ class ValidateCandidateTests(unittest.TestCase):
 
             self.assertTrue(result.ok, result.errors)
             self.assertIn("PASS required file score.json", result.messages)
+            self.assertIn("PASS ablation metadata", result.messages)
+            self.assertIn("PASS source provenance metadata", result.messages)
 
     def test_validate_candidate_detects_missing_required_file(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -70,6 +72,51 @@ class ValidateCandidateTests(unittest.TestCase):
             self.assertFalse(result.ok)
             self.assertIn("declared artifact path does not exist: runs/sample/candidates/baseline/artifacts/missing.html", result.errors)
 
+    def test_validate_candidate_rejects_missing_ablation_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            candidate_dir = _create_candidate(root)
+            score_path = candidate_dir / "score.json"
+            score = json.loads(score_path.read_text(encoding="utf-8"))
+            del score["ablation"]
+            score_path.write_text(json.dumps(score, indent=2) + "\n", encoding="utf-8")
+
+            result = validate_candidate(candidate_dir, root=root)
+
+            self.assertFalse(result.ok)
+            self.assertIn("score ablation must be an object", result.errors)
+
+    def test_validate_candidate_requires_source_provenance_for_source_ablation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            candidate_dir = _create_candidate(root, change_class="source")
+            score_path = candidate_dir / "score.json"
+            score = json.loads(score_path.read_text(encoding="utf-8"))
+            score["source_provenance"] = []
+            score_path.write_text(json.dumps(score, indent=2) + "\n", encoding="utf-8")
+
+            result = validate_candidate(candidate_dir, root=root)
+
+            self.assertFalse(result.ok)
+            self.assertIn(
+                "score source_provenance must include at least one existing source snapshot for source ablations",
+                result.errors,
+            )
+
+    def test_validate_candidate_requires_lineage_to_match_parent_ids(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            candidate_dir = _create_candidate(root)
+            score_path = candidate_dir / "score.json"
+            score = json.loads(score_path.read_text(encoding="utf-8"))
+            score["lineage"]["parents"] = ["other"]
+            score_path.write_text(json.dumps(score, indent=2) + "\n", encoding="utf-8")
+
+            result = validate_candidate(candidate_dir, root=root)
+
+            self.assertFalse(result.ok)
+            self.assertIn("score lineage.parents must match parent_ids", result.errors)
+
     def test_write_candidate_validation_creates_html_report(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -111,7 +158,7 @@ class ValidateCandidateTests(unittest.TestCase):
             self.assertTrue(output_path.is_file())
 
 
-def _create_candidate(root: Path) -> Path:
+def _create_candidate(root: Path, change_class: str = "policy") -> Path:
     manifest_path = _write_manifest(root)
     initialize_candidate(
         manifest_path,
@@ -119,6 +166,7 @@ def _create_candidate(root: Path) -> Path:
         root=root,
         changed_modules=["candidate-search"],
         parent_ids=["seed"],
+        change_class=change_class,
     )
     return root / "runs" / "sample" / "candidates" / "baseline"
 

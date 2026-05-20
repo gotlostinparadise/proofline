@@ -41,6 +41,10 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((vendor / "scripts" / "validate_evaluator_replay.py").is_file())
             self.assertTrue((vendor / "scripts" / "execute_evaluator_replay.py").is_file())
             self.assertTrue((vendor / "scripts" / "query_experience_store.py").is_file())
+            self.assertTrue((vendor / "scripts" / "diagnose_experience_store.py").is_file())
+            self.assertTrue((vendor / "scripts" / "plan_next_candidates.py").is_file())
+            self.assertTrue((vendor / "scripts" / "trace_strictness_report.py").is_file())
+            self.assertTrue((vendor / "scripts" / "repair_trace_strictness.py").is_file())
             self.assertTrue((vendor / "scripts" / "lint_trace.py").is_file())
             self.assertTrue((vendor / "scripts" / "trace_metrics.py").is_file())
             self.assertTrue((vendor / "harness" / "policies" / "README.md").is_file())
@@ -56,6 +60,10 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue(os.access(vendor / "scripts" / "validate_evaluator_replay.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "execute_evaluator_replay.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "query_experience_store.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "diagnose_experience_store.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "plan_next_candidates.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "trace_strictness_report.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "repair_trace_strictness.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "lint_trace.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "trace_metrics.py", os.X_OK))
 
@@ -399,6 +407,100 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(experience["schema_version"], "ciph.experience-store.v1")
             self.assertEqual(experience["runs"][0]["run_id"], "sample-run")
 
+            query_diagnostics = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/diagnose_experience_store.py",
+                    "--root",
+                    str(target),
+                    "--runs-dir",
+                    "vendor/proofline/runs",
+                    "--min-severity",
+                    "low",
+                    "--format",
+                    "json",
+                    "--output",
+                    "vendor/proofline/runs/sample-run/artifacts/experience-diagnostics.json",
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(query_diagnostics.returncode, 0, query_diagnostics.stderr)
+            self.assertIn("Wrote CIPH experience diagnostics", query_diagnostics.stdout)
+            diagnostics = json.loads(
+                (vendor / "runs" / "sample-run" / "artifacts" / "experience-diagnostics.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(diagnostics["schema_version"], "ciph.experience-diagnostics.v1")
+
+            plan_next = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/plan_next_candidates.py",
+                    "vendor/proofline/runs/sample-run/artifacts/experience-diagnostics.json",
+                    "--format",
+                    "json",
+                    "--output",
+                    "vendor/proofline/runs/sample-run/artifacts/next-candidates.json",
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(plan_next.returncode, 0, plan_next.stderr)
+            self.assertIn("Wrote CIPH next candidate plan", plan_next.stdout)
+            next_plan = json.loads((vendor / "runs" / "sample-run" / "artifacts" / "next-candidates.json").read_text(encoding="utf-8"))
+            self.assertEqual(next_plan["schema_version"], "ciph.next-candidate-plan.v1")
+
+            strictness_report = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/trace_strictness_report.py",
+                    "--root",
+                    str(target),
+                    "--runs-dir",
+                    "vendor/proofline/runs",
+                    "--format",
+                    "json",
+                    "--output",
+                    "vendor/proofline/runs/sample-run/artifacts/trace-strictness.json",
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(strictness_report.returncode, 0, strictness_report.stderr)
+            self.assertIn("Wrote CIPH trace strictness report", strictness_report.stdout)
+            strictness = json.loads((vendor / "runs" / "sample-run" / "artifacts" / "trace-strictness.json").read_text(encoding="utf-8"))
+            self.assertEqual(strictness["schema_version"], "ciph.trace-strictness-report.v1")
+
+            repair_trace = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/repair_trace_strictness.py",
+                    "vendor/proofline/runs/sample-run/artifacts/trace-strictness.json",
+                    "--format",
+                    "json",
+                    "--output",
+                    "vendor/proofline/runs/sample-run/artifacts/trace-repair-plan.json",
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(repair_trace.returncode, 0, repair_trace.stderr)
+            self.assertIn("Wrote CIPH trace repair plan", repair_trace.stdout)
+            repair = json.loads((vendor / "runs" / "sample-run" / "artifacts" / "trace-repair-plan.json").read_text(encoding="utf-8"))
+            self.assertEqual(repair["schema_version"], "ciph.trace-repair-plan.v1")
+
     def test_bundled_assets_are_trace_aware(self):
         skill_text = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
         manifest = (SKILL_DIR / "assets" / "proofline" / "templates" / "MANIFEST.json").read_text(encoding="utf-8")
@@ -416,8 +518,17 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertIn("validate_evaluator_replay.py", skill_text)
         self.assertIn("execute_evaluator_replay.py", skill_text)
         self.assertIn("query_experience_store.py", skill_text)
+        self.assertIn("diagnose_experience_store.py", skill_text)
+        self.assertIn("plan_next_candidates.py", skill_text)
+        self.assertIn("trace_strictness_report.py", skill_text)
+        self.assertIn("repair_trace_strictness.py", skill_text)
         self.assertIn("--receipt-dir", skill_text)
         self.assertIn("--has-replay-receipts", skill_text)
+        self.assertIn("--min-severity", skill_text)
+        self.assertIn("--fail-on-high", skill_text)
+        self.assertIn("--strict", skill_text)
+        self.assertIn("--source-path", skill_text)
+        self.assertIn("source_provenance", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)
@@ -434,6 +545,10 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_evaluator_replay.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "execute_evaluator_replay.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "query_experience_store.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "diagnose_experience_store.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "plan_next_candidates.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "trace_strictness_report.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "repair_trace_strictness.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "harness" / "policies" / "state.md").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):

@@ -45,6 +45,9 @@ Lint a research trace ledger:
 
 ```bash
 python3 scripts/lint_trace.py runs/my-run/TRACE.jsonl --root .
+python3 scripts/lint_trace.py runs/my-run/TRACE.jsonl --root . --strict
+python3 scripts/trace_strictness_report.py --root . --runs-dir runs --format html --output runs/my-run/artifacts/trace-strictness.html
+python3 scripts/repair_trace_strictness.py runs/my-run/artifacts/trace-strictness.json --format html --output runs/my-run/artifacts/trace-repair-plan.html
 ```
 
 Render mechanism metrics from the manifest and trace:
@@ -76,6 +79,7 @@ Create and summarize candidates:
 
 ```bash
 python3 scripts/init_candidate.py runs/my-run/MANIFEST.json baseline --changed-module verification
+python3 scripts/init_candidate.py runs/my-run/MANIFEST.json source-frontier --change-class source --changed-module runner --parent baseline --source-path runs/my-run/candidates/source-frontier/source/README.md
 python3 scripts/validate_candidate.py runs/my-run/candidates/baseline --root . --output runs/my-run/artifacts/candidate-validation.html
 python3 scripts/candidate_summary.py runs/my-run --output runs/my-run/artifacts/candidate-summary.html
 ```
@@ -111,6 +115,15 @@ python3 scripts/query_experience_store.py --root . --runs-dir runs --status PASS
 python3 scripts/query_experience_store.py --root . --runs-dir runs --has-replay-receipts --format html --output runs/my-run/artifacts/experience-store.html
 ```
 
+Diagnose recurring harness weak spots and generate repair guidance:
+
+```bash
+python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --min-severity medium --format json --output runs/my-run/artifacts/experience-diagnostics.json
+python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --min-severity low --format html --output runs/my-run/artifacts/experience-diagnostics.html
+python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --min-severity high --fail-on-high
+python3 scripts/plan_next_candidates.py runs/my-run/artifacts/experience-diagnostics.json --format html --output runs/my-run/artifacts/next-candidates.html
+```
+
 ## Files
 
 - `harness/CIPH.md`: harness lifecycle and contracts.
@@ -121,8 +134,8 @@ python3 scripts/query_experience_store.py --root . --runs-dir runs --has-replay-
 - `templates/MANIFEST.json`: manifest template used by the initializer.
 - `scripts/init_run.py`: creates a run directory from templates.
 - `scripts/init_child_task.py`: creates a bounded child task packet.
-- `scripts/init_candidate.py`: creates Meta-Harness candidate records.
-- `scripts/validate_candidate.py`: validates candidate records and writes validation reports.
+- `scripts/init_candidate.py`: creates Meta-Harness candidate records with ablation, policy provenance, and source provenance scaffolding.
+- `scripts/validate_candidate.py`: validates candidate records, source snapshots, ablation metadata, lineage consistency, and writes validation reports.
 - `scripts/validate_evaluation.py`: validates search-set versus holdout evaluation protocols.
 - `scripts/release_holdout.py`: gates the transition from search to holdout release.
 - `scripts/ingest_holdout_scores.py`: links released holdout score records into the evaluation protocol.
@@ -136,8 +149,12 @@ python3 scripts/query_experience_store.py --root . --runs-dir runs --has-replay-
 - `scripts/check_repo.py`: runs the repository health gate.
 - `scripts/lint_manifest.py`: catches placeholders and weak manifest contracts.
 - `scripts/lint_trace.py`: validates research trace JSONL event contracts.
+- `scripts/trace_strictness_report.py`: reports which historical runs are ready for strict trace adoption.
+- `scripts/repair_trace_strictness.py`: converts strict trace report failures into structured repair suggestions.
 - `scripts/trace_metrics.py`: derives mechanism metrics from run manifests and traces.
 - `scripts/run_checks.py`: runs manifest checks and writes structured evidence.
+- `scripts/diagnose_experience_store.py`: runs a deterministic diagnostics pass over run history and emits prioritized findings + recommendations.
+- `scripts/plan_next_candidates.py`: turns diagnostics recommendations into bounded next-candidate stubs without executing them.
 - `scripts/html_report.py`: renders shared self-contained HTML report structure.
 - `scripts/verify_manifest.py`: validates manifest structure and required local paths.
 - `scripts/run_status.py`: writes a concise run status report.
@@ -145,7 +162,7 @@ python3 scripts/query_experience_store.py --root . --runs-dir runs --has-replay-
 
 ## Research Harness Layer
 
-Policy modules under `harness/policies/` describe editable harness strategy. They are intentionally readable and ablatable; exact checks remain in scripts. `TRACE.jsonl` stores raw research events such as stage, state, tool, handoff, validation, candidate, recovery, budget, and closeout events. Candidate records under `runs/<run-id>/candidates/` preserve policy snapshots, source notes, raw candidate traces, score contracts, and artifacts. `EVALUATION.json` records baseline, search-set, holdout-set, budget, frontier, release budget, holdout score paths, and candidate phase state. Evaluator manifests under `runs/<run-id>/evaluators/` describe the command, inputs, outputs, evidence, metric keys, optional SHA-256 integrity hashes, and optional metadata-only replay readiness behind score records. Validate traces with `scripts/lint_trace.py`, candidates with `scripts/validate_candidate.py`, evaluation protocols with `scripts/validate_evaluation.py`, score provenance with `scripts/validate_score_provenance.py`, score integrity with `scripts/validate_score_integrity.py`, evaluator replay readiness with `scripts/validate_evaluator_replay.py`, and local replay execution with `scripts/execute_evaluator_replay.py`. The executor dry-runs by default; actual execution requires `--execute`, exact `--allow-argv0` approval, Bubblewrap no-network isolation, and post-run output hash verification. Replay receipts under `runs/<run-id>/replay_receipts/` record machine-readable status, command digest, sandbox mode, timeout, env allowlist names, pre/post output hashes, exit code, and output byte counts without storing env values or command output. `scripts/query_experience_store.py` projects prior runs into queryable JSON/HTML records without reading or serializing raw evidence bodies. Release holdout with `scripts/release_holdout.py`, ingest released scores with `scripts/ingest_holdout_scores.py`, then compare final outcomes with `scripts/final_comparison.py`; generated reports are views over manifest and trace evidence.
+Policy modules under `harness/policies/` describe editable harness strategy. They are intentionally readable and ablatable; exact checks remain in scripts. `TRACE.jsonl` stores raw research events such as stage, state, tool, handoff, validation, candidate, recovery, budget, and closeout events; strict linting also checks duplicate event IDs, safe local path references, and basic event ordering. Runs opt into strict manifest enforcement with `trace.strict: true`, while historical runs remain compatible with schema linting. `scripts/trace_strictness_report.py` shows which runs are ready to opt in and which need repair; `scripts/repair_trace_strictness.py` turns those failures into report-only repair suggestions for common candidate, validation, and reference issues. Candidate records under `runs/<run-id>/candidates/` preserve policy snapshots, `source_provenance` snapshots, source notes, raw candidate traces, score contracts, ablation class metadata, lineage metadata, and artifacts. `validate_candidate.py` requires `parent_ids` and `lineage.parents` to agree, and source ablations must include at least one existing source snapshot. `validate_evaluation.py` rejects parent/child lineage that compounds multiple non-baseline ablation classes. `EVALUATION.json` records baseline, search-set, holdout-set, budget, frontier, release budget, holdout score paths, and candidate phase state. Evaluator manifests under `runs/<run-id>/evaluators/` describe the command, inputs, outputs, evidence, metric keys, optional SHA-256 integrity hashes, and optional metadata-only replay readiness behind score records. Validate traces with `scripts/lint_trace.py`, candidates with `scripts/validate_candidate.py`, evaluation protocols with `scripts/validate_evaluation.py`, score provenance with `scripts/validate_score_provenance.py`, score integrity with `scripts/validate_score_integrity.py`, evaluator replay readiness with `scripts/validate_evaluator_replay.py`, and local replay execution with `scripts/execute_evaluator_replay.py`. The executor dry-runs by default; actual execution requires `--execute`, exact `--allow-argv0` approval, Bubblewrap no-network isolation, and post-run output hash verification. Replay receipts under `runs/<run-id>/replay_receipts/` record machine-readable status, command digest, sandbox mode, timeout, env allowlist names, pre/post output hashes, exit code, and output byte counts without storing env values or command output. `scripts/query_experience_store.py` projects prior runs into queryable JSON/HTML records without reading or serializing raw evidence bodies. `scripts/diagnose_experience_store.py --fail-on-high` turns high-severity diagnostics into an execution-control blocker, and `scripts/plan_next_candidates.py` converts recommendations into suggested candidate IDs and changed modules for the next experiment. Mechanism metrics consume top-level or nested token usage, runtime, and declared cost fields when trace events carry them, but generated reports remain diagnostic views over manifest and trace evidence. Release holdout with `scripts/release_holdout.py`, ingest released scores with `scripts/ingest_holdout_scores.py`, then compare final outcomes with `scripts/final_comparison.py`; generated reports are views over manifest and trace evidence.
 
 ## Development Checks
 

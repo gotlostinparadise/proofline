@@ -4,7 +4,8 @@
   "objective": "<original objective>",
   "trace": {
     "schema_version": "ciph.trace.v1",
-    "path": "runs/<run-id>/TRACE.jsonl"
+    "path": "runs/<run-id>/TRACE.jsonl",
+    "strict": true
   },
   "policy_modules": [
     "harness/policies/state.md",

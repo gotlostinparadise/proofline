@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 
 try:
@@ -32,6 +34,8 @@ def initialize_candidate(
     root: Path | str = ".",
     changed_modules: list[str] | None = None,
     parent_ids: list[str] | None = None,
+    change_class: str = "policy",
+    source_paths: list[str] | None = None,
     force: bool = False,
 ) -> CandidateResult:
     validate_candidate_id(candidate_id)
@@ -68,6 +72,9 @@ def initialize_candidate(
     (trace_dir / "failures.md").write_text("# Candidate Failures\n\n- None recorded.\n", encoding="utf-8")
 
     display_root = _display_path(candidate_dir, root_path)
+    source_snapshot_paths = source_paths or []
+    if change_class == "source" and not source_snapshot_paths:
+        source_snapshot_paths = [f"{display_root}/source/README.md"]
     score_path = candidate_dir / "score.json"
     score_path.write_text(
         json.dumps(
@@ -81,6 +88,12 @@ def initialize_candidate(
                     "generation": 0,
                 },
                 "changed_modules": changed_modules or [],
+                "ablation": {
+                    "changed_class": change_class,
+                    "changed_dimensions": _changed_dimensions(change_class, changed_modules or []),
+                },
+                "policy_provenance": _policy_provenance(root_path, changed_modules or []),
+                "source_provenance": _source_provenance(root_path, source_snapshot_paths),
                 "search_scores": {
                     "task_success": None,
                     "audit_completeness": None,
@@ -157,6 +170,55 @@ Record source files, prompt variants, config fragments, or patch references that
 """
 
 
+def _policy_provenance(root: Path, changed_modules: list[str]) -> list[dict[str, str | None]]:
+    loaded_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    snapshots: list[dict[str, str | None]] = []
+    for module in changed_modules:
+        candidates = [
+            root / module,
+            root / "harness" / "policies" / f"{module}.md",
+            root / "harness" / "policies" / module,
+        ]
+        policy_path = next((path for path in candidates if path.is_file()), None)
+        snapshots.append(
+            {
+                "module": module,
+                "path": _display_path(policy_path, root) if policy_path else None,
+                "sha256": _sha256(policy_path) if policy_path else None,
+                "loaded_at": loaded_at,
+            }
+        )
+    return snapshots
+
+
+def _source_provenance(root: Path, source_paths: list[str]) -> list[dict[str, str | bool | None]]:
+    loaded_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    snapshots: list[dict[str, str | bool | None]] = []
+    for source_path in source_paths:
+        path = Path(source_path)
+        resolved = path if path.is_absolute() else root / path
+        exists = resolved.is_file()
+        snapshots.append(
+            {
+                "path": _display_path(resolved, root),
+                "sha256": _sha256(resolved) if exists else None,
+                "loaded_at": loaded_at,
+                "exists": exists,
+            }
+        )
+    return snapshots
+
+
+def _changed_dimensions(change_class: str, changed_modules: list[str]) -> list[str]:
+    return [f"{change_class}:{module}" for module in changed_modules] or [change_class]
+
+
+def _sha256(path: Path | None) -> str | None:
+    if path is None:
+        return None
+    return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def _display_path(path: Path, root: Path) -> str:
     try:
         return path.resolve().relative_to(root.resolve()).as_posix()
@@ -171,6 +233,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", type=Path, default=Path("."), help="Repository root")
     parser.add_argument("--changed-module", action="append", default=[], help="Changed module name; repeatable")
     parser.add_argument("--parent", action="append", default=[], help="Parent candidate id; repeatable")
+    parser.add_argument("--source-path", action="append", default=[], help="Source snapshot path; repeatable")
+    parser.add_argument(
+        "--change-class",
+        choices=["policy", "source", "config", "evaluator", "baseline"],
+        default="policy",
+        help="Single ablation class this candidate changes",
+    )
     parser.add_argument("--force", action="store_true", help="Overwrite generated candidate files")
     args = parser.parse_args(argv)
 
@@ -181,6 +250,8 @@ def main(argv: list[str] | None = None) -> int:
             root=args.root,
             changed_modules=args.changed_module,
             parent_ids=args.parent,
+            change_class=args.change_class,
+            source_paths=args.source_path,
             force=args.force,
         )
     except (FileExistsError, ValueError, FileNotFoundError) as exc:

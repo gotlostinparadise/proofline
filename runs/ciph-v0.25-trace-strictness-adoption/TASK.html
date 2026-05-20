@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIPH Task</title>
+<style>
+body{margin:0;background:#faf9f5;color:#141413;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;padding:44px 28px 88px}
+main{max-width:980px;margin:0 auto}
+h1,h2{font-family:ui-serif,Georgia,serif;font-weight:500}
+h1{font-size:40px;margin:0 0 18px}
+h2{font-size:24px;margin:0 0 12px}
+section{background:#fff;border:1px solid #d1cfc5;border-radius:8px;padding:18px;margin:16px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #d1cfc5;padding:8px;text-align:left;vertical-align:top}
+th{font:11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#66635c;background:#f0eee6}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
+</style>
+</head>
+<body data-proofline-kind="task">
+<main>
+<h1>CIPH Task</h1>
+
+<section id="objective" data-proofline-section="objective">
+<h2>Objective</h2>
+<p>Adopt strict trace linting as an opt-in manifest contract: add trace.strict enforcement, a trace strictness migration report, default new runs to strict traces, sync Proofline assets, and dogfood the adoption path.</p>
+</section>
+
+<section id="acceptance-object" data-proofline-section="acceptance-object">
+<h2>Acceptance Object</h2>
+<p>Describe what proves the work is acceptable. Prefer exact files, commands, UI states, test results, or external evaluator behavior.</p>
+</section>
+
+<section id="constraints" data-proofline-section="constraints">
+<h2>Constraints</h2>
+<ul>
+<li>Repository rules:</li>
+<li>Files or areas in scope:</li>
+<li>Files or areas out of scope:</li>
+<li>Permissions:</li>
+<li>Secrets handling:</li>
+</ul>
+</section>
+
+<section id="volatile-facts" data-proofline-section="volatile-facts">
+<h2>Volatile Facts To Verify</h2>
+<p>List API shapes, CLI flags, config keys, pricing, product limits, schemas, required fields, or other facts that need authoritative sources before implementation depends on them.</p>
+</section>
+
+<section id="policy-modules" data-proofline-section="policy-modules">
+<h2>Policy Modules</h2>
+<p>List any active harness policy modules from <code>harness/policies/</code>. Policy modules describe strategy; deterministic scripts still own exact validation and scoring.</p>
+</section>
+
+<section id="trace-ledger" data-proofline-section="trace-ledger">
+<h2>Trace Ledger</h2>
+<p>Research runs use <code>runs/ciph-v0.25-trace-strictness-adoption/TRACE.jsonl</code> for raw events. Validate it with <code>scripts/lint_trace.py</code> before closeout.</p>
+</section>
+
+<section id="mechanism-metrics" data-proofline-section="mechanism-metrics">
+<h2>Mechanism Metrics</h2>
+<p>Research runs can derive mechanism metrics with <code>scripts/trace_metrics.py</code>. Use them to inspect harness behavior; keep manifest validation and closeout evidence as the source of completion truth.</p>
+</section>
+
+<section id="deliverables" data-proofline-section="deliverables">
+<h2>Deliverables</h2>
+<table>
+<thead><tr><th>ID</th><th>Requirement</th><th>Artifact paths</th><th>Evidence paths</th></tr></thead>
+<tbody><tr><td>example</td><td>Replace this row.</td><td><code>path/to/artifact</code></td><td><code>path/to/evidence.html</code></td></tr></tbody>
+</table>
+</section>
+
+<section id="risks" data-proofline-section="risks">
+<h2>Risks And Blockers</h2>
+<ul><li>None yet.</li></ul>
+</section>
+
+<section id="closeout-commands" data-proofline-section="closeout-commands">
+<h2>Closeout Commands</h2>
+<pre><code>python3 scripts/lint_manifest.py runs/ciph-v0.25-trace-strictness-adoption/MANIFEST.json --root .
+python3 scripts/lint_trace.py runs/ciph-v0.25-trace-strictness-adoption/TRACE.jsonl --root .
+python3 scripts/run_checks.py runs/ciph-v0.25-trace-strictness-adoption/MANIFEST.json --root .
+python3 scripts/verify_manifest.py runs/ciph-v0.25-trace-strictness-adoption/MANIFEST.json --root .
+python3 scripts/trace_metrics.py runs/ciph-v0.25-trace-strictness-adoption/MANIFEST.json --root . --output runs/ciph-v0.25-trace-strictness-adoption/artifacts/mechanism-metrics.html
+python3 scripts/run_status.py runs/ciph-v0.25-trace-strictness-adoption/MANIFEST.json --root . --output runs/ciph-v0.25-trace-strictness-adoption/artifacts/status.html
+python3 scripts/closeout_check.py runs/ciph-v0.25-trace-strictness-adoption/MANIFEST.json --root . --output runs/ciph-v0.25-trace-strictness-adoption/artifacts/closeout.html</code></pre>
+</section>
+</main>
+</body>
+</html>

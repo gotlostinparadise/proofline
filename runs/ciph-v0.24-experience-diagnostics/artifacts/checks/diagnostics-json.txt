@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "diagnostics-json", "command": "python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --min-severity low --format json --output runs/ciph-v0.24-experience-diagnostics/artifacts/experience-diagnostics.json", "exit_code": 0, "finished_at_utc": "2026-05-20T22:33:57+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T22:33:57+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH experience diagnostics: runs/ciph-v0.24-experience-diagnostics/artifacts/experience-diagnostics.json
+
+## STDERR
+
+<empty>

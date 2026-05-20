@@ -1,0 +1,152 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.27-plan-completion-closeout",
+  "objective": "Finish the original CIPH research optimizer plan by adding source provenance, lineage guards, richer mechanism metrics, docs/Proofline synchronization, and a completion audit.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.27-plan-completion-closeout/TRACE.jsonl",
+    "strict": true
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "source-provenance",
+      "requirement": "Candidate setup and validation must make source provenance a checked contract for source ablations.",
+      "artifact_paths": [
+        "scripts/init_candidate.py",
+        "scripts/validate_candidate.py",
+        "tests/test_init_candidate.py",
+        "tests/test_validate_candidate.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/candidate-provenance-tests.txt"
+      ]
+    },
+    {
+      "id": "lineage-and-metrics",
+      "requirement": "Evaluation validation must guard ablation lineage and mechanism metrics must read richer runtime/cost/token fields.",
+      "artifact_paths": [
+        "scripts/validate_evaluation.py",
+        "scripts/trace_metrics.py",
+        "tests/test_validate_evaluation.py",
+        "tests/test_trace_metrics.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/evaluation-metrics-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-proofline-sync",
+      "requirement": "Docs and bundled Proofline assets must describe and carry the final optimizer controls.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/init_candidate.py",
+        "skills/proofline/assets/proofline/scripts/validate_candidate.py",
+        "skills/proofline/assets/proofline/scripts/validate_evaluation.py",
+        "skills/proofline/assets/proofline/scripts/trace_metrics.py",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "completion-audit",
+      "requirement": "The closeout must map every original plan milestone to concrete artifacts and verification evidence.",
+      "artifact_paths": [
+        "runs/ciph-v0.27-plan-completion-closeout/artifacts/completion-audit.html",
+        "runs/ciph-v0.27-plan-completion-closeout/artifacts/mechanism-metrics.html",
+        "runs/ciph-v0.27-plan-completion-closeout/artifacts/status.html",
+        "runs/ciph-v0.27-plan-completion-closeout/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/full-unit-tests.txt",
+        "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/strict-trace-lint.txt",
+        "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/repo-gate.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {"path": "scripts/init_candidate.py", "description": "Candidate initializer with policy and source provenance metadata.", "required": true},
+    {"path": "scripts/validate_candidate.py", "description": "Candidate validator enforcing source snapshots and lineage consistency.", "required": true},
+    {"path": "scripts/validate_evaluation.py", "description": "Evaluation validator enforcing one-dimension-at-a-time ablation lineage.", "required": true},
+    {"path": "scripts/trace_metrics.py", "description": "Mechanism metrics calculator with nested usage, runtime, and cost extraction.", "required": true},
+    {"path": "tests/test_init_candidate.py", "description": "Candidate initializer regression tests.", "required": true},
+    {"path": "tests/test_validate_candidate.py", "description": "Candidate validation regression tests.", "required": true},
+    {"path": "tests/test_validate_evaluation.py", "description": "Evaluation lineage regression tests.", "required": true},
+    {"path": "tests/test_trace_metrics.py", "description": "Trace metric extraction regression tests.", "required": true},
+    {"path": "README.md", "description": "Repository quickstart and contract documentation.", "required": true},
+    {"path": "harness/CIPH.md", "description": "CIPH operating contract documentation.", "required": true},
+    {"path": "skills/proofline/SKILL.md", "description": "Bundled Proofline skill instructions.", "required": true},
+    {"path": "skills/proofline/assets/proofline/scripts/init_candidate.py", "description": "Mirrored candidate initializer asset.", "required": true},
+    {"path": "skills/proofline/assets/proofline/scripts/validate_candidate.py", "description": "Mirrored candidate validator asset.", "required": true},
+    {"path": "skills/proofline/assets/proofline/scripts/validate_evaluation.py", "description": "Mirrored evaluation validator asset.", "required": true},
+    {"path": "skills/proofline/assets/proofline/scripts/trace_metrics.py", "description": "Mirrored trace metrics asset.", "required": true},
+    {"path": "tests/test_proofline_skill.py", "description": "Proofline bundle parity tests.", "required": true},
+    {"path": "runs/ciph-v0.27-plan-completion-closeout/artifacts/completion-audit.html", "description": "Eight-milestone completion audit.", "required": true},
+    {"path": "runs/ciph-v0.27-plan-completion-closeout/artifacts/mechanism-metrics.html", "description": "Mechanism metrics report for this run.", "required": true},
+    {"path": "runs/ciph-v0.27-plan-completion-closeout/artifacts/status.html", "description": "Run status report.", "required": true},
+    {"path": "runs/ciph-v0.27-plan-completion-closeout/artifacts/closeout.html", "description": "Closeout coverage report.", "required": true}
+  ],
+  "checks": [
+    {
+      "name": "candidate-provenance-tests",
+      "command": "python3 -m unittest tests.test_init_candidate tests.test_validate_candidate",
+      "required": true,
+      "evidence": "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/candidate-provenance-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "evaluation-metrics-tests",
+      "command": "python3 -m unittest tests.test_validate_evaluation tests.test_trace_metrics",
+      "required": true,
+      "evidence": "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/evaluation-metrics-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "strict-trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.27-plan-completion-closeout/TRACE.jsonl --root . --strict",
+      "required": true,
+      "evidence": "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/strict-trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "repo-gate",
+      "command": "python3 scripts/check_repo.py --skip-diff-check",
+      "required": true,
+      "evidence": "runs/ciph-v0.27-plan-completion-closeout/artifacts/checks/repo-gate.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    {
+      "id": "legacy-baseline-semantics",
+      "description": "Older candidates may have policy changed_class even when used as a baseline; evaluation lineage treats explicit baseline role as the compatibility boundary.",
+      "mitigation": "Focused tests cover both blocked compounding and explicit baseline compatibility."
+    }
+  ]
+}

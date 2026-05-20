@@ -23,6 +23,11 @@ MECHANISM_METRICS = [
     ("tool_call_success", "Tool Success"),
     ("handoff_recall", "Handoff Recall"),
     ("validation_coverage", "Validation Coverage"),
+    ("model_result_coverage", "Model Result Coverage"),
+    ("context_token_total", "Context Token Total"),
+    ("wall_time_seconds", "Wall Time Seconds"),
+    ("cost_proxy", "Cost Proxy"),
+    ("recovery_evidence_coverage", "Recovery Evidence"),
 ]
 
 
@@ -36,8 +41,10 @@ def render_candidate_summary(run_dir: Path | str) -> str:
         "",
         f"Run: {run_path}",
         "",
-        "| Candidate | Pareto | Eval Phase | Holdout | Task Success | Audit | Cost Tokens | Wall Minutes | Defect Escape | Artifact Contract | Stage Coverage | Ordered Workflow | Tool Success | Handoff Recall | Validation Coverage | Search Evaluator |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "Objective scores and mechanism metrics are reported separately; Pareto status uses objective scores only.",
+        "",
+        "| Candidate | Pareto | Eval Phase | Holdout | Task Success | Audit | Cost Tokens | Wall Minutes | Defect Escape | Artifact Contract | Stage Coverage | Ordered Workflow | Tool Success | Handoff Recall | Validation Coverage | Model Result Coverage | Context Token Total | Wall Time Seconds | Cost Proxy | Recovery Evidence | Search Evaluator |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for candidate in sorted(candidates, key=lambda item: str(item.get("candidate_id", ""))):
         candidate_id = str(candidate.get("candidate_id", "<missing>"))
@@ -69,7 +76,7 @@ def render_candidate_summary(run_dir: Path | str) -> str:
             + " |"
         )
     if not candidates:
-        lines.append("| None | unscored | - | - | - | - | - | - | - | - | - | - | - | - | - | - |")
+        lines.append("| None | unscored | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - |")
     return "\n".join(lines) + "\n"
 
 
@@ -105,7 +112,7 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
             ]
         )
     if not rows:
-        rows.append(["None", "unscored", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
+        rows.append(["None", "unscored", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
 
     return render_html_document(
         title="CIPH Candidate Summary",
@@ -115,7 +122,7 @@ def render_candidate_summary_html(run_dir: Path | str) -> str:
         sections=[
             {
                 "id": "scores",
-                "title": "Candidate Scores",
+                "title": "Objective Scores and Mechanism Metrics",
                 "body_html": render_table(
                     [
                         "Candidate",

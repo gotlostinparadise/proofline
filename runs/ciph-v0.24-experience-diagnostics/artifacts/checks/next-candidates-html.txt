@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "next-candidates-html", "command": "python3 scripts/plan_next_candidates.py runs/ciph-v0.24-experience-diagnostics/artifacts/experience-diagnostics.json --format html --output runs/ciph-v0.24-experience-diagnostics/artifacts/next-candidates.html", "exit_code": 0, "finished_at_utc": "2026-05-20T22:33:57+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T22:33:57+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH next candidate plan: runs/ciph-v0.24-experience-diagnostics/artifacts/next-candidates.html
+
+## STDERR
+
+<empty>

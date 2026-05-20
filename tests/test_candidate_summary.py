@@ -134,7 +134,7 @@ class CandidateSummaryTests(unittest.TestCase):
             output = render_candidate_summary(run_dir)
 
             self.assertIn("Search Evaluator", output)
-            self.assertIn("| frontier | frontier | - | - | 0.9 | 0.9 | 100 | 2 | 0.0 | - | - | - | - | - | - | search-evaluator |", output)
+            self.assertIn("| frontier | frontier | - | - | 0.9 | 0.9 | 100 | 2 | 0.0 | - | - | - | - | - | - | - | - | - | - | - | search-evaluator |", output)
 
     def test_candidate_summary_script_runs_when_executed_by_file_path(self):
         with tempfile.TemporaryDirectory() as tmp:

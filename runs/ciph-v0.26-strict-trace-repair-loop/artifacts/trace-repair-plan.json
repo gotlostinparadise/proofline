@@ -1,0 +1,1363 @@
+{
+  "repairs": [
+    {
+      "run_id": "ciph-v0.10-vendor-layout",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.11-html-artifacts",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.13-mechanism-metrics",
+      "strict_status": "PASS",
+      "suggestions": [
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-metrics-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 4,
+          "rationale": "Strict lint prefers validation.started before completing trace-metrics-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-metrics-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 5,
+          "rationale": "Strict lint prefers validation.started before completing trace-metrics-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "candidate-summary-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 6,
+          "rationale": "Strict lint prefers validation.started before completing candidate-summary-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 7,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 8,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 9,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.13-mechanism-metrics/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.14-candidate-lab",
+      "strict_status": "PASS",
+      "suggestions": [
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "candidate-record-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 6,
+          "rationale": "Strict lint prefers validation.started before completing candidate-record-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "candidate-validation-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 7,
+          "rationale": "Strict lint prefers validation.started before completing candidate-validation-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "candidate-validation-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 8,
+          "rationale": "Strict lint prefers validation.started before completing candidate-validation-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "candidate-summary-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 9,
+          "rationale": "Strict lint prefers validation.started before completing candidate-summary-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 10,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 11,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 12,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.14-candidate-lab/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.15-evaluation-protocol",
+      "strict_status": "PASS",
+      "suggestions": [
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "evaluation-validator-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 8,
+          "rationale": "Strict lint prefers validation.started before completing evaluation-validator-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "evaluation-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 9,
+          "rationale": "Strict lint prefers validation.started before completing evaluation-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "candidate-summary-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 10,
+          "rationale": "Strict lint prefers validation.started before completing candidate-summary-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "candidate-summary-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 11,
+          "rationale": "Strict lint prefers validation.started before completing candidate-summary-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 12,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 13,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 14,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.15-evaluation-protocol/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.16-holdout-release-gate",
+      "strict_status": "PASS",
+      "suggestions": [
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "holdout-release-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 14,
+          "rationale": "Strict lint prefers validation.started before completing holdout-release-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "holdout-release-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 15,
+          "rationale": "Strict lint prefers validation.started before completing holdout-release-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "evaluation-validator-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 16,
+          "rationale": "Strict lint prefers validation.started before completing evaluation-validator-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "evaluation-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 17,
+          "rationale": "Strict lint prefers validation.started before completing evaluation-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 18,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 19,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 20,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.16-holdout-release-gate/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.17-holdout-final-comparison",
+      "strict_status": "PASS",
+      "suggestions": [
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "holdout-ingest-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 18,
+          "rationale": "Strict lint prefers validation.started before completing holdout-ingest-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "holdout-ingest-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 19,
+          "rationale": "Strict lint prefers validation.started before completing holdout-ingest-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "evaluation-validator-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 20,
+          "rationale": "Strict lint prefers validation.started before completing evaluation-validator-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "evaluation-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 21,
+          "rationale": "Strict lint prefers validation.started before completing evaluation-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "final-comparison-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 22,
+          "rationale": "Strict lint prefers validation.started before completing final-comparison-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "final-comparison-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 23,
+          "rationale": "Strict lint prefers validation.started before completing final-comparison-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 24,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 25,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 26,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.17-holdout-final-comparison/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.18-score-provenance",
+      "strict_status": "PASS",
+      "suggestions": [
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "score-provenance-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 26,
+          "rationale": "Strict lint prefers validation.started before completing score-provenance-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "score-provenance-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 27,
+          "rationale": "Strict lint prefers validation.started before completing score-provenance-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "provenance-reporting-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 28,
+          "rationale": "Strict lint prefers validation.started before completing provenance-reporting-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "final-comparison-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 29,
+          "rationale": "Strict lint prefers validation.started before completing final-comparison-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 30,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 31,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 32,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.18-score-provenance/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.19-score-integrity",
+      "strict_status": "PASS",
+      "suggestions": [
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "score-integrity-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 27,
+          "rationale": "Strict lint prefers validation.started before completing score-integrity-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "score-integrity-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 28,
+          "rationale": "Strict lint prefers validation.started before completing score-integrity-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 29,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 30,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 31,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.19-score-integrity/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.2-init-run",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.20-evaluator-replay-readiness",
+      "strict_status": "PASS",
+      "suggestions": [
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "evaluator-replay-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 29,
+          "rationale": "Strict lint prefers validation.started before completing evaluator-replay-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "evaluator-replay-report"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 30,
+          "rationale": "Strict lint prefers validation.started before completing evaluator-replay-report."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 31,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 32,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 33,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.20-evaluator-replay-readiness/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.21-local-replay-executor",
+      "strict_status": "FAIL",
+      "suggestions": [
+        {
+          "action": "insert candidate.created before candidate.scored",
+          "apply_mode": "manual",
+          "event_fields": {
+            "candidate_id": "frontier"
+          },
+          "event_type": "candidate.created",
+          "kind": "insert-event-before-line",
+          "line": 15,
+          "rationale": "Strict lint requires candidate.created before scoring frontier."
+        },
+        {
+          "action": "create the referenced artifact or update the trace reference",
+          "apply_mode": "manual",
+          "event_fields": {
+            "evidence_path": "runs/ciph-v0.21-local-replay-executor/artifacts/checks/executor-tests-red.txt"
+          },
+          "event_type": "unknown",
+          "kind": "review-reference",
+          "line": 7,
+          "rationale": "Strict lint found a repo-local reference that does not exist on disk."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "executor-tests-red"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 7,
+          "rationale": "Strict lint prefers validation.started before completing executor-tests-red."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "executor-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 9,
+          "rationale": "Strict lint prefers validation.started before completing executor-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 11,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "evaluator-replay-readiness"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 17,
+          "rationale": "Strict lint prefers validation.started before completing evaluator-replay-readiness."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "executor-dry-run"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 18,
+          "rationale": "Strict lint prefers validation.started before completing executor-dry-run."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "executor-local-run"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 19,
+          "rationale": "Strict lint prefers validation.started before completing executor-local-run."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "executor-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 22,
+          "rationale": "Strict lint prefers validation.started before completing executor-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 23,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 24,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.21-local-replay-executor/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.22-replay-result-attestation",
+      "strict_status": "FAIL",
+      "suggestions": [
+        {
+          "action": "insert candidate.created before candidate.scored",
+          "apply_mode": "manual",
+          "event_fields": {
+            "candidate_id": "frontier"
+          },
+          "event_type": "candidate.created",
+          "kind": "insert-event-before-line",
+          "line": 15,
+          "rationale": "Strict lint requires candidate.created before scoring frontier."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "replay-receipt-tests-red"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 7,
+          "rationale": "Strict lint prefers validation.started before completing replay-receipt-tests-red."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "replay-receipt-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 9,
+          "rationale": "Strict lint prefers validation.started before completing replay-receipt-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-replay-receipt-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 11,
+          "rationale": "Strict lint prefers validation.started before completing proofline-replay-receipt-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "evaluator-replay-readiness"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 17,
+          "rationale": "Strict lint prefers validation.started before completing evaluator-replay-readiness."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "replay-receipt-dry-run"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 18,
+          "rationale": "Strict lint prefers validation.started before completing replay-receipt-dry-run."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "replay-receipt-execute"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 19,
+          "rationale": "Strict lint prefers validation.started before completing replay-receipt-execute."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "installed-proofline-replay"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 20,
+          "rationale": "Strict lint prefers validation.started before completing installed-proofline-replay."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "replay-receipt-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 23,
+          "rationale": "Strict lint prefers validation.started before completing replay-receipt-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "replay-receipt-dry-run"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 24,
+          "rationale": "Strict lint prefers validation.started before completing replay-receipt-dry-run."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "replay-receipt-execute"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 25,
+          "rationale": "Strict lint prefers validation.started before completing replay-receipt-execute."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 26,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 27,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 28,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "manifest-verify"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 29,
+          "rationale": "Strict lint prefers validation.started before completing manifest-verify."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "check-repo"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 30,
+          "rationale": "Strict lint prefers validation.started before completing check-repo."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.22-replay-result-attestation/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.23-experience-store-cli",
+      "strict_status": "PASS",
+      "suggestions": [
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "experience-store-tests-red"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 7,
+          "rationale": "Strict lint prefers validation.started before completing experience-store-tests-red."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "experience-store-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 9,
+          "rationale": "Strict lint prefers validation.started before completing experience-store-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-query-focused-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 11,
+          "rationale": "Strict lint prefers validation.started before completing proofline-query-focused-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "installed-proofline-query"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 16,
+          "rationale": "Strict lint prefers validation.started before completing installed-proofline-query."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "experience-store-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 19,
+          "rationale": "Strict lint prefers validation.started before completing experience-store-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "experience-store-json"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 20,
+          "rationale": "Strict lint prefers validation.started before completing experience-store-json."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "experience-store-html"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 21,
+          "rationale": "Strict lint prefers validation.started before completing experience-store-html."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 22,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-ledger-lint"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 23,
+          "rationale": "Strict lint prefers validation.started before completing trace-ledger-lint."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 24,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "manifest-verify"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 25,
+          "rationale": "Strict lint prefers validation.started before completing manifest-verify."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "check-repo"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 26,
+          "rationale": "Strict lint prefers validation.started before completing check-repo."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.23-experience-store-cli/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.24-experience-diagnostics",
+      "strict_status": "PASS",
+      "suggestions": [
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "diagnostics-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 7,
+          "rationale": "Strict lint prefers validation.started before completing diagnostics-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "trace-lint-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 8,
+          "rationale": "Strict lint prefers validation.started before completing trace-lint-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "candidate-loop-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 9,
+          "rationale": "Strict lint prefers validation.started before completing candidate-loop-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "diagnostics-json"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 10,
+          "rationale": "Strict lint prefers validation.started before completing diagnostics-json."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "diagnostics-html"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 11,
+          "rationale": "Strict lint prefers validation.started before completing diagnostics-html."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "next-candidates-html"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 12,
+          "rationale": "Strict lint prefers validation.started before completing next-candidates-html."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "experience-store-json"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 13,
+          "rationale": "Strict lint prefers validation.started before completing experience-store-json."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "experience-store-html"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 14,
+          "rationale": "Strict lint prefers validation.started before completing experience-store-html."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "proofline-skill-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 15,
+          "rationale": "Strict lint prefers validation.started before completing proofline-skill-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "full-unit-tests"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 16,
+          "rationale": "Strict lint prefers validation.started before completing full-unit-tests."
+        },
+        {
+          "action": "insert validation.started before validation.completed",
+          "apply_mode": "manual",
+          "event_fields": {
+            "check_name": "check-repo"
+          },
+          "event_type": "validation.started",
+          "kind": "insert-event-before-line",
+          "line": 17,
+          "rationale": "Strict lint prefers validation.started before completing check-repo."
+        }
+      ],
+      "trace_path": "runs/ciph-v0.24-experience-diagnostics/TRACE.jsonl",
+      "unhandled_errors": [],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.3-run-checks",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.4-manifest-lint",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.5-usability-reports",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.6-child-tasks",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.7-candidates",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.8-repo-gate",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "ciph-v0.9-codex-skill",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    },
+    {
+      "run_id": "example-harness-design",
+      "strict_status": "MISSING",
+      "suggestions": [],
+      "trace_path": null,
+      "unhandled_errors": [
+        "trace.path missing"
+      ],
+      "unhandled_warnings": []
+    }
+  ],
+  "schema_version": "ciph.trace-repair-plan.v1",
+  "source_report_path": "runs/ciph-v0.26-strict-trace-repair-loop/artifacts/trace-strictness.json",
+  "summary": {
+    "runs_with_repairs": 23,
+    "suggestions": 103,
+    "unhandled_errors": 11,
+    "unhandled_warnings": 0
+  }
+}
