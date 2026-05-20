@@ -1,0 +1,7 @@
+{
+  "schema_version": "ciph.search-input.v1",
+  "run_id": "ciph-v0.22-replay-result-attestation",
+  "candidate_id": "frontier",
+  "scenario_id": "replay-receipt-search",
+  "objective": "Verify that local replay produces normalized dry-run and execution receipts without storing secrets or raw command output."
+}

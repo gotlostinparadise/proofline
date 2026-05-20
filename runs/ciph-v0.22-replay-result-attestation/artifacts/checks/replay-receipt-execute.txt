@@ -1,0 +1,17 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "replay-receipt-execute", "command": "python3 scripts/execute_evaluator_replay.py runs/ciph-v0.22-replay-result-attestation --root . --execute --allow-argv0 python3 --timeout-seconds 10 --receipt-dir runs/ciph-v0.22-replay-result-attestation/replay_receipts --output runs/ciph-v0.22-replay-result-attestation/artifacts/evaluator-replay-execution.html", "exit_code": 0, "finished_at_utc": "2026-05-20T09:08:52+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T09:08:52+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH evaluator replay execution report: runs/ciph-v0.22-replay-result-attestation/artifacts/evaluator-replay-execution.html
+PASS evaluator replay execution runs/ciph-v0.22-replay-result-attestation
+PASS evaluator search-evaluator replay.expected_output_hashes runs/ciph-v0.22-replay-result-attestation/candidates/frontier/score.json
+PASS evaluator replay search-evaluator
+PASS score replay frontier search
+evaluator search-evaluator execution output suppressed stdout_bytes=31 stderr_bytes=0
+PASS evaluator search-evaluator execution exit_code=0
+PASS evaluator search-evaluator output hash runs/ciph-v0.22-replay-result-attestation/candidates/frontier/score.json
+
+## STDERR
+
+<empty>

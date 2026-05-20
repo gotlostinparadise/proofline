@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "python3",
+    "runs/ciph-v0.22-replay-result-attestation/artifacts/local_evaluator.py",
+    "--output",
+    "runs/ciph-v0.22-replay-result-attestation/candidates/frontier/score.json"
+  ],
+  "command_digest": "sha256:a29c493be3053c454dc0294351b30b3aae700403e3623faf569c6b3e87eb319c",
+  "env_allowlist": [
+    "PATH",
+    "PYTHONPATH"
+  ],
+  "errors": [],
+  "evaluator_id": "search-evaluator",
+  "exit_code": 0,
+  "expected_output_hashes": {
+    "runs/ciph-v0.22-replay-result-attestation/candidates/frontier/score.json": "sha256:a139b7799806f084fdbf779f12c8099ceea0509339535ac1ce18b450805ad15a"
+  },
+  "finished_at_utc": "2026-05-20T09:08:52+00:00",
+  "manifest_path": "runs/ciph-v0.22-replay-result-attestation/evaluators/search-evaluator.json",
+  "mode": "execute",
+  "post_output_hashes": {
+    "runs/ciph-v0.22-replay-result-attestation/candidates/frontier/score.json": "sha256:a139b7799806f084fdbf779f12c8099ceea0509339535ac1ce18b450805ad15a"
+  },
+  "pre_output_hashes": {
+    "runs/ciph-v0.22-replay-result-attestation/candidates/frontier/score.json": "sha256:a139b7799806f084fdbf779f12c8099ceea0509339535ac1ce18b450805ad15a"
+  },
+  "report_path": "runs/ciph-v0.22-replay-result-attestation/artifacts/evaluator-replay-execution.html",
+  "sandbox_mode": "bwrap-unshare-net",
+  "schema_version": "ciph.replay-receipt.v1",
+  "started_at_utc": "2026-05-20T09:08:52+00:00",
+  "status": "PASS",
+  "stderr_bytes": 0,
+  "stdout_bytes": 31,
+  "timeout_seconds": 10.0,
+  "working_directory": "."
+}

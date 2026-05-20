@@ -1,0 +1,7 @@
+Wrote CIPH evaluator replay execution report: /tmp/ciph-v0.22-installed-dry-run.html
+PASS evaluator replay execution runs/ciph-v0.22-replay-result-attestation
+PASS evaluator search-evaluator replay.expected_output_hashes runs/ciph-v0.22-replay-result-attestation/candidates/frontier/score.json
+PASS evaluator replay search-evaluator
+PASS score replay frontier search
+DRY-RUN evaluator search-evaluator command not executed
+/tmp/ciph-v0.22-installed-receipts/search-evaluator-dry-run.json

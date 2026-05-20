@@ -1,0 +1,33 @@
+{
+  "schema_version": "ciph.evaluation.v1",
+  "run_id": "ciph-v0.22-replay-result-attestation",
+  "phase": "search",
+  "baseline_candidate_id": "frontier",
+  "search_set": {
+    "scenario_ids": [
+      "replay-receipt-search"
+    ]
+  },
+  "holdout_set": {
+    "scenario_ids": [
+      "replay-receipt-holdout"
+    ],
+    "sealed": true
+  },
+  "budget": {
+    "max_candidates": 1,
+    "max_holdout_releases": 0
+  },
+  "frontier_candidate_ids": [
+    "frontier"
+  ],
+  "holdout_releases": [],
+  "candidates": [
+    {
+      "candidate_id": "frontier",
+      "role": "frontier",
+      "evaluation_phase": "search",
+      "score_path": "runs/ciph-v0.22-replay-result-attestation/candidates/frontier/score.json"
+    }
+  ]
+}

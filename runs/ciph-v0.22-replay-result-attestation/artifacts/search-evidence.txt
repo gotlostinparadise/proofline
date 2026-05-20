@@ -1,0 +1,6 @@
+CIPH v0.22 dogfood evidence:
+
+- dry-run replay writes a normalized receipt without executing the evaluator
+- executed replay writes a normalized receipt after Bubblewrap no-network execution
+- receipts include command digest, sandbox mode, timeout, env allowlist names, pre/post output hashes, exit code, output byte counts, and status
+- receipts exclude environment values and stdout/stderr content
