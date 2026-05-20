@@ -1,0 +1,57 @@
+{
+  "schema_version": "ciph.evaluator-manifest.v1",
+  "evaluator_id": "search-evaluator",
+  "evaluation_phase": "search",
+  "command": "python3 runs/ciph-v0.21-local-replay-executor/artifacts/local_evaluator.py --output runs/ciph-v0.21-local-replay-executor/candidates/frontier/score.json",
+  "input_paths": [
+    "runs/ciph-v0.21-local-replay-executor/artifacts/search-input.json"
+  ],
+  "output_paths": [
+    "runs/ciph-v0.21-local-replay-executor/candidates/frontier/score.json"
+  ],
+  "evidence_paths": [
+    "runs/ciph-v0.21-local-replay-executor/artifacts/search-evidence.txt"
+  ],
+  "metric_keys": [
+    "task_success",
+    "audit_completeness",
+    "cost_tokens",
+    "wall_minutes",
+    "defect_escape_rate"
+  ],
+  "integrity": {
+    "schema_version": "ciph.evaluator-integrity.v1",
+    "algorithm": "sha256",
+    "input_hashes": {
+      "runs/ciph-v0.21-local-replay-executor/artifacts/search-input.json": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    "evidence_hashes": {
+      "runs/ciph-v0.21-local-replay-executor/artifacts/search-evidence.txt": "sha256:f33c031b63d0d05922e646fa1059691ae88b104bdd29403939acde513786463b"
+    },
+    "output_hashes": {
+      "runs/ciph-v0.21-local-replay-executor/candidates/frontier/score.json": "sha256:44e67a0a7805635372ed53c19fa392fa935d0ef1c45482317081e2116e7300e1"
+    }
+  },
+  "replay": {
+    "schema_version": "ciph.evaluator-replay.v1",
+    "mode": "metadata-only",
+    "working_directory": ".",
+    "command_metadata": {
+      "argv": [
+        "python3",
+        "runs/ciph-v0.21-local-replay-executor/artifacts/local_evaluator.py",
+        "--output",
+        "runs/ciph-v0.21-local-replay-executor/candidates/frontier/score.json"
+      ],
+      "shell": false
+    },
+    "env_allowlist": [
+      "PATH",
+      "PYTHONPATH"
+    ],
+    "external_effect_policy": "local-only",
+    "expected_output_hashes": {
+      "runs/ciph-v0.21-local-replay-executor/candidates/frontier/score.json": "sha256:44e67a0a7805635372ed53c19fa392fa935d0ef1c45482317081e2116e7300e1"
+    }
+  }
+}

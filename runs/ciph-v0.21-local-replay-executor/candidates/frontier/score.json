@@ -1,0 +1,24 @@
+{
+  "schema_version": "ciph.candidate.v1",
+  "candidate_id": "frontier",
+  "search_scores": {
+    "task_success": 0.97,
+    "audit_completeness": 0.96,
+    "cost_tokens": 90,
+    "wall_minutes": 2,
+    "defect_escape_rate": 0.0
+  },
+  "score_provenance": {
+    "schema_version": "ciph.score-provenance.v1",
+    "evaluator_id": "search-evaluator",
+    "evaluator_manifest_path": "runs/ciph-v0.21-local-replay-executor/evaluators/search-evaluator.json",
+    "evaluation_phase": "search",
+    "produced_at": "2026-05-20T11:40:00Z",
+    "input_paths": [
+      "runs/ciph-v0.21-local-replay-executor/artifacts/search-input.json"
+    ],
+    "evidence_paths": [
+      "runs/ciph-v0.21-local-replay-executor/artifacts/search-evidence.txt"
+    ]
+  }
+}

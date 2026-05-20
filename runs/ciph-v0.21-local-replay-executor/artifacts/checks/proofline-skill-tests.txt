@@ -1,0 +1,14 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "proofline-skill-tests", "command": "python3 -m unittest tests.test_proofline_skill", "exit_code": 0, "finished_at_utc": "2026-05-20T08:39:11+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T08:39:10+00:00", "status": "PASS"}
+
+## STDOUT
+
+<empty>
+
+## STDERR
+
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.651s
+
+OK
