@@ -29,6 +29,22 @@ class FinalComparisonTests(unittest.TestCase):
             self.assertIn("| frontier-b | winner | 0.91 | 0.94 | 0.03 |", output)
             self.assertIn("| frontier-a | finalist | 0.92 | 0.88 | -0.04 |", output)
 
+    def test_render_final_comparison_includes_score_provenance_when_present(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = _create_run(root)
+            _write_search_score(run_dir, "frontier", task_success=0.92, evaluator_id="search-evaluator")
+            _write_holdout_score(run_dir, "frontier", task_success=0.94, evaluator_id="holdout-evaluator")
+            _write_evaluation(run_dir, ["frontier"])
+
+            result = compare_final_results(run_dir, root=root)
+            output = render_final_comparison(run_dir, result)
+
+            self.assertTrue(result.ok, result.errors)
+            self.assertIn("Search Evaluator", output)
+            self.assertIn("Holdout Evaluator", output)
+            self.assertIn("| frontier | winner | 0.92 | 0.94 | 0.02 | 0.9 | 0.91 | 0.01 | search-evaluator | holdout-evaluator |", output)
+
     def test_compare_final_results_breaks_holdout_score_ties_by_candidate_id(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -110,62 +126,54 @@ def _create_run(root: Path) -> Path:
     return run_dir
 
 
-def _write_search_score(run_dir: Path, candidate_id: str, *, task_success: float) -> None:
+def _write_search_score(run_dir: Path, candidate_id: str, *, task_success: float, evaluator_id: str | None = None) -> None:
     candidate_dir = run_dir / "candidates" / candidate_id
     candidate_dir.mkdir(parents=True, exist_ok=True)
-    candidate_dir.joinpath("score.json").write_text(
-        json.dumps(
-            {
-                "schema_version": "ciph.candidate.v1",
-                "candidate_id": candidate_id,
-                "hypothesis": f"Candidate {candidate_id}.",
-                "parent_ids": [],
-                "lineage": {"parents": [], "generation": 0},
-                "changed_modules": [],
-                "search_scores": {
-                    "task_success": task_success,
-                    "audit_completeness": 0.90,
-                    "cost_tokens": 100,
-                    "wall_minutes": 2,
-                    "defect_escape_rate": 0.02,
-                },
-                "candidate_trace": f"runs/sample/candidates/{candidate_id}/TRACE.jsonl",
-                "trace_paths": [],
-                "artifact_paths": [],
-                "mechanism_metrics": {},
-                "pareto_status": "unscored",
-            },
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
+    payload = {
+        "schema_version": "ciph.candidate.v1",
+        "candidate_id": candidate_id,
+        "hypothesis": f"Candidate {candidate_id}.",
+        "parent_ids": [],
+        "lineage": {"parents": [], "generation": 0},
+        "changed_modules": [],
+        "search_scores": {
+            "task_success": task_success,
+            "audit_completeness": 0.90,
+            "cost_tokens": 100,
+            "wall_minutes": 2,
+            "defect_escape_rate": 0.02,
+        },
+        "candidate_trace": f"runs/sample/candidates/{candidate_id}/TRACE.jsonl",
+        "trace_paths": [],
+        "artifact_paths": [],
+        "mechanism_metrics": {},
+        "pareto_status": "unscored",
+    }
+    if evaluator_id is not None:
+        payload["score_provenance"] = {"evaluator_id": evaluator_id}
+    candidate_dir.joinpath("score.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
-def _write_holdout_score(run_dir: Path, candidate_id: str, *, task_success: float) -> None:
+def _write_holdout_score(run_dir: Path, candidate_id: str, *, task_success: float, evaluator_id: str | None = None) -> None:
     score_dir = run_dir / "holdout_scores"
     score_dir.mkdir(parents=True, exist_ok=True)
-    score_dir.joinpath(f"{candidate_id}.json").write_text(
-        json.dumps(
-            {
-                "schema_version": "ciph.holdout-score.v1",
-                "candidate_id": candidate_id,
-                "release_index": 1,
-                "scored_at": "2026-05-20T05:00:00Z",
-                "scenario_ids": ["holdout-1"],
-                "holdout_scores": {
-                    "task_success": task_success,
-                    "audit_completeness": 0.91,
-                    "cost_tokens": 120,
-                    "wall_minutes": 3,
-                    "defect_escape_rate": 0.01,
-                },
-            },
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
+    payload = {
+        "schema_version": "ciph.holdout-score.v1",
+        "candidate_id": candidate_id,
+        "release_index": 1,
+        "scored_at": "2026-05-20T05:00:00Z",
+        "scenario_ids": ["holdout-1"],
+        "holdout_scores": {
+            "task_success": task_success,
+            "audit_completeness": 0.91,
+            "cost_tokens": 120,
+            "wall_minutes": 3,
+            "defect_escape_rate": 0.01,
+        },
+    }
+    if evaluator_id is not None:
+        payload["score_provenance"] = {"evaluator_id": evaluator_id}
+    score_dir.joinpath(f"{candidate_id}.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
 def _write_evaluation(run_dir: Path, frontier_ids: list[str], *, include_holdout_path: bool = True) -> None:

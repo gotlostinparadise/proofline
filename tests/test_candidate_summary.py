@@ -116,6 +116,26 @@ class CandidateSummaryTests(unittest.TestCase):
             self.assertIn("Holdout", output)
             self.assertIn("| baseline | frontier | search | sealed |", output)
 
+    def test_candidate_summary_includes_score_provenance_when_present(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = root / "runs" / "sample"
+            _write_score(
+                run_dir,
+                "frontier",
+                task_success=0.9,
+                audit_completeness=0.9,
+                cost_tokens=100,
+                wall_minutes=2,
+                defect_escape_rate=0.0,
+                evaluator_id="search-evaluator",
+            )
+
+            output = render_candidate_summary(run_dir)
+
+            self.assertIn("Search Evaluator", output)
+            self.assertIn("| frontier | frontier | - | - | 0.9 | 0.9 | 100 | 2 | 0.0 | - | - | - | - | - | - | search-evaluator |", output)
+
     def test_candidate_summary_script_runs_when_executed_by_file_path(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -152,34 +172,32 @@ def _write_score(
     wall_minutes: int,
     defect_escape_rate: float,
     mechanism_metrics: dict[str, float] | None = None,
+    evaluator_id: str | None = None,
 ) -> None:
     candidate_dir = run_dir / "candidates" / candidate_id
     candidate_dir.mkdir(parents=True, exist_ok=True)
-    candidate_dir.joinpath("score.json").write_text(
-        json.dumps(
-            {
-                "candidate_id": candidate_id,
-                "parent_ids": [],
-                "changed_modules": [],
-                "search_scores": {
-                    "task_success": task_success,
-                    "audit_completeness": audit_completeness,
-                    "cost_tokens": cost_tokens,
-                    "wall_minutes": wall_minutes,
-                    "defect_escape_rate": defect_escape_rate,
-                },
-                "trace_paths": [
-                    f"candidates/{candidate_id}/trace/prompts.jsonl",
-                    f"candidates/{candidate_id}/trace/tools.jsonl",
-                    f"candidates/{candidate_id}/trace/failures.md",
-                ],
-                "mechanism_metrics": mechanism_metrics or {},
-                "pareto_status": "unscored",
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
+    payload = {
+        "candidate_id": candidate_id,
+        "parent_ids": [],
+        "changed_modules": [],
+        "search_scores": {
+            "task_success": task_success,
+            "audit_completeness": audit_completeness,
+            "cost_tokens": cost_tokens,
+            "wall_minutes": wall_minutes,
+            "defect_escape_rate": defect_escape_rate,
+        },
+        "trace_paths": [
+            f"candidates/{candidate_id}/trace/prompts.jsonl",
+            f"candidates/{candidate_id}/trace/tools.jsonl",
+            f"candidates/{candidate_id}/trace/failures.md",
+        ],
+        "mechanism_metrics": mechanism_metrics or {},
+        "pareto_status": "unscored",
+    }
+    if evaluator_id is not None:
+        payload["score_provenance"] = {"evaluator_id": evaluator_id}
+    candidate_dir.joinpath("score.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

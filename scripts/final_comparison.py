@@ -28,6 +28,8 @@ class ComparisonRow:
     search_audit_completeness: float
     holdout_audit_completeness: float
     holdout_defect_escape_rate: float
+    search_evaluator_id: str
+    holdout_evaluator_id: str
 
 
 @dataclass
@@ -110,6 +112,8 @@ def compare_final_results(run_dir: Path | str, root: Path | str = ".") -> FinalC
                 search_audit_completeness=_metric(search_score, "search_scores", "audit_completeness"),
                 holdout_audit_completeness=_metric(holdout_score, "holdout_scores", "audit_completeness"),
                 holdout_defect_escape_rate=_metric(holdout_score, "holdout_scores", "defect_escape_rate"),
+                search_evaluator_id=_evaluator_id(search_score),
+                holdout_evaluator_id=_evaluator_id(holdout_score),
             )
         )
     result.messages.append(f"PASS final winner {winner_id}")
@@ -125,8 +129,8 @@ def render_final_comparison(run_dir: Path | str, result: FinalComparisonResult) 
         f"Status: {status}",
         f"Winner: {result.winner_candidate_id or '-'}",
         "",
-        "| Candidate | Final Status | Search Task Success | Holdout Task Success | Generalization Delta | Search Audit | Holdout Audit | Holdout Defect Escape |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| Candidate | Final Status | Search Task Success | Holdout Task Success | Generalization Delta | Search Audit | Holdout Audit | Holdout Defect Escape | Search Evaluator | Holdout Evaluator |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for row in result.rows:
         lines.append(
@@ -141,12 +145,14 @@ def render_final_comparison(run_dir: Path | str, result: FinalComparisonResult) 
                     _fmt(row.search_audit_completeness),
                     _fmt(row.holdout_audit_completeness),
                     _fmt(row.holdout_defect_escape_rate),
+                    row.search_evaluator_id,
+                    row.holdout_evaluator_id,
                 ]
             )
             + " |"
         )
     if not result.rows:
-        lines.append("| None | - | - | - | - | - | - | - |")
+        lines.append("| None | - | - | - | - | - | - | - | - | - |")
     if result.errors:
         lines.extend(["", "## Errors", *[f"- {error}" for error in result.errors]])
     return "\n".join(lines) + "\n"
@@ -164,11 +170,13 @@ def render_final_comparison_html(run_dir: Path | str, result: FinalComparisonRes
             _fmt(row.search_audit_completeness),
             _fmt(row.holdout_audit_completeness),
             _fmt(row.holdout_defect_escape_rate),
+            row.search_evaluator_id,
+            row.holdout_evaluator_id,
         ]
         for row in result.rows
     ]
     if not rows:
-        rows.append(["None", "-", "-", "-", "-", "-", "-", "-"])
+        rows.append(["None", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
     return render_html_document(
         title="CIPH Final Comparison",
         heading="CIPH Final Comparison",
@@ -193,6 +201,8 @@ def render_final_comparison_html(run_dir: Path | str, result: FinalComparisonRes
                         "Search Audit",
                         "Holdout Audit",
                         "Holdout Defect Escape",
+                        "Search Evaluator",
+                        "Holdout Evaluator",
                     ],
                     rows,
                 ),
@@ -242,6 +252,14 @@ def _metric(payload: dict[str, Any], group: str, metric: str) -> float:
         return 0.0
     value = scores.get(metric)
     return float(value) if isinstance(value, (int, float)) else 0.0
+
+
+def _evaluator_id(score: dict[str, Any]) -> str:
+    provenance = score.get("score_provenance")
+    if not isinstance(provenance, dict):
+        return "-"
+    evaluator_id = provenance.get("evaluator_id")
+    return evaluator_id if isinstance(evaluator_id, str) and evaluator_id.strip() else "-"
 
 
 def _load_json_object(path: Path, result: FinalComparisonResult, label: str) -> dict[str, Any] | None:
