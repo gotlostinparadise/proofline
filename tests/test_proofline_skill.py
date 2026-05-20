@@ -38,6 +38,7 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((vendor / "scripts" / "final_comparison.py").is_file())
             self.assertTrue((vendor / "scripts" / "validate_score_provenance.py").is_file())
             self.assertTrue((vendor / "scripts" / "validate_score_integrity.py").is_file())
+            self.assertTrue((vendor / "scripts" / "validate_evaluator_replay.py").is_file())
             self.assertTrue((vendor / "scripts" / "lint_trace.py").is_file())
             self.assertTrue((vendor / "scripts" / "trace_metrics.py").is_file())
             self.assertTrue((vendor / "harness" / "policies" / "README.md").is_file())
@@ -50,6 +51,7 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue(os.access(vendor / "scripts" / "final_comparison.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "validate_score_provenance.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "validate_score_integrity.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "validate_evaluator_replay.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "lint_trace.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "trace_metrics.py", os.X_OK))
 
@@ -324,6 +326,23 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(validate_integrity.returncode, 0, validate_integrity.stderr)
             self.assertIn("PASS score integrity", validate_integrity.stdout)
 
+            validate_replay = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/validate_evaluator_replay.py",
+                    "vendor/proofline/runs/sample-run",
+                    "--root",
+                    str(target),
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(validate_replay.returncode, 0, validate_replay.stderr)
+            self.assertIn("PASS evaluator replay", validate_replay.stdout)
+
     def test_bundled_assets_are_trace_aware(self):
         skill_text = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
         manifest = (SKILL_DIR / "assets" / "proofline" / "templates" / "MANIFEST.json").read_text(encoding="utf-8")
@@ -338,6 +357,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertIn("final_comparison.py", skill_text)
         self.assertIn("validate_score_provenance.py", skill_text)
         self.assertIn("validate_score_integrity.py", skill_text)
+        self.assertIn("validate_evaluator_replay.py", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)
@@ -351,6 +371,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "final_comparison.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_score_provenance.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_score_integrity.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_evaluator_replay.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "harness" / "policies" / "state.md").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):
@@ -430,6 +451,7 @@ def _write_installed_evaluator_manifest(path: Path, evaluator_id: str, phase: st
     root = path.parents[5]
     input_path = f"vendor/proofline/runs/sample-run/artifacts/{phase}-input.json"
     evidence_path = f"vendor/proofline/runs/sample-run/artifacts/{phase}-evidence.txt"
+    output_hashes = {output_path: _digest(root / output_path) for output_path in output_paths}
     path.write_text(
         json.dumps(
             {
@@ -452,7 +474,19 @@ def _write_installed_evaluator_manifest(path: Path, evaluator_id: str, phase: st
                     "algorithm": "sha256",
                     "input_hashes": {input_path: _digest(root / input_path)},
                     "evidence_hashes": {evidence_path: _digest(root / evidence_path)},
-                    "output_hashes": {output_path: _digest(root / output_path) for output_path in output_paths},
+                    "output_hashes": output_hashes,
+                },
+                "replay": {
+                    "schema_version": "ciph.evaluator-replay.v1",
+                    "mode": "metadata-only",
+                    "working_directory": ".",
+                    "command_metadata": {
+                        "argv": ["python3", "tools/evaluate.py", "--phase", phase],
+                        "shell": False,
+                    },
+                    "env_allowlist": ["PATH", "PYTHONPATH"],
+                    "external_effect_policy": "local-only",
+                    "expected_output_hashes": output_hashes,
                 },
             },
             indent=2,

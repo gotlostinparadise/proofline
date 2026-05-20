@@ -57,6 +57,10 @@ Research-grade score records can include `score_provenance` pointing to an evalu
 
 Evaluator manifests can include an `integrity` object with schema `ciph.evaluator-integrity.v1`, algorithm `sha256`, and digest maps for `input_hashes`, `evidence_hashes`, and `output_hashes`. Each digest uses `sha256:<hex>`. Validate integrity with `scripts/validate_score_integrity.py` to detect drift in evaluator inputs, evidence, or score outputs after evaluation. Integrity is local tamper evidence, not a signature or trusted timestamp.
 
+### Evaluator Replay Readiness Contract
+
+Evaluator manifests can include a `replay` object with schema `ciph.evaluator-replay.v1`, mode `metadata-only`, a local `working_directory`, command metadata with `argv` and `shell: false`, an `env_allowlist` of variable names, `external_effect_policy: local-only`, and `expected_output_hashes`. Validate replay readiness with `scripts/validate_evaluator_replay.py`. The validator preflights metadata and hashes only; it does not execute evaluator commands or call providers.
+
 ### Delegation Contract
 
 Delegated work requires a bounded task packet, clear write ownership, expected output paths, and local verification after return. Child-agent self-report is not completion evidence.
@@ -152,6 +156,7 @@ Ingest holdout scores and compare finalists:
 python3 scripts/ingest_holdout_scores.py runs/<run-id> runs/<run-id>/artifacts/frontier-holdout-input.json --root . --output runs/<run-id>/artifacts/holdout-ingest.html
 python3 scripts/validate_score_provenance.py runs/<run-id> --root . --output runs/<run-id>/artifacts/score-provenance.html
 python3 scripts/validate_score_integrity.py runs/<run-id> --root . --output runs/<run-id>/artifacts/score-integrity.html
+python3 scripts/validate_evaluator_replay.py runs/<run-id> --root . --output runs/<run-id>/artifacts/evaluator-replay.html
 python3 scripts/final_comparison.py runs/<run-id> --root . --output runs/<run-id>/artifacts/final-comparison.html
 ```
 
