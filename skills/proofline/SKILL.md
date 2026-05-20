@@ -71,6 +71,7 @@ python3 vendor/proofline/scripts/validate_evaluation.py vendor/proofline/runs/<r
 python3 vendor/proofline/scripts/release_holdout.py vendor/proofline/runs/<run-id> --root . --released-at 2026-05-20T04:00:00Z --output vendor/proofline/runs/<run-id>/artifacts/holdout-release.html
 python3 vendor/proofline/scripts/ingest_holdout_scores.py vendor/proofline/runs/<run-id> vendor/proofline/runs/<run-id>/artifacts/frontier-holdout-input.json --root . --output vendor/proofline/runs/<run-id>/artifacts/holdout-ingest.html
 python3 vendor/proofline/scripts/validate_score_provenance.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/score-provenance.html
+python3 vendor/proofline/scripts/validate_score_integrity.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/score-integrity.html
 python3 vendor/proofline/scripts/final_comparison.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/final-comparison.html
 ```
 
@@ -108,6 +109,7 @@ Only claim completion when closeout maps every explicit requirement to existing 
 | Manually flipping `phase` or `holdout_set.sealed` | Use `release_holdout.py` so frontier validation, release budget, and release history are checked. |
 | Writing holdout scores into `score.json` | Use `ingest_holdout_scores.py` so search and holdout records stay separate. |
 | Treating score numbers as self-proving | Add evaluator manifests and run `validate_score_provenance.py`. |
+| Treating evaluator artifacts as immutable | Add SHA-256 integrity maps and run `validate_score_integrity.py`. |
 | Picking a final winner from search scores | Use `final_comparison.py` after holdout score ingestion. |
 | Treating chat or child-agent output as proof | Record command evidence or source references in the manifest. |
 | Forgetting generated reports | Write `status.html` and `closeout.html` before final verification. |

@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import stat
@@ -36,6 +37,7 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue((vendor / "scripts" / "ingest_holdout_scores.py").is_file())
             self.assertTrue((vendor / "scripts" / "final_comparison.py").is_file())
             self.assertTrue((vendor / "scripts" / "validate_score_provenance.py").is_file())
+            self.assertTrue((vendor / "scripts" / "validate_score_integrity.py").is_file())
             self.assertTrue((vendor / "scripts" / "lint_trace.py").is_file())
             self.assertTrue((vendor / "scripts" / "trace_metrics.py").is_file())
             self.assertTrue((vendor / "harness" / "policies" / "README.md").is_file())
@@ -47,6 +49,7 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertTrue(os.access(vendor / "scripts" / "ingest_holdout_scores.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "final_comparison.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "validate_score_provenance.py", os.X_OK))
+            self.assertTrue(os.access(vendor / "scripts" / "validate_score_integrity.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "lint_trace.py", os.X_OK))
             self.assertTrue(os.access(vendor / "scripts" / "trace_metrics.py", os.X_OK))
 
@@ -222,7 +225,6 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(evaluation["phase"], "holdout_released")
             self.assertFalse(evaluation["holdout_set"]["sealed"])
 
-            _write_installed_evaluator_files(vendor)
             _write_installed_search_score(candidate_dir / "score.json", "baseline")
             _write_installed_search_score(frontier_dir / "score.json", "frontier")
             incoming_holdout = vendor / "runs" / "sample-run" / "artifacts" / "frontier-holdout-input.json"
@@ -266,6 +268,7 @@ class ProoflineSkillTests(unittest.TestCase):
 
             self.assertEqual(ingest_holdout.returncode, 0, ingest_holdout.stderr)
             self.assertIn("PASS holdout ingest", ingest_holdout.stdout)
+            _write_installed_evaluator_files(vendor)
 
             final_comparison = subprocess.run(
                 [
@@ -304,6 +307,23 @@ class ProoflineSkillTests(unittest.TestCase):
             self.assertEqual(validate_provenance.returncode, 0, validate_provenance.stderr)
             self.assertIn("PASS score provenance", validate_provenance.stdout)
 
+            validate_integrity = subprocess.run(
+                [
+                    sys.executable,
+                    "vendor/proofline/scripts/validate_score_integrity.py",
+                    "vendor/proofline/runs/sample-run",
+                    "--root",
+                    str(target),
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(validate_integrity.returncode, 0, validate_integrity.stderr)
+            self.assertIn("PASS score integrity", validate_integrity.stdout)
+
     def test_bundled_assets_are_trace_aware(self):
         skill_text = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
         manifest = (SKILL_DIR / "assets" / "proofline" / "templates" / "MANIFEST.json").read_text(encoding="utf-8")
@@ -317,6 +337,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertIn("ingest_holdout_scores.py", skill_text)
         self.assertIn("final_comparison.py", skill_text)
         self.assertIn("validate_score_provenance.py", skill_text)
+        self.assertIn("validate_score_integrity.py", skill_text)
         self.assertIn('"trace"', manifest)
         self.assertIn('"policy_modules"', manifest)
         self.assertIn("Policy Modules", task_html)
@@ -329,6 +350,7 @@ class ProoflineSkillTests(unittest.TestCase):
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "ingest_holdout_scores.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "final_comparison.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_score_provenance.py").is_file())
+        self.assertTrue((SKILL_DIR / "assets" / "proofline" / "scripts" / "validate_score_integrity.py").is_file())
         self.assertTrue((SKILL_DIR / "assets" / "proofline" / "harness" / "policies" / "state.md").is_file())
 
     def test_installer_refuses_to_overwrite_without_force(self):
@@ -405,6 +427,9 @@ def _write_installed_evaluator_files(vendor: Path) -> None:
 
 
 def _write_installed_evaluator_manifest(path: Path, evaluator_id: str, phase: str, output_paths: list[str]) -> None:
+    root = path.parents[5]
+    input_path = f"vendor/proofline/runs/sample-run/artifacts/{phase}-input.json"
+    evidence_path = f"vendor/proofline/runs/sample-run/artifacts/{phase}-evidence.txt"
     path.write_text(
         json.dumps(
             {
@@ -412,9 +437,9 @@ def _write_installed_evaluator_manifest(path: Path, evaluator_id: str, phase: st
                 "evaluator_id": evaluator_id,
                 "evaluation_phase": phase,
                 "command": f"python3 tools/evaluate.py --phase {phase}",
-                "input_paths": [f"vendor/proofline/runs/sample-run/artifacts/{phase}-input.json"],
+                "input_paths": [input_path],
                 "output_paths": output_paths,
-                "evidence_paths": [f"vendor/proofline/runs/sample-run/artifacts/{phase}-evidence.txt"],
+                "evidence_paths": [evidence_path],
                 "metric_keys": [
                     "task_success",
                     "audit_completeness",
@@ -422,12 +447,23 @@ def _write_installed_evaluator_manifest(path: Path, evaluator_id: str, phase: st
                     "wall_minutes",
                     "defect_escape_rate",
                 ],
+                "integrity": {
+                    "schema_version": "ciph.evaluator-integrity.v1",
+                    "algorithm": "sha256",
+                    "input_hashes": {input_path: _digest(root / input_path)},
+                    "evidence_hashes": {evidence_path: _digest(root / evidence_path)},
+                    "output_hashes": {output_path: _digest(root / output_path) for output_path in output_paths},
+                },
             },
             indent=2,
         )
         + "\n",
         encoding="utf-8",
     )
+
+
+def _digest(path: Path) -> str:
+    return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _installed_score_provenance(evaluator_id: str, phase: str) -> dict[str, object]:

@@ -53,6 +53,10 @@ Research-grade optimization runs can include `EVALUATION.json` at the run root. 
 
 Research-grade score records can include `score_provenance` pointing to an evaluator manifest under `runs/<run-id>/evaluators/`. The manifest records evaluator ID, phase, command, inputs, outputs, evidence paths, and metric keys. Validate provenance with `scripts/validate_score_provenance.py` before relying on score values in summaries or final comparisons.
 
+### Score Integrity Contract
+
+Evaluator manifests can include an `integrity` object with schema `ciph.evaluator-integrity.v1`, algorithm `sha256`, and digest maps for `input_hashes`, `evidence_hashes`, and `output_hashes`. Each digest uses `sha256:<hex>`. Validate integrity with `scripts/validate_score_integrity.py` to detect drift in evaluator inputs, evidence, or score outputs after evaluation. Integrity is local tamper evidence, not a signature or trusted timestamp.
+
 ### Delegation Contract
 
 Delegated work requires a bounded task packet, clear write ownership, expected output paths, and local verification after return. Child-agent self-report is not completion evidence.
@@ -147,6 +151,7 @@ Ingest holdout scores and compare finalists:
 ```bash
 python3 scripts/ingest_holdout_scores.py runs/<run-id> runs/<run-id>/artifacts/frontier-holdout-input.json --root . --output runs/<run-id>/artifacts/holdout-ingest.html
 python3 scripts/validate_score_provenance.py runs/<run-id> --root . --output runs/<run-id>/artifacts/score-provenance.html
+python3 scripts/validate_score_integrity.py runs/<run-id> --root . --output runs/<run-id>/artifacts/score-integrity.html
 python3 scripts/final_comparison.py runs/<run-id> --root . --output runs/<run-id>/artifacts/final-comparison.html
 ```
 
