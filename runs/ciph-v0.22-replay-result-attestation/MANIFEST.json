@@ -1,0 +1,134 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.22-replay-result-attestation",
+  "objective": "Implement CIPH v0.22 Replay Result Attestation: persist normalized replay receipts for dry-run and executed evaluator replays with command digest, sandbox mode, timeout, env allowlist names, pre/post output hashes, status, docs, Proofline bundle sync, and dogfood evidence.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.22-replay-result-attestation/TRACE.jsonl"
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "replay-receipts",
+      "requirement": "Persist normalized replay receipts for dry-run and executed evaluator replay commands.",
+      "artifact_paths": [
+        "scripts/execute_evaluator_replay.py",
+        "tests/test_execute_evaluator_replay.py",
+        "runs/ciph-v0.22-replay-result-attestation/replay_receipts/search-evaluator-execute.json",
+        "runs/ciph-v0.22-replay-result-attestation/replay_receipts/search-evaluator-dry-run.json"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/replay-receipt-tests.txt",
+        "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/replay-receipt-dry-run.txt",
+        "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/replay-receipt-execute.txt"
+      ]
+    },
+    {
+      "id": "proofline-skill-sync",
+      "requirement": "Mirror replay receipt docs and executor changes into bundled and installed Proofline assets.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/execute_evaluator_replay.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-closeout",
+      "requirement": "Document replay result attestation and close out the dogfood run with generated evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "docs/plans/2026-05-20-ciph-v0.22-replay-result-attestation-design.md",
+        "docs/plans/2026-05-20-ciph-v0.22-replay-result-attestation.md",
+        "runs/ciph-v0.22-replay-result-attestation/TASK.html",
+        "runs/ciph-v0.22-replay-result-attestation/MANIFEST.json",
+        "runs/ciph-v0.22-replay-result-attestation/TRACE.jsonl",
+        "runs/ciph-v0.22-replay-result-attestation/artifacts/status.html",
+        "runs/ciph-v0.22-replay-result-attestation/artifacts/closeout.html",
+        "runs/ciph-v0.22-replay-result-attestation/artifacts/mechanism-metrics.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "runs/ciph-v0.22-replay-result-attestation/replay_receipts/search-evaluator-execute.json",
+      "description": "Dogfood executed replay receipt.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.22-replay-result-attestation/replay_receipts/search-evaluator-dry-run.json",
+      "description": "Dogfood dry-run replay receipt.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.22-replay-result-attestation/artifacts/evaluator-replay-execution.html",
+      "description": "Replay execution report linked to receipts.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "replay-receipt-tests",
+      "command": "python3 -m unittest tests.test_execute_evaluator_replay",
+      "required": true,
+      "evidence": "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/replay-receipt-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "replay-receipt-dry-run",
+      "command": "python3 scripts/execute_evaluator_replay.py runs/ciph-v0.22-replay-result-attestation --root . --receipt-dir runs/ciph-v0.22-replay-result-attestation/replay_receipts --output runs/ciph-v0.22-replay-result-attestation/artifacts/evaluator-replay-dry-run.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/replay-receipt-dry-run.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "replay-receipt-execute",
+      "command": "python3 scripts/execute_evaluator_replay.py runs/ciph-v0.22-replay-result-attestation --root . --execute --allow-argv0 python3 --timeout-seconds 10 --receipt-dir runs/ciph-v0.22-replay-result-attestation/replay_receipts --output runs/ciph-v0.22-replay-result-attestation/artifacts/evaluator-replay-execution.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/replay-receipt-execute.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-ledger-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.22-replay-result-attestation/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/trace-ledger-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.22-replay-result-attestation/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Receipts must never store environment values or command stdout/stderr content.",
+    "Dry-run receipts must not imply execution.",
+    "Hash mismatch and timeout receipts must be written even when execution fails.",
+    "Bundled and installed Proofline assets must stay synchronized."
+  ]
+}
