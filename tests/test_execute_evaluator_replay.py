@@ -24,6 +24,28 @@ class ExecuteEvaluatorReplayTests(unittest.TestCase):
             self.assertIn("DRY-RUN evaluator search-evaluator command not executed", result.messages)
             self.assertEqual(before, output_path.read_text(encoding="utf-8"))
 
+    def test_execute_evaluator_replay_writes_dry_run_receipt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = _create_replay_run(root)
+
+            result = execute_evaluator_replay(run_dir, root=root)
+
+            receipt = _load_receipt(run_dir, "search-evaluator-dry-run.json")
+            self.assertTrue(result.ok, result.errors)
+            self.assertEqual(receipt["schema_version"], "ciph.replay-receipt.v1")
+            self.assertEqual(receipt["evaluator_id"], "search-evaluator")
+            self.assertEqual(receipt["mode"], "dry-run")
+            self.assertEqual(receipt["status"], "DRY_RUN")
+            self.assertEqual(receipt["sandbox_mode"], "none")
+            self.assertEqual(receipt["env_allowlist"], ["PATH", "PYTHONPATH"])
+            self.assertNotIn("env", receipt)
+            self.assertNotIn("stdout", receipt)
+            self.assertNotIn("stderr", receipt)
+            self.assertIn("command_digest", receipt)
+            self.assertIn("pre_output_hashes", receipt)
+            self.assertIn("post_output_hashes", receipt)
+
     def test_execute_evaluator_replay_requires_argv0_approval_when_execute_is_set(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -33,6 +55,11 @@ class ExecuteEvaluatorReplayTests(unittest.TestCase):
 
             self.assertFalse(result.ok)
             self.assertIn("evaluator search-evaluator command argv[0] is not approved for execution: python3", result.errors)
+
+            receipt = _load_receipt(run_dir, "search-evaluator-execute.json")
+            self.assertEqual(receipt["status"], "SKIPPED_ARGV0_NOT_APPROVED")
+            self.assertEqual(receipt["mode"], "execute")
+            self.assertEqual(receipt["exit_code"], None)
 
     def test_execute_evaluator_replay_fails_closed_without_network_sandbox(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -49,6 +76,10 @@ class ExecuteEvaluatorReplayTests(unittest.TestCase):
 
             self.assertFalse(result.ok)
             self.assertIn("network sandbox is required for execution and was not found: /missing/ciph-bwrap", result.errors)
+
+            receipt = _load_receipt(run_dir, "search-evaluator-execute.json")
+            self.assertEqual(receipt["status"], "SANDBOX_UNAVAILABLE")
+            self.assertEqual(receipt["sandbox_mode"], "missing")
 
     @unittest.skipUnless(shutil.which("bwrap"), "bwrap is required for local replay execution")
     def test_execute_evaluator_replay_runs_approved_local_command_and_verifies_hash(self):
@@ -67,6 +98,16 @@ class ExecuteEvaluatorReplayTests(unittest.TestCase):
             self.assertTrue(result.ok, result.errors)
             self.assertIn("PASS evaluator search-evaluator execution exit_code=0", result.messages)
             self.assertIn("PASS evaluator search-evaluator output hash runs/sample/candidates/frontier/score.json", result.messages)
+
+            receipt = _load_receipt(run_dir, "search-evaluator-execute.json")
+            self.assertEqual(receipt["mode"], "execute")
+            self.assertEqual(receipt["status"], "PASS")
+            self.assertEqual(receipt["exit_code"], 0)
+            self.assertEqual(receipt["sandbox_mode"], "bwrap-unshare-net")
+            self.assertEqual(receipt["timeout_seconds"], 10)
+            self.assertEqual(receipt["stdout_bytes"], 0)
+            self.assertEqual(receipt["stderr_bytes"], 0)
+            self.assertEqual(receipt["post_output_hashes"], receipt["expected_output_hashes"])
 
     @unittest.skipUnless(shutil.which("bwrap"), "bwrap is required for local replay execution")
     def test_execute_evaluator_replay_rejects_post_execution_output_hash_mismatch(self):
@@ -88,6 +129,11 @@ class ExecuteEvaluatorReplayTests(unittest.TestCase):
                 result.errors,
             )
 
+            receipt = _load_receipt(run_dir, "search-evaluator-execute.json")
+            self.assertEqual(receipt["status"], "OUTPUT_HASH_MISMATCH")
+            self.assertEqual(receipt["pre_output_hashes"], receipt["expected_output_hashes"])
+            self.assertNotEqual(receipt["post_output_hashes"], receipt["expected_output_hashes"])
+
     @unittest.skipUnless(shutil.which("bwrap"), "bwrap is required for local replay execution")
     def test_execute_evaluator_replay_reports_timeout(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -104,6 +150,10 @@ class ExecuteEvaluatorReplayTests(unittest.TestCase):
 
             self.assertFalse(result.ok)
             self.assertIn("evaluator search-evaluator execution timed out after 0.1 seconds", result.errors)
+
+            receipt = _load_receipt(run_dir, "search-evaluator-execute.json")
+            self.assertEqual(receipt["status"], "TIMEOUT")
+            self.assertEqual(receipt["timeout_seconds"], 0.1)
 
     def test_write_evaluator_replay_execution_report_creates_html_report(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -139,11 +189,17 @@ class ExecuteEvaluatorReplayTests(unittest.TestCase):
             self.assertIn("stdout_bytes=", html)
             self.assertNotIn("CIPH_SECRET_VALUE", html)
 
+            receipt = _load_receipt(run_dir, "search-evaluator-execute.json")
+            self.assertEqual(receipt["stdout_bytes"], len("CIPH_SECRET_VALUE\n"))
+            serialized = json.dumps(receipt, sort_keys=True)
+            self.assertNotIn("CIPH_SECRET_VALUE", serialized)
+
     def test_execute_evaluator_replay_script_runs_when_executed_by_file_path(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             run_dir = _create_replay_run(root)
             output_path = run_dir / "artifacts" / "execution.html"
+            receipt_dir = run_dir / "receipts"
             repo_root = Path(__file__).resolve().parents[1]
 
             completed = subprocess.run(
@@ -155,6 +211,8 @@ class ExecuteEvaluatorReplayTests(unittest.TestCase):
                     str(root),
                     "--output",
                     str(output_path),
+                    "--receipt-dir",
+                    str(receipt_dir),
                 ],
                 cwd=repo_root,
                 text=True,
@@ -165,6 +223,7 @@ class ExecuteEvaluatorReplayTests(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stderr)
             self.assertIn(f"PASS evaluator replay execution {run_dir}", completed.stdout)
             self.assertTrue(output_path.is_file())
+            self.assertTrue((receipt_dir / "search-evaluator-dry-run.json").is_file())
 
 
 def _create_replay_run(root: Path, variant: str = "same") -> Path:
@@ -342,6 +401,14 @@ def _write_evaluation(run_dir: Path) -> None:
 
 def _digest(path: Path) -> str:
     return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _load_receipt(run_dir: Path, name: str) -> dict[str, object]:
+    path = run_dir / "replay_receipts" / name
+    with path.open(encoding="utf-8") as handle:
+        payload = json.load(handle)
+    assert isinstance(payload, dict)
+    return payload
 
 
 if __name__ == "__main__":
