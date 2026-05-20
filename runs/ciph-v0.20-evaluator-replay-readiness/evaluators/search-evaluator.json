@@ -1,0 +1,62 @@
+{
+  "schema_version": "ciph.evaluator-manifest.v1",
+  "evaluator_id": "search-evaluator",
+  "evaluation_phase": "search",
+  "command": "python3 tools/evaluate.py --phase search --run runs/ciph-v0.20-evaluator-replay-readiness",
+  "input_paths": [
+    "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/search-input.json"
+  ],
+  "output_paths": [
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/score.json",
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/frontier/score.json"
+  ],
+  "evidence_paths": [
+    "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/search-evidence.txt"
+  ],
+  "metric_keys": [
+    "task_success",
+    "audit_completeness",
+    "cost_tokens",
+    "wall_minutes",
+    "defect_escape_rate"
+  ],
+  "integrity": {
+    "schema_version": "ciph.evaluator-integrity.v1",
+    "algorithm": "sha256",
+    "input_hashes": {
+      "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/search-input.json": "sha256:8b3dbebadcc519ec81d4a08e9578fb1a7c820cde33dbaee21a969cc1c01dcaa2"
+    },
+    "evidence_hashes": {
+      "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/search-evidence.txt": "sha256:2594ac0ebc57e2b88612b32efaaa65aae90c0f452597280be1b2c851162699ff"
+    },
+    "output_hashes": {
+      "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/score.json": "sha256:2a691c1ed876114fff369e21c9f0a61a4dbf9a1b712676a2b73579470183cabe",
+      "runs/ciph-v0.20-evaluator-replay-readiness/candidates/frontier/score.json": "sha256:733deeecd24532cc7616690670b7ea586715c21ab5199322a339b25eb58ae311"
+    }
+  },
+  "replay": {
+    "schema_version": "ciph.evaluator-replay.v1",
+    "mode": "metadata-only",
+    "working_directory": ".",
+    "command_metadata": {
+      "argv": [
+        "python3",
+        "tools/evaluate.py",
+        "--phase",
+        "search",
+        "--run",
+        "runs/ciph-v0.20-evaluator-replay-readiness"
+      ],
+      "shell": false
+    },
+    "env_allowlist": [
+      "PATH",
+      "PYTHONPATH"
+    ],
+    "external_effect_policy": "local-only",
+    "expected_output_hashes": {
+      "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/score.json": "sha256:2a691c1ed876114fff369e21c9f0a61a4dbf9a1b712676a2b73579470183cabe",
+      "runs/ciph-v0.20-evaluator-replay-readiness/candidates/frontier/score.json": "sha256:733deeecd24532cc7616690670b7ea586715c21ab5199322a339b25eb58ae311"
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": "ciph.evaluation.v1",
+  "run_id": "ciph-v0.20-evaluator-replay-readiness",
+  "phase": "holdout_released",
+  "baseline_candidate_id": "baseline",
+  "search_set": {
+    "scenario_ids": [
+      "search-replay-validator",
+      "search-replay-bundle",
+      "search-replay-dogfood"
+    ]
+  },
+  "holdout_set": {
+    "scenario_ids": [
+      "holdout-evaluator-replay-closeout"
+    ],
+    "sealed": false
+  },
+  "budget": {
+    "max_candidates": 3,
+    "max_holdout_releases": 1
+  },
+  "frontier_candidate_ids": [
+    "frontier"
+  ],
+  "candidates": [
+    {
+      "candidate_id": "baseline",
+      "role": "baseline",
+      "evaluation_phase": "search",
+      "score_path": "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/score.json"
+    },
+    {
+      "candidate_id": "frontier",
+      "role": "frontier",
+      "evaluation_phase": "holdout",
+      "score_path": "runs/ciph-v0.20-evaluator-replay-readiness/candidates/frontier/score.json",
+      "holdout_score_path": "runs/ciph-v0.20-evaluator-replay-readiness/holdout_scores/frontier.json",
+      "holdout_score_ingested_at": "2026-05-20T10:35:00Z"
+    }
+  ],
+  "holdout_releases": [
+    {
+      "release_index": 1,
+      "released_at": "2026-05-20T10:30:00Z",
+      "frontier_candidate_ids": [
+        "frontier"
+      ]
+    }
+  ]
+}

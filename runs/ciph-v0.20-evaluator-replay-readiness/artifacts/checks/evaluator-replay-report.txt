@@ -1,0 +1,22 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "evaluator-replay-report", "command": "python3 scripts/validate_evaluator_replay.py runs/ciph-v0.20-evaluator-replay-readiness --root . --output runs/ciph-v0.20-evaluator-replay-readiness/artifacts/evaluator-replay.html", "exit_code": 0, "finished_at_utc": "2026-05-20T08:14:52+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T08:14:52+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH evaluator replay report: runs/ciph-v0.20-evaluator-replay-readiness/artifacts/evaluator-replay.html
+PASS evaluator replay runs/ciph-v0.20-evaluator-replay-readiness
+PASS evaluator search-evaluator replay.expected_output_hashes runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/score.json
+PASS evaluator search-evaluator replay.expected_output_hashes runs/ciph-v0.20-evaluator-replay-readiness/candidates/frontier/score.json
+PASS evaluator replay search-evaluator
+PASS score replay baseline search
+PASS evaluator search-evaluator replay.expected_output_hashes runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/score.json
+PASS evaluator search-evaluator replay.expected_output_hashes runs/ciph-v0.20-evaluator-replay-readiness/candidates/frontier/score.json
+PASS evaluator replay search-evaluator
+PASS score replay frontier search
+PASS evaluator holdout-evaluator replay.expected_output_hashes runs/ciph-v0.20-evaluator-replay-readiness/holdout_scores/frontier.json
+PASS evaluator replay holdout-evaluator
+PASS score replay frontier holdout
+
+## STDERR
+
+<empty>

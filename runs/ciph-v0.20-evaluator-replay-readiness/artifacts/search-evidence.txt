@@ -1,0 +1,1 @@
+Search evaluator inspected replay metadata validation, unsafe working directory tests, shell rejection, docs, bundled Proofline assets, and focused test evidence.

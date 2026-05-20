@@ -1,0 +1,29 @@
+{
+  "schema_version": "ciph.holdout-score.v1",
+  "candidate_id": "frontier",
+  "release_index": 1,
+  "scored_at": "2026-05-20T10:35:00Z",
+  "scenario_ids": [
+    "holdout-evaluator-replay-closeout"
+  ],
+  "holdout_scores": {
+    "task_success": 0.96,
+    "audit_completeness": 0.97,
+    "cost_tokens": 1740,
+    "wall_minutes": 38,
+    "defect_escape_rate": 0.01
+  },
+  "score_provenance": {
+    "schema_version": "ciph.score-provenance.v1",
+    "evaluator_id": "holdout-evaluator",
+    "evaluator_manifest_path": "runs/ciph-v0.20-evaluator-replay-readiness/evaluators/holdout-evaluator.json",
+    "evaluation_phase": "holdout",
+    "produced_at": "2026-05-20T10:35:00Z",
+    "input_paths": [
+      "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/holdout-input.json"
+    ],
+    "evidence_paths": [
+      "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/holdout-evidence.txt"
+    ]
+  }
+}

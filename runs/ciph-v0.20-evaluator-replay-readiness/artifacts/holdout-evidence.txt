@@ -1,0 +1,1 @@
+Holdout evaluator inspected canonical holdout ingestion, final comparison, provenance, integrity, and replay readiness validation on ingested output.

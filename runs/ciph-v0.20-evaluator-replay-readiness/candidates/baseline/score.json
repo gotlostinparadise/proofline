@@ -1,0 +1,60 @@
+{
+  "schema_version": "ciph.candidate.v1",
+  "candidate_id": "baseline",
+  "hypothesis": "Score provenance and integrity still leave evaluator replay assumptions implicit.",
+  "parent_ids": [
+    "seed"
+  ],
+  "lineage": {
+    "parents": [
+      "seed"
+    ],
+    "generation": 0
+  },
+  "changed_modules": [
+    "baseline"
+  ],
+  "search_scores": {
+    "task_success": 0.9,
+    "audit_completeness": 0.87,
+    "cost_tokens": 1580,
+    "wall_minutes": 34,
+    "defect_escape_rate": 0.04
+  },
+  "candidate_trace": "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/TRACE.jsonl",
+  "trace_paths": [
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/TRACE.jsonl",
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/trace/prompts.jsonl",
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/trace/tools.jsonl",
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/trace/failures.md"
+  ],
+  "artifact_paths": [
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/policy/README.md",
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/source/README.md",
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/artifacts/.gitkeep",
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/patch.diff",
+    "runs/ciph-v0.20-evaluator-replay-readiness/candidates/baseline/NOTES.md"
+  ],
+  "mechanism_metrics": {
+    "artifact_contract_compliance": 0.88,
+    "stage_coverage": 0.85,
+    "ordered_workflow_compliance": 0.87,
+    "tool_call_success": 0.96,
+    "handoff_recall": 0.84,
+    "validation_coverage": 0.82
+  },
+  "pareto_status": "baseline",
+  "score_provenance": {
+    "schema_version": "ciph.score-provenance.v1",
+    "evaluator_id": "search-evaluator",
+    "evaluator_manifest_path": "runs/ciph-v0.20-evaluator-replay-readiness/evaluators/search-evaluator.json",
+    "evaluation_phase": "search",
+    "produced_at": "2026-05-20T10:15:00Z",
+    "input_paths": [
+      "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/search-input.json"
+    ],
+    "evidence_paths": [
+      "runs/ciph-v0.20-evaluator-replay-readiness/artifacts/search-evidence.txt"
+    ]
+  }
+}
