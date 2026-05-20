@@ -1,0 +1,134 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.21-local-replay-executor",
+  "objective": "Implement CIPH v0.21 Local Replay Executor: execute approved local evaluator replay commands from metadata-only replay contracts with explicit opt-in, timeout, no shell, local-only effect policy, output hash verification, docs, Proofline bundle sync, and dogfood evidence.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.21-local-replay-executor/TRACE.jsonl"
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "local-replay-executor",
+      "requirement": "Execute approved local evaluator replay commands only after readiness validation, explicit opt-in, argv0 approval, timeout, and network sandbox checks.",
+      "artifact_paths": [
+        "scripts/execute_evaluator_replay.py",
+        "tests/test_execute_evaluator_replay.py",
+        "runs/ciph-v0.21-local-replay-executor/artifacts/evaluator-replay-execution.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.21-local-replay-executor/artifacts/checks/executor-tests.txt",
+        "runs/ciph-v0.21-local-replay-executor/artifacts/checks/executor-dry-run.txt",
+        "runs/ciph-v0.21-local-replay-executor/artifacts/checks/executor-local-run.txt"
+      ]
+    },
+    {
+      "id": "proofline-skill-sync",
+      "requirement": "Mirror local replay executor docs and scripts into bundled and installed Proofline assets.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/execute_evaluator_replay.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.21-local-replay-executor/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-closeout",
+      "requirement": "Document the executor boundary and close out the dogfood run with generated status, metrics, and closeout evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "docs/plans/2026-05-20-ciph-v0.21-local-replay-executor-design.md",
+        "docs/plans/2026-05-20-ciph-v0.21-local-replay-executor.md",
+        "runs/ciph-v0.21-local-replay-executor/TASK.html",
+        "runs/ciph-v0.21-local-replay-executor/MANIFEST.json",
+        "runs/ciph-v0.21-local-replay-executor/TRACE.jsonl",
+        "runs/ciph-v0.21-local-replay-executor/artifacts/status.html",
+        "runs/ciph-v0.21-local-replay-executor/artifacts/closeout.html",
+        "runs/ciph-v0.21-local-replay-executor/artifacts/mechanism-metrics.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.21-local-replay-executor/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/execute_evaluator_replay.py",
+      "description": "Opt-in local replay executor and report generator.",
+      "required": true
+    },
+    {
+      "path": "tests/test_execute_evaluator_replay.py",
+      "description": "Unit and CLI coverage for local replay execution.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.21-local-replay-executor/artifacts/evaluator-replay-execution.html",
+      "description": "Generated local replay execution report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "executor-tests",
+      "command": "python3 -m unittest tests.test_execute_evaluator_replay",
+      "required": true,
+      "evidence": "runs/ciph-v0.21-local-replay-executor/artifacts/checks/executor-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "executor-dry-run",
+      "command": "python3 scripts/execute_evaluator_replay.py runs/ciph-v0.21-local-replay-executor --root . --output runs/ciph-v0.21-local-replay-executor/artifacts/evaluator-replay-dry-run.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.21-local-replay-executor/artifacts/checks/executor-dry-run.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "executor-local-run",
+      "command": "python3 scripts/execute_evaluator_replay.py runs/ciph-v0.21-local-replay-executor --root . --execute --allow-argv0 python3 --timeout-seconds 10 --output runs/ciph-v0.21-local-replay-executor/artifacts/evaluator-replay-execution.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.21-local-replay-executor/artifacts/checks/executor-local-run.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.21-local-replay-executor/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-ledger-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.21-local-replay-executor/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/ciph-v0.21-local-replay-executor/artifacts/checks/trace-ledger-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.21-local-replay-executor/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Execution must remain opt-in and must not run arbitrary manifest commands without argv0 approval.",
+    "If Bubblewrap network isolation is unavailable, execution must fail closed.",
+    "Reports must not store environment values or command stdout/stderr that could contain secrets.",
+    "Output hash verification must fail if an evaluator command changes declared outputs unexpectedly.",
+    "Bundled and installed Proofline assets must stay synchronized."
+  ]
+}
