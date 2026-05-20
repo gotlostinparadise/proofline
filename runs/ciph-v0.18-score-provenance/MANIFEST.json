@@ -1,0 +1,163 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.18-score-provenance",
+  "objective": "Implement CIPH v0.18 Score Provenance and Evaluator Manifests: require research-grade score records to reference local evaluator manifests, validate provenance and evidence paths, surface evaluator provenance in reports, sync Proofline assets, and dogfood the workflow.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.18-score-provenance/TRACE.jsonl"
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "score-provenance-validator",
+      "requirement": "Validate score provenance links from search and holdout scores to evaluator manifests, commands, inputs, outputs, and evidence.",
+      "artifact_paths": [
+        "scripts/validate_score_provenance.py",
+        "tests/test_validate_score_provenance.py",
+        "runs/ciph-v0.18-score-provenance/evaluators/search-evaluator.json",
+        "runs/ciph-v0.18-score-provenance/evaluators/holdout-evaluator.json",
+        "runs/ciph-v0.18-score-provenance/artifacts/score-provenance.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.18-score-provenance/artifacts/checks/score-provenance-tests.txt",
+        "runs/ciph-v0.18-score-provenance/artifacts/checks/score-provenance-report.txt"
+      ]
+    },
+    {
+      "id": "provenance-reporting",
+      "requirement": "Surface evaluator IDs in candidate and final comparison reports when provenance is present.",
+      "artifact_paths": [
+        "scripts/candidate_summary.py",
+        "scripts/final_comparison.py",
+        "tests/test_candidate_summary.py",
+        "tests/test_final_comparison.py",
+        "runs/ciph-v0.18-score-provenance/artifacts/candidate-summary.html",
+        "runs/ciph-v0.18-score-provenance/artifacts/final-comparison.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.18-score-provenance/artifacts/checks/provenance-reporting-tests.txt",
+        "runs/ciph-v0.18-score-provenance/artifacts/checks/final-comparison-report.txt"
+      ]
+    },
+    {
+      "id": "proofline-skill-sync",
+      "requirement": "Mirror score provenance validation scripts, docs, and instructions into bundled Proofline assets.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/validate_score_provenance.py",
+        "skills/proofline/assets/proofline/scripts/candidate_summary.py",
+        "skills/proofline/assets/proofline/scripts/final_comparison.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.18-score-provenance/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-closeout",
+      "requirement": "Document evaluator manifests and close out the dogfood run with generated evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "docs/plans/2026-05-20-ciph-v0.18-score-provenance-design.md",
+        "docs/plans/2026-05-20-ciph-v0.18-score-provenance.md",
+        "runs/ciph-v0.18-score-provenance/TASK.html",
+        "runs/ciph-v0.18-score-provenance/MANIFEST.json",
+        "runs/ciph-v0.18-score-provenance/TRACE.jsonl",
+        "runs/ciph-v0.18-score-provenance/artifacts/status.html",
+        "runs/ciph-v0.18-score-provenance/artifacts/closeout.html",
+        "runs/ciph-v0.18-score-provenance/artifacts/mechanism-metrics.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.18-score-provenance/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/validate_score_provenance.py",
+      "description": "Score provenance validator and report generator.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.18-score-provenance/evaluators/search-evaluator.json",
+      "description": "Dogfood search evaluator manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.18-score-provenance/evaluators/holdout-evaluator.json",
+      "description": "Dogfood holdout evaluator manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.18-score-provenance/artifacts/score-provenance.html",
+      "description": "Generated score provenance validation report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "score-provenance-tests",
+      "command": "python3 -m unittest tests.test_validate_score_provenance",
+      "required": true,
+      "evidence": "runs/ciph-v0.18-score-provenance/artifacts/checks/score-provenance-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "score-provenance-report",
+      "command": "python3 scripts/validate_score_provenance.py runs/ciph-v0.18-score-provenance --root . --output runs/ciph-v0.18-score-provenance/artifacts/score-provenance.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.18-score-provenance/artifacts/checks/score-provenance-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "provenance-reporting-tests",
+      "command": "python3 -m unittest tests.test_candidate_summary tests.test_final_comparison",
+      "required": true,
+      "evidence": "runs/ciph-v0.18-score-provenance/artifacts/checks/provenance-reporting-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "final-comparison-report",
+      "command": "python3 scripts/final_comparison.py runs/ciph-v0.18-score-provenance --root . --output runs/ciph-v0.18-score-provenance/artifacts/final-comparison.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.18-score-provenance/artifacts/checks/final-comparison-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.18-score-provenance/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-ledger-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.18-score-provenance/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/ciph-v0.18-score-provenance/artifacts/checks/trace-ledger-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.18-score-provenance/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Provenance must not be a loose note; it must point to local evaluator manifests and evidence.",
+    "Historical runs must remain valid unless they explicitly opt into provenance checks.",
+    "Bundled and installed Proofline assets must stay synchronized."
+  ]
+}
