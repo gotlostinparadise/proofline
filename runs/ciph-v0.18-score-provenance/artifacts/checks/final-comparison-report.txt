@@ -1,0 +1,20 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "final-comparison-report", "command": "python3 scripts/final_comparison.py runs/ciph-v0.18-score-provenance --root . --output runs/ciph-v0.18-score-provenance/artifacts/final-comparison.html", "exit_code": 0, "finished_at_utc": "2026-05-20T07:45:23+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T07:45:23+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH final comparison: runs/ciph-v0.18-score-provenance/artifacts/final-comparison.html
+PASS final comparison runs/ciph-v0.18-score-provenance
+# CIPH Final Comparison
+
+Run: runs/ciph-v0.18-score-provenance
+Status: PASS
+Winner: frontier
+
+| Candidate | Final Status | Search Task Success | Holdout Task Success | Generalization Delta | Search Audit | Holdout Audit | Holdout Defect Escape | Search Evaluator | Holdout Evaluator |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| frontier | winner | 0.95 | 0.94 | -0.01 | 0.97 | 0.96 | 0.01 | search-evaluator | holdout-evaluator |
+
+## STDERR
+
+<empty>

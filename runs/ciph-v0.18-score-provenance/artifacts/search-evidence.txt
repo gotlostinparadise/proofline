@@ -1,0 +1,1 @@
+Search evaluator inspected the score provenance validator, report columns, bundled Proofline assets, and focused tests.

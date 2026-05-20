@@ -1,0 +1,22 @@
+{
+  "schema_version": "ciph.evaluator-manifest.v1",
+  "evaluator_id": "holdout-evaluator",
+  "evaluation_phase": "holdout",
+  "command": "python3 tools/evaluate.py --phase holdout --run runs/ciph-v0.18-score-provenance",
+  "input_paths": [
+    "runs/ciph-v0.18-score-provenance/artifacts/holdout-input.json"
+  ],
+  "output_paths": [
+    "runs/ciph-v0.18-score-provenance/holdout_scores/frontier.json"
+  ],
+  "evidence_paths": [
+    "runs/ciph-v0.18-score-provenance/artifacts/holdout-evidence.txt"
+  ],
+  "metric_keys": [
+    "task_success",
+    "audit_completeness",
+    "cost_tokens",
+    "wall_minutes",
+    "defect_escape_rate"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": "ciph.evaluator-input.v1",
+  "phase": "holdout",
+  "candidate_ids": [
+    "frontier"
+  ],
+  "scenario_ids": [
+    "holdout-score-provenance-closeout"
+  ]
+}

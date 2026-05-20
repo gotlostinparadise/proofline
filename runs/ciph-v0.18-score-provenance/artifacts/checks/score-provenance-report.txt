@@ -1,0 +1,34 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "score-provenance-report", "command": "python3 scripts/validate_score_provenance.py runs/ciph-v0.18-score-provenance --root . --output runs/ciph-v0.18-score-provenance/artifacts/score-provenance.html", "exit_code": 0, "finished_at_utc": "2026-05-20T07:45:23+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T07:45:22+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH score provenance report: runs/ciph-v0.18-score-provenance/artifacts/score-provenance.html
+PASS score provenance runs/ciph-v0.18-score-provenance
+PASS baseline search score_provenance.input_paths runs/ciph-v0.18-score-provenance/artifacts/search-input.json
+PASS baseline search score_provenance.evidence_paths runs/ciph-v0.18-score-provenance/artifacts/search-evidence.txt
+PASS evaluator search-evaluator input path runs/ciph-v0.18-score-provenance/artifacts/search-input.json
+PASS evaluator search-evaluator evidence path runs/ciph-v0.18-score-provenance/artifacts/search-evidence.txt
+PASS evaluator search-evaluator output path runs/ciph-v0.18-score-provenance/candidates/baseline/score.json
+PASS evaluator search-evaluator output path runs/ciph-v0.18-score-provenance/candidates/frontier/score.json
+PASS evaluator manifest search-evaluator
+PASS score provenance baseline search
+PASS frontier search score_provenance.input_paths runs/ciph-v0.18-score-provenance/artifacts/search-input.json
+PASS frontier search score_provenance.evidence_paths runs/ciph-v0.18-score-provenance/artifacts/search-evidence.txt
+PASS evaluator search-evaluator input path runs/ciph-v0.18-score-provenance/artifacts/search-input.json
+PASS evaluator search-evaluator evidence path runs/ciph-v0.18-score-provenance/artifacts/search-evidence.txt
+PASS evaluator search-evaluator output path runs/ciph-v0.18-score-provenance/candidates/baseline/score.json
+PASS evaluator search-evaluator output path runs/ciph-v0.18-score-provenance/candidates/frontier/score.json
+PASS evaluator manifest search-evaluator
+PASS score provenance frontier search
+PASS frontier holdout score_provenance.input_paths runs/ciph-v0.18-score-provenance/artifacts/holdout-input.json
+PASS frontier holdout score_provenance.evidence_paths runs/ciph-v0.18-score-provenance/artifacts/holdout-evidence.txt
+PASS evaluator holdout-evaluator input path runs/ciph-v0.18-score-provenance/artifacts/holdout-input.json
+PASS evaluator holdout-evaluator evidence path runs/ciph-v0.18-score-provenance/artifacts/holdout-evidence.txt
+PASS evaluator holdout-evaluator output path runs/ciph-v0.18-score-provenance/holdout_scores/frontier.json
+PASS evaluator manifest holdout-evaluator
+PASS score provenance frontier holdout
+
+## STDERR
+
+<empty>

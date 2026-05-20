@@ -1,0 +1,60 @@
+{
+  "schema_version": "ciph.candidate.v1",
+  "candidate_id": "frontier",
+  "hypothesis": "Score provenance and evaluator manifests make optimizer comparisons auditable without breaking historical runs.",
+  "parent_ids": [
+    "baseline"
+  ],
+  "lineage": {
+    "parents": [
+      "baseline"
+    ],
+    "generation": 0
+  },
+  "changed_modules": [
+    "score-provenance"
+  ],
+  "search_scores": {
+    "task_success": 0.95,
+    "audit_completeness": 0.97,
+    "cost_tokens": 1510,
+    "wall_minutes": 34,
+    "defect_escape_rate": 0.01
+  },
+  "candidate_trace": "runs/ciph-v0.18-score-provenance/candidates/frontier/TRACE.jsonl",
+  "trace_paths": [
+    "runs/ciph-v0.18-score-provenance/candidates/frontier/TRACE.jsonl",
+    "runs/ciph-v0.18-score-provenance/candidates/frontier/trace/prompts.jsonl",
+    "runs/ciph-v0.18-score-provenance/candidates/frontier/trace/tools.jsonl",
+    "runs/ciph-v0.18-score-provenance/candidates/frontier/trace/failures.md"
+  ],
+  "artifact_paths": [
+    "runs/ciph-v0.18-score-provenance/candidates/frontier/policy/README.md",
+    "runs/ciph-v0.18-score-provenance/candidates/frontier/source/README.md",
+    "runs/ciph-v0.18-score-provenance/candidates/frontier/artifacts/.gitkeep",
+    "runs/ciph-v0.18-score-provenance/candidates/frontier/patch.diff",
+    "runs/ciph-v0.18-score-provenance/candidates/frontier/NOTES.md"
+  ],
+  "mechanism_metrics": {
+    "artifact_contract_compliance": 0.97,
+    "stage_coverage": 0.95,
+    "ordered_workflow_compliance": 0.96,
+    "tool_call_success": 1.0,
+    "handoff_recall": 0.93,
+    "validation_coverage": 0.97
+  },
+  "pareto_status": "frontier",
+  "score_provenance": {
+    "schema_version": "ciph.score-provenance.v1",
+    "evaluator_id": "search-evaluator",
+    "evaluator_manifest_path": "runs/ciph-v0.18-score-provenance/evaluators/search-evaluator.json",
+    "evaluation_phase": "search",
+    "produced_at": "2026-05-20T07:00:00Z",
+    "input_paths": [
+      "runs/ciph-v0.18-score-provenance/artifacts/search-input.json"
+    ],
+    "evidence_paths": [
+      "runs/ciph-v0.18-score-provenance/artifacts/search-evidence.txt"
+    ]
+  }
+}

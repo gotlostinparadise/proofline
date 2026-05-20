@@ -1,0 +1,60 @@
+{
+  "schema_version": "ciph.candidate.v1",
+  "candidate_id": "baseline",
+  "hypothesis": "Current CIPH scoring can record search scores without explicit evaluator provenance.",
+  "parent_ids": [
+    "seed"
+  ],
+  "lineage": {
+    "parents": [
+      "seed"
+    ],
+    "generation": 0
+  },
+  "changed_modules": [
+    "baseline"
+  ],
+  "search_scores": {
+    "task_success": 0.88,
+    "audit_completeness": 0.84,
+    "cost_tokens": 1420,
+    "wall_minutes": 32,
+    "defect_escape_rate": 0.04
+  },
+  "candidate_trace": "runs/ciph-v0.18-score-provenance/candidates/baseline/TRACE.jsonl",
+  "trace_paths": [
+    "runs/ciph-v0.18-score-provenance/candidates/baseline/TRACE.jsonl",
+    "runs/ciph-v0.18-score-provenance/candidates/baseline/trace/prompts.jsonl",
+    "runs/ciph-v0.18-score-provenance/candidates/baseline/trace/tools.jsonl",
+    "runs/ciph-v0.18-score-provenance/candidates/baseline/trace/failures.md"
+  ],
+  "artifact_paths": [
+    "runs/ciph-v0.18-score-provenance/candidates/baseline/policy/README.md",
+    "runs/ciph-v0.18-score-provenance/candidates/baseline/source/README.md",
+    "runs/ciph-v0.18-score-provenance/candidates/baseline/artifacts/.gitkeep",
+    "runs/ciph-v0.18-score-provenance/candidates/baseline/patch.diff",
+    "runs/ciph-v0.18-score-provenance/candidates/baseline/NOTES.md"
+  ],
+  "mechanism_metrics": {
+    "artifact_contract_compliance": 0.86,
+    "stage_coverage": 0.83,
+    "ordered_workflow_compliance": 0.85,
+    "tool_call_success": 0.96,
+    "handoff_recall": 0.82,
+    "validation_coverage": 0.80
+  },
+  "pareto_status": "baseline",
+  "score_provenance": {
+    "schema_version": "ciph.score-provenance.v1",
+    "evaluator_id": "search-evaluator",
+    "evaluator_manifest_path": "runs/ciph-v0.18-score-provenance/evaluators/search-evaluator.json",
+    "evaluation_phase": "search",
+    "produced_at": "2026-05-20T07:00:00Z",
+    "input_paths": [
+      "runs/ciph-v0.18-score-provenance/artifacts/search-input.json"
+    ],
+    "evidence_paths": [
+      "runs/ciph-v0.18-score-provenance/artifacts/search-evidence.txt"
+    ]
+  }
+}

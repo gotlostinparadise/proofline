@@ -1,0 +1,51 @@
+{
+  "schema_version": "ciph.evaluation.v1",
+  "run_id": "ciph-v0.18-score-provenance",
+  "phase": "holdout_released",
+  "baseline_candidate_id": "baseline",
+  "search_set": {
+    "scenario_ids": [
+      "search-provenance-validator",
+      "search-provenance-reporting",
+      "search-proofline-bundle"
+    ]
+  },
+  "holdout_set": {
+    "scenario_ids": [
+      "holdout-score-provenance-closeout"
+    ],
+    "sealed": false
+  },
+  "budget": {
+    "max_candidates": 3,
+    "max_holdout_releases": 1
+  },
+  "frontier_candidate_ids": [
+    "frontier"
+  ],
+  "candidates": [
+    {
+      "candidate_id": "baseline",
+      "role": "baseline",
+      "evaluation_phase": "search",
+      "score_path": "runs/ciph-v0.18-score-provenance/candidates/baseline/score.json"
+    },
+    {
+      "candidate_id": "frontier",
+      "role": "frontier",
+      "evaluation_phase": "holdout",
+      "score_path": "runs/ciph-v0.18-score-provenance/candidates/frontier/score.json",
+      "holdout_score_path": "runs/ciph-v0.18-score-provenance/holdout_scores/frontier.json",
+      "holdout_score_ingested_at": "2026-05-20T07:35:00Z"
+    }
+  ],
+  "holdout_releases": [
+    {
+      "release_index": 1,
+      "released_at": "2026-05-20T07:30:00Z",
+      "frontier_candidate_ids": [
+        "frontier"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "ciph.evaluator-input.v1",
+  "phase": "search",
+  "candidate_ids": [
+    "baseline",
+    "frontier"
+  ],
+  "scenario_ids": [
+    "search-provenance-validator",
+    "search-provenance-reporting",
+    "search-proofline-bundle"
+  ]
+}

@@ -1,0 +1,2 @@
+{"schema_version":"ciph.trace.v1","event_id":"baseline-candidate-created","occurred_at":"2026-05-20T07:00:00Z","event_type":"candidate.created","candidate_id":"baseline"}
+{"schema_version":"ciph.trace.v1","event_id":"baseline-candidate-scored","occurred_at":"2026-05-20T07:01:00Z","event_type":"candidate.scored","candidate_id":"baseline","score_path":"runs/ciph-v0.18-score-provenance/candidates/baseline/score.json"}
