@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIPH Task</title>
+<style>
+body{margin:0;background:#faf9f5;color:#141413;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;padding:44px 28px 88px}
+main{max-width:980px;margin:0 auto}
+h1,h2{font-family:ui-serif,Georgia,serif;font-weight:500}
+h1{font-size:40px;margin:0 0 18px}
+h2{font-size:24px;margin:0 0 12px}
+section{background:#fff;border:1px solid #d1cfc5;border-radius:8px;padding:18px;margin:16px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #d1cfc5;padding:8px;text-align:left;vertical-align:top}
+th{font:11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#66635c;background:#f0eee6}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
+</style>
+</head>
+<body data-proofline-kind="task">
+<main>
+<h1>CIPH Task</h1>
+
+<section id="objective" data-proofline-section="objective">
+<h2>Objective</h2>
+<p>Implement CIPH v0.17 Holdout Score Ingestion and Final Comparison: accept holdout scores only after release, validate post-release score paths, produce final comparison reports, sync Proofline assets, and dogfood the workflow.</p>
+</section>
+
+<section id="acceptance-object" data-proofline-section="acceptance-object">
+<h2>Acceptance Object</h2>
+<p>The work is acceptable when holdout scores can be ingested only after <code>holdout_released</code>, <code>EVALUATION.json</code> links a validated canonical holdout score path, final comparison reports rank only scored holdout candidates, bundled Proofline assets expose the same workflow, and every required check has generated evidence.</p>
+</section>
+
+<section id="constraints" data-proofline-section="constraints">
+<h2>Constraints</h2>
+<ul>
+<li>Repository rules: keep search scores immutable; holdout scores must be separate canonical files linked from the evaluation protocol.</li>
+<li>Files or areas in scope: <code>scripts/</code>, <code>tests/</code>, <code>README.md</code>, <code>harness/</code>, <code>skills/proofline/</code>, and this run directory.</li>
+<li>Files or areas out of scope: benchmark execution, hidden holdout payload storage, provider APIs, and score generation.</li>
+<li>Permissions: local file edits, local tests, commit/merge/push closeout, and installed Proofline skill sync.</li>
+<li>Secrets handling: do not print private scenario payloads, tokens, headers, or environment secrets in reports.</li>
+</ul>
+</section>
+
+<section id="volatile-facts" data-proofline-section="volatile-facts">
+<h2>Volatile Facts To Verify</h2>
+<p>No external API, pricing, product-limit, or provider configuration facts are needed. This milestone uses local JSON contracts and Python standard-library behavior.</p>
+</section>
+
+<section id="policy-modules" data-proofline-section="policy-modules">
+<h2>Policy Modules</h2>
+<p>Active modules: <code>state</code>, <code>context</code>, <code>verification</code>, <code>recovery</code>, <code>delegation</code>, <code>candidate-search</code>, and <code>stopping</code>.</p>
+</section>
+
+<section id="trace-ledger" data-proofline-section="trace-ledger">
+<h2>Trace Ledger</h2>
+<p>Research runs use <code>runs/ciph-v0.17-holdout-final-comparison/TRACE.jsonl</code> for raw events. Validate it with <code>scripts/lint_trace.py</code> before closeout.</p>
+</section>
+
+<section id="mechanism-metrics" data-proofline-section="mechanism-metrics">
+<h2>Mechanism Metrics</h2>
+<p>Research runs can derive mechanism metrics with <code>scripts/trace_metrics.py</code>. Use them to inspect harness behavior; keep manifest validation and closeout evidence as the source of completion truth.</p>
+</section>
+
+<section id="deliverables" data-proofline-section="deliverables">
+<h2>Deliverables</h2>
+<table>
+<thead><tr><th>ID</th><th>Requirement</th><th>Artifact paths</th><th>Evidence paths</th></tr></thead>
+<tbody>
+<tr><td>holdout-score-ingestion</td><td>Ingest holdout scores only after release and link canonical paths.</td><td><code>scripts/ingest_holdout_scores.py</code>, <code>EVALUATION.json</code>, <code>holdout_scores/frontier.json</code></td><td><code>runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/holdout-ingest-tests.txt</code></td></tr>
+<tr><td>post-release-validation</td><td>Validate holdout score path, schema, release membership, and metrics.</td><td><code>scripts/validate_evaluation.py</code>, <code>tests/test_validate_evaluation.py</code></td><td><code>runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/evaluation-validator-tests.txt</code></td></tr>
+<tr><td>final-comparison-report</td><td>Render final search-versus-holdout report with deterministic winner selection.</td><td><code>scripts/final_comparison.py</code>, <code>tests/test_final_comparison.py</code></td><td><code>runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/final-comparison-tests.txt</code></td></tr>
+<tr><td>proofline-skill-sync</td><td>Bundle and install the same ingestion and comparison workflow.</td><td><code>skills/proofline/</code></td><td><code>runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/proofline-skill-tests.txt</code></td></tr>
+<tr><td>docs-and-closeout</td><td>Docs and dogfood closeout evidence are complete.</td><td><code>README.md</code>, <code>harness/CIPH.md</code>, <code>status.html</code>, <code>closeout.html</code></td><td><code>runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/full-unit-tests.txt</code></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="risks" data-proofline-section="risks">
+<h2>Risks And Blockers</h2>
+<ul>
+<li>Holdout ingestion must be impossible before release.</li>
+<li>Search scores must remain immutable and distinct from holdout scores.</li>
+<li>Final comparison must not silently rank unscored candidates as winners.</li>
+<li>Bundled and installed Proofline assets must stay synchronized.</li>
+</ul>
+</section>
+
+<section id="closeout-commands" data-proofline-section="closeout-commands">
+<h2>Closeout Commands</h2>
+<pre><code>python3 scripts/lint_manifest.py runs/ciph-v0.17-holdout-final-comparison/MANIFEST.json --root .
+python3 scripts/lint_trace.py runs/ciph-v0.17-holdout-final-comparison/TRACE.jsonl --root .
+python3 scripts/run_checks.py runs/ciph-v0.17-holdout-final-comparison/MANIFEST.json --root .
+python3 scripts/verify_manifest.py runs/ciph-v0.17-holdout-final-comparison/MANIFEST.json --root .
+python3 scripts/trace_metrics.py runs/ciph-v0.17-holdout-final-comparison/MANIFEST.json --root . --output runs/ciph-v0.17-holdout-final-comparison/artifacts/mechanism-metrics.html
+python3 scripts/run_status.py runs/ciph-v0.17-holdout-final-comparison/MANIFEST.json --root . --output runs/ciph-v0.17-holdout-final-comparison/artifacts/status.html
+python3 scripts/closeout_check.py runs/ciph-v0.17-holdout-final-comparison/MANIFEST.json --root . --output runs/ciph-v0.17-holdout-final-comparison/artifacts/closeout.html</code></pre>
+</section>
+</main>
+</body>
+</html>

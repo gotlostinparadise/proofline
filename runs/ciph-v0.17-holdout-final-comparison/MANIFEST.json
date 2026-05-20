@@ -1,0 +1,198 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "ciph-v0.17-holdout-final-comparison",
+  "objective": "Implement CIPH v0.17 Holdout Score Ingestion and Final Comparison: accept holdout scores only after release, validate post-release score paths, produce final comparison reports, sync Proofline assets, and dogfood the workflow.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/ciph-v0.17-holdout-final-comparison/TRACE.jsonl"
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "holdout-score-ingestion",
+      "requirement": "Ingest holdout scores only after holdout release and link canonical score paths from EVALUATION.json.",
+      "artifact_paths": [
+        "scripts/ingest_holdout_scores.py",
+        "tests/test_ingest_holdout_scores.py",
+        "runs/ciph-v0.17-holdout-final-comparison/EVALUATION.json",
+        "runs/ciph-v0.17-holdout-final-comparison/holdout_scores/frontier.json",
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/holdout-ingest.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/holdout-ingest-tests.txt",
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/holdout-ingest-report.txt"
+      ]
+    },
+    {
+      "id": "post-release-validation",
+      "requirement": "Validate post-release holdout score paths, score schema, release membership, and numeric metrics.",
+      "artifact_paths": [
+        "scripts/validate_evaluation.py",
+        "tests/test_validate_evaluation.py",
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/evaluation-report.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/evaluation-validator-tests.txt",
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/evaluation-report.txt"
+      ]
+    },
+    {
+      "id": "final-comparison-report",
+      "requirement": "Produce a final search-versus-holdout comparison report with deterministic winner selection.",
+      "artifact_paths": [
+        "scripts/final_comparison.py",
+        "tests/test_final_comparison.py",
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/final-comparison.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/final-comparison-tests.txt",
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/final-comparison-report.txt"
+      ]
+    },
+    {
+      "id": "proofline-skill-sync",
+      "requirement": "Mirror holdout ingestion and final comparison scripts, docs, and instructions into bundled Proofline assets.",
+      "artifact_paths": [
+        "skills/proofline/SKILL.md",
+        "skills/proofline/assets/proofline/scripts/ingest_holdout_scores.py",
+        "skills/proofline/assets/proofline/scripts/final_comparison.py",
+        "skills/proofline/assets/proofline/scripts/validate_evaluation.py",
+        "skills/proofline/assets/proofline/harness/CIPH.md",
+        "tests/test_proofline_skill.py"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/proofline-skill-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-closeout",
+      "requirement": "Document holdout ingestion and close out the dogfood run with generated evidence.",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "docs/plans/2026-05-20-ciph-v0.17-holdout-final-comparison-design.md",
+        "docs/plans/2026-05-20-ciph-v0.17-holdout-final-comparison.md",
+        "runs/ciph-v0.17-holdout-final-comparison/TASK.html",
+        "runs/ciph-v0.17-holdout-final-comparison/MANIFEST.json",
+        "runs/ciph-v0.17-holdout-final-comparison/TRACE.jsonl",
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/status.html",
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/closeout.html",
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/mechanism-metrics.html"
+      ],
+      "evidence_paths": [
+        "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/full-unit-tests.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scripts/ingest_holdout_scores.py",
+      "description": "Holdout score ingestion command and report generator.",
+      "required": true
+    },
+    {
+      "path": "scripts/final_comparison.py",
+      "description": "Final search-versus-holdout comparison report generator.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.17-holdout-final-comparison/EVALUATION.json",
+      "description": "Dogfood evaluation protocol with ingested holdout score path.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.17-holdout-final-comparison/holdout_scores/frontier.json",
+      "description": "Canonical dogfood holdout score file.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.17-holdout-final-comparison/artifacts/holdout-ingest.html",
+      "description": "Generated holdout ingestion report.",
+      "required": true
+    },
+    {
+      "path": "runs/ciph-v0.17-holdout-final-comparison/artifacts/final-comparison.html",
+      "description": "Generated final comparison report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "holdout-ingest-tests",
+      "command": "python3 -m unittest tests.test_ingest_holdout_scores",
+      "required": true,
+      "evidence": "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/holdout-ingest-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "holdout-ingest-report",
+      "command": "python3 scripts/ingest_holdout_scores.py runs/ciph-v0.17-holdout-final-comparison runs/ciph-v0.17-holdout-final-comparison/artifacts/frontier-holdout-input.json --root . --output runs/ciph-v0.17-holdout-final-comparison/artifacts/holdout-ingest.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/holdout-ingest-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "evaluation-validator-tests",
+      "command": "python3 -m unittest tests.test_validate_evaluation",
+      "required": true,
+      "evidence": "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/evaluation-validator-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "evaluation-report",
+      "command": "python3 scripts/validate_evaluation.py runs/ciph-v0.17-holdout-final-comparison --root . --output runs/ciph-v0.17-holdout-final-comparison/artifacts/evaluation-report.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/evaluation-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "final-comparison-tests",
+      "command": "python3 -m unittest tests.test_final_comparison",
+      "required": true,
+      "evidence": "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/final-comparison-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "final-comparison-report",
+      "command": "python3 scripts/final_comparison.py runs/ciph-v0.17-holdout-final-comparison --root . --output runs/ciph-v0.17-holdout-final-comparison/artifacts/final-comparison.html",
+      "required": true,
+      "evidence": "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/final-comparison-report.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "proofline-skill-tests",
+      "command": "python3 -m unittest tests.test_proofline_skill",
+      "required": true,
+      "evidence": "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/proofline-skill-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-ledger-lint",
+      "command": "python3 scripts/lint_trace.py runs/ciph-v0.17-holdout-final-comparison/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/trace-ledger-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "full-unit-tests",
+      "command": "python3 -m unittest discover",
+      "required": true,
+      "evidence": "runs/ciph-v0.17-holdout-final-comparison/artifacts/checks/full-unit-tests.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Holdout ingestion must be impossible before release.",
+    "Search scores must remain immutable and distinct from holdout scores.",
+    "Final comparison must not silently rank unscored candidates as winners.",
+    "Bundled and installed Proofline assets must stay synchronized."
+  ]
+}
