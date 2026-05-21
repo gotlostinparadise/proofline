@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proofline Real-Task Confirmation</title>
+<style>
+body{margin:0;background:#faf9f5;color:#141413;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;padding:44px 28px 88px}
+main{max-width:980px;margin:0 auto}
+h1,h2{font-family:ui-serif,Georgia,serif;font-weight:500}
+h1{font-size:40px;margin:0 0 18px}
+h2{font-size:24px;margin:0 0 12px}
+section{background:#fff;border:1px solid #d1cfc5;border-radius:8px;padding:18px;margin:16px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #d1cfc5;padding:8px;text-align:left;vertical-align:top}
+th{font:11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#66635c;background:#f0eee6}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
+</style>
+</head>
+<body data-proofline-kind="task">
+<main>
+  <h1>Proofline Real-Task Confirmation</h1>
+
+  <section id="objective">
+    <h2>Objective</h2>
+    <p>Run the minimal Proofline core workflow on a real maintenance follow-up task and convert the campaign’s real-task findings into a concrete cleanup backlog.</p>
+  </section>
+
+  <section id="constraints">
+    <h2>Constraints</h2>
+    <ul>
+      <li>No candidate/evaluation/replay commands in this run.</li>
+      <li>No behavior changes to historical campaign subjects.</li>
+      <li>No optimizer layer invocation; core workflow only.</li>
+    </ul>
+  </section>
+
+  <section id="deliverables">
+    <h2>Deliverables</h2>
+    <ol>
+      <li><strong>Cleanup backlog artifact</strong> that captures all 5 confirmed historical campaign hits.</li>
+      <li><strong>Closeout evidence</strong> from manifest lint, trace lint, status render, and closeout render.</li>
+      <li><strong>Repository gate check</strong> for current repo-state readiness.</li>
+    </ol>
+  </section>
+
+  <section id="checks">
+    <h2>Required Checks</h2>
+    <pre><code>python3 scripts/run_checks.py runs/proofline-real-task-confirmation/MANIFEST.json --root .
+python3 scripts/check_repo.py</code></pre>
+  </section>
+
+  <section id="evidence">
+    <h2>Evidence</h2>
+    <ul>
+      <li><code>runs/proofline-real-task-confirmation/artifacts/cleanup-backlog.md</code></li>
+      <li><code>runs/proofline-real-task-confirmation/artifacts/checks/campaign-backlog-check.txt</code></li>
+      <li><code>runs/proofline-real-task-confirmation/artifacts/checks/manifest-lint.txt</code></li>
+      <li><code>runs/proofline-real-task-confirmation/artifacts/checks/trace-lint.txt</code></li>
+      <li><code>runs/proofline-real-task-confirmation/artifacts/checks/generate-status.txt</code></li>
+      <li><code>runs/proofline-real-task-confirmation/artifacts/checks/render-closeout.txt</code></li>
+      <li><code>runs/proofline-real-task-confirmation/artifacts/checks/repo-gate.txt</code></li>
+      <li><code>runs/proofline-real-task-confirmation/artifacts/status.html</code></li>
+      <li><code>runs/proofline-real-task-confirmation/artifacts/closeout.html</code></li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

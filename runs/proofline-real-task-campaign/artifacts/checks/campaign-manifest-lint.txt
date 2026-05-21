@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "manifest-lint", "command": "python3 scripts/lint_manifest.py runs/proofline-real-task-campaign/MANIFEST.json --root .", "exit_code": 0, "finished_at_utc": "2026-05-21T07:53:47+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T07:53:47+00:00", "status": "PASS"}
+
+## STDOUT
+
+CIPH manifest lint clean: runs/proofline-real-task-campaign/MANIFEST.json
+
+## STDERR
+
+<empty>

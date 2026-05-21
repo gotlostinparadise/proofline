@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proofline Real-Task Validation Campaign</title>
+<style>
+body{margin:0;background:#faf9f5;color:#141413;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;padding:44px 28px 88px}
+main{max-width:980px;margin:0 auto}
+h1,h2{font-family:ui-serif,Georgia,serif;font-weight:500}
+h1{font-size:40px;margin:0 0 18px}
+h2{font-size:24px;margin:0 0 12px}
+section{background:#fff;border:1px solid #d1cfc5;border-radius:8px;padding:18px;margin:16px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #d1cfc5;padding:8px;text-align:left;vertical-align:top}
+th{font:11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#66635c;background:#f0eee6}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
+</style>
+</head>
+<body data-proofline-kind="task">
+<main>
+  <h1>Proofline Real-Task Campaign</h1>
+
+  <section id="objective">
+    <h2>Objective</h2>
+    <p>Validate whether default Proofline workflows catch concrete issues in 5 real historical repository tasks and record outcomes.</p>
+  </section>
+
+  <section id="acceptance">
+    <h2>Acceptance Object</h2>
+    <p>Proof of value is each selected task reporting at least one concrete high-severity issue when sampled via history-aware diagnostics.</p>
+  </section>
+
+  <section id="constraints">
+    <h2>Constraints</h2>
+    <ul>
+      <li>No code changes to selected historical runs.</li>
+      <li>Use history-aware diagnostics intentionally with explicit legacy inclusion.</li>
+      <li>No candidate/evaluation/replay layer in this campaign.</li>
+    </ul>
+  </section>
+
+  <section id="tasks">
+    <h2>Campaign Tasks (Real Repo Runs)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Run</th>
+          <th>Expected High-Severity Pattern</th>
+          <th>Captured as Concrete Issue?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ciph-v0.10-vendor-layout</td>
+          <td>closeout-missing, trace-missing</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td>ciph-v0.11-html-artifacts</td>
+          <td>closeout-missing, trace-missing</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td>ciph-v0.12-policy-trace</td>
+          <td>closeout-missing</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td>ciph-v0.2-init-run</td>
+          <td>closeout-missing, trace-missing</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td>ciph-v0.3-run-checks</td>
+          <td>closeout-missing, trace-missing</td>
+          <td>Yes</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Count of concrete hits: 5/5 tasks (meets campaign value threshold).</p>
+  </section>
+
+  <section id="checks">
+    <h2>Checks</h2>
+    <pre><code>python3 scripts/run_checks.py runs/proofline-real-task-campaign/MANIFEST.json --root . --include-optional
+python3 scripts/verify_manifest.py runs/proofline-real-task-campaign/MANIFEST.json --root .
+python3 scripts/check_repo.py --skip-diff-check</code></pre>
+  </section>
+
+  <section id="closeout">
+    <h2>Closeout Evidence</h2>
+    <ul>
+      <li><code>runs/proofline-real-task-campaign/artifacts/checks/campaign-diagnostics.txt</code></li>
+      <li><code>runs/proofline-real-task-campaign/artifacts/campaign-diagnostics.json</code></li>
+      <li><code>runs/proofline-real-task-campaign/artifacts/campaign-summary.md</code></li>
+      <li><code>runs/proofline-real-task-campaign/artifacts/status.html</code></li>
+      <li><code>runs/proofline-real-task-campaign/artifacts/closeout.html</code></li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

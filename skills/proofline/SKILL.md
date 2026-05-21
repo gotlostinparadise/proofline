@@ -1,150 +1,122 @@
 ---
 name: proofline
-description: Use when starting, managing, reviewing, delegating, or closing out multi-step coding work that needs durable scope, artifacts, verification evidence, run manifests, child task packets, candidate comparison, independent review, or auditability across context handoffs.
+description: Use when starting, managing, reviewing, delegating, or closing out multi-step coding work that needs durable scope, artifacts, verification evidence, run manifests, and closeout across context handoffs.
 ---
 
 # Proofline
 
 ## Overview
 
-Proofline is a repo-native harness for evidence-backed agent work. Use it to make complex coding tasks inspectable by recording the objective, deliverables, artifacts, checks, evidence, and closeout in the repository before claiming completion.
+Proofline is the repo-native workflow for evidence-backed agent work. Use it to keep the task objective, deliverables, checks, evidence, and closeout artifacts in-repo and verify that completion is real.
 
-For research-grade runs, Proofline also records policy modules and a raw `TRACE.jsonl` ledger. Policy modules describe editable harness strategy; deterministic scripts still own exact validation, scoring, trace linting, mechanism metrics, and closeout checks.
+For core work, use `TASK` + `MANIFEST` + checks, then closeout evidence. Do not default to optimizer tooling until explicit research tasks require it.
+
+Current proofline boundary (2026-05-21):
+
+- `proofline-real-task-campaign` completed 5 real tasks with `0/5` high-severity catches against a practical threshold of `2/5`.
+- Keep candidate/evaluation/replay as research-only tooling unless a milestone explicitly requires optimization.
 
 ## Decision
 
-Use Proofline for multi-step, high-risk, delegated, review-heavy, or evidence-sensitive work. For a one-line typo or trivial local edit, keep the workflow lightweight unless the user explicitly asks for Proofline.
+Use Proofline for:
 
-If the repo already has `vendor/proofline/scripts/init_run.py`, use the vendored harness. If not, install bundled assets first:
+- multi-step maintenance work
+- delegated tasks with clear handoffs
+- scope-boundary changes
+- review-required changes
 
-```bash
-python3 <skill-dir>/scripts/install_proofline.py --target .
-```
+Use lightweight local edits for:
 
-This installs Proofline under `vendor/proofline` so product files stay separate from harness files. Use `--force` only when the user has approved overwriting existing files under `vendor/proofline`.
+- one-line fixes
+- exploratory throwaway experiments
 
 ## Start A Run
-
-Create a run before implementation:
 
 ```bash
 python3 vendor/proofline/scripts/init_run.py <run-id> --root . --proofline-root vendor/proofline --objective "<objective>"
 ```
 
-Then fill in:
+## Core Quick Path
 
-- `vendor/proofline/runs/<run-id>/TASK.html`: objective, acceptance object, constraints, volatile facts, deliverables, risks, closeout commands.
-- `vendor/proofline/runs/<run-id>/MANIFEST.json`: every explicit requirement mapped to project-root-relative artifact paths, evidence paths, required checks, policy modules, and trace metadata.
-- `vendor/proofline/runs/<run-id>/TRACE.jsonl`: raw research trace events; it may start empty.
-
-Lint the contract before coding:
-
-```bash
-python3 vendor/proofline/scripts/lint_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
-python3 vendor/proofline/scripts/lint_trace.py vendor/proofline/runs/<run-id>/TRACE.jsonl --root .
-python3 vendor/proofline/scripts/lint_trace.py vendor/proofline/runs/<run-id>/TRACE.jsonl --root . --strict
-python3 vendor/proofline/scripts/trace_strictness_report.py --root . --runs-dir vendor/proofline/runs --format html --output vendor/proofline/runs/<run-id>/artifacts/trace-strictness.html
-python3 vendor/proofline/scripts/repair_trace_strictness.py vendor/proofline/runs/<run-id>/artifacts/trace-strictness.json --format html --output vendor/proofline/runs/<run-id>/artifacts/trace-repair-plan.html
-```
-
-Show the user the run contract for approval when the user asked to approve plans or when the scope is ambiguous. Otherwise proceed if they clearly asked for implementation.
-
-## Execute
-
-Implement only inside the agreed scope. When work needs delegated agents, create bounded child packets:
-
-```bash
-python3 vendor/proofline/scripts/init_child_task.py vendor/proofline/runs/<run-id>/MANIFEST.json <child-id> --owner <role> --write-scope <path>
-```
-
-Child-agent self-report is not evidence. Inspect returned changes and verify them locally.
-
-For competing approaches, scaffold and validate candidates:
-
-```bash
-python3 vendor/proofline/scripts/init_candidate.py vendor/proofline/runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
-python3 vendor/proofline/scripts/init_candidate.py vendor/proofline/runs/<run-id>/MANIFEST.json <candidate-id> --change-class source --changed-module <module> --source-path vendor/proofline/runs/<run-id>/candidates/<candidate-id>/source/README.md
-python3 vendor/proofline/scripts/validate_candidate.py vendor/proofline/runs/<run-id>/candidates/<candidate-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/candidate-validation.html
-python3 vendor/proofline/scripts/candidate_summary.py vendor/proofline/runs/<run-id> --output vendor/proofline/runs/<run-id>/artifacts/candidate-summary.html
-```
-
-Candidate records include ablation metadata, `policy_provenance`, and `source_provenance`. Source ablations must point at at least one existing source snapshot, and evaluation lineage must stay one-dimension-at-a-time unless a parent is explicitly the baseline.
-
-For search-set / holdout research runs, validate the evaluation protocol and release holdout only through the gate:
-
-```bash
-python3 vendor/proofline/scripts/validate_evaluation.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/evaluation-report.html
-python3 vendor/proofline/scripts/release_holdout.py vendor/proofline/runs/<run-id> --root . --released-at 2026-05-20T04:00:00Z --output vendor/proofline/runs/<run-id>/artifacts/holdout-release.html
-python3 vendor/proofline/scripts/ingest_holdout_scores.py vendor/proofline/runs/<run-id> vendor/proofline/runs/<run-id>/artifacts/frontier-holdout-input.json --root . --output vendor/proofline/runs/<run-id>/artifacts/holdout-ingest.html
-python3 vendor/proofline/scripts/validate_score_provenance.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/score-provenance.html
-python3 vendor/proofline/scripts/validate_score_integrity.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/score-integrity.html
-python3 vendor/proofline/scripts/validate_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay.html
-python3 vendor/proofline/scripts/execute_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --receipt-dir vendor/proofline/runs/<run-id>/replay_receipts --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay-dry-run.html
-python3 vendor/proofline/scripts/execute_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --execute --allow-argv0 python3 --timeout-seconds 30 --receipt-dir vendor/proofline/runs/<run-id>/replay_receipts --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay-execution.html
-python3 vendor/proofline/scripts/final_comparison.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/final-comparison.html
-```
-
-To inspect prior run experience without mutating it:
-
-```bash
-python3 vendor/proofline/scripts/query_experience_store.py --root . --runs-dir vendor/proofline/runs --status PASS --format json --output vendor/proofline/runs/<run-id>/artifacts/experience-store.json
-python3 vendor/proofline/scripts/query_experience_store.py --root . --runs-dir vendor/proofline/runs --has-replay-receipts --format html --output vendor/proofline/runs/<run-id>/artifacts/experience-store.html
-```
-
-To prioritize follow-up remediation work from run history:
-
-```bash
-python3 vendor/proofline/scripts/diagnose_experience_store.py --root . --runs-dir vendor/proofline/runs --min-severity medium --format json --output vendor/proofline/runs/<run-id>/artifacts/experience-diagnostics.json
-python3 vendor/proofline/scripts/diagnose_experience_store.py --root . --runs-dir vendor/proofline/runs --min-severity low --format html --output vendor/proofline/runs/<run-id>/artifacts/experience-diagnostics.html
-python3 vendor/proofline/scripts/diagnose_experience_store.py --root . --runs-dir vendor/proofline/runs --min-severity high --fail-on-high
-python3 vendor/proofline/scripts/plan_next_candidates.py vendor/proofline/runs/<run-id>/artifacts/experience-diagnostics.json --format html --output vendor/proofline/runs/<run-id>/artifacts/next-candidates.html
-```
-
-## Verify And Close
-
-Run required checks and write evidence:
+1. Fill `vendor/proofline/runs/<run-id>/TASK.html` and `MANIFEST.json`.
+2. Run required checks:
 
 ```bash
 python3 vendor/proofline/scripts/run_checks.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
-python3 vendor/proofline/scripts/lint_trace.py vendor/proofline/runs/<run-id>/TRACE.jsonl --root .
-python3 vendor/proofline/scripts/verify_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
-python3 vendor/proofline/scripts/trace_metrics.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/mechanism-metrics.html
-python3 vendor/proofline/scripts/run_status.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/status.html
-python3 vendor/proofline/scripts/closeout_check.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/closeout.html
 ```
 
-Finish with the repository gate when available:
+3. Validate manifest contracts:
+
+```bash
+python3 vendor/proofline/scripts/lint_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
+python3 vendor/proofline/scripts/verify_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
+```
+
+4. Render closeout evidence:
+
+```bash
+python3 vendor/proofline/scripts/run_status.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/status.html
+python3 vendor/proofline/scripts/closeout_check.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/closeout.html
+python3 vendor/proofline/scripts/lint_trace.py vendor/proofline/runs/<run-id>/TRACE.jsonl --root .
+python3 vendor/proofline/scripts/trace_metrics.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
+```
+
+5. Run repo gate:
 
 ```bash
 python3 vendor/proofline/scripts/check_repo.py --root . --runs-dir vendor/proofline/runs
 ```
 
-Only claim completion when closeout maps every explicit requirement to existing artifacts and evidence, or when remaining gaps are recorded as blockers.
+## Research Layer (Optional)
+
+Candidate, evaluation, and replay commands are optional and should be used only for explicit research/optimization tasks:
+
+```bash
+python3 vendor/proofline/scripts/init_candidate.py vendor/proofline/runs/<run-id>/MANIFEST.json <candidate-id> --changed-module <module>
+python3 vendor/proofline/scripts/init_candidate.py vendor/proofline/runs/<run-id>/MANIFEST.json <candidate-id> --change-class source --changed-module <module> --source-path vendor/proofline/runs/<run-id>/candidates/<candidate-id>/source/README.md
+python3 vendor/proofline/scripts/release_holdout.py vendor/proofline/runs/<run-id> --root . --released-at 2026-05-20T04:00:00Z --output vendor/proofline/runs/<run-id>/artifacts/holdout-release.html
+python3 vendor/proofline/scripts/ingest_holdout_scores.py vendor/proofline/runs/<run-id> vendor/proofline/runs/<run-id>/artifacts/frontier-holdout-input.json --root . --output vendor/proofline/runs/<run-id>/artifacts/holdout-ingest.html
+python3 vendor/proofline/scripts/final_comparison.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/final-comparison.html
+python3 vendor/proofline/scripts/validate_candidate.py vendor/proofline/runs/<run-id>/candidates/<candidate-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/candidate-validation.html
+python3 vendor/proofline/scripts/candidate_summary.py vendor/proofline/runs/<run-id> --output vendor/proofline/runs/<run-id>/artifacts/candidate-summary.html
+python3 vendor/proofline/scripts/validate_evaluation.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/evaluation-report.html
+python3 vendor/proofline/scripts/query_experience_store.py --root . --runs-dir vendor/proofline/runs --status PASS --format json --output vendor/proofline/runs/<run-id>/artifacts/experience-store.json
+python3 vendor/proofline/scripts/query_experience_store.py --root . --runs-dir vendor/proofline/runs --has-replay-receipts --format html --output vendor/proofline/runs/<run-id>/artifacts/experience-store.html
+python3 vendor/proofline/scripts/diagnose_experience_store.py --root . --runs-dir vendor/proofline/runs --min-severity medium --format json --output vendor/proofline/runs/<run-id>/artifacts/experience-diagnostics.json
+python3 vendor/proofline/scripts/diagnose_experience_store.py --root . --runs-dir vendor/proofline/runs --min-severity high --include-legacy-runs
+python3 vendor/proofline/scripts/plan_next_candidates.py vendor/proofline/runs/<run-id>/artifacts/experience-diagnostics.json --format html --output vendor/proofline/runs/<run-id>/artifacts/next-candidates.html
+```
+
+```bash
+python3 vendor/proofline/scripts/validate_score_provenance.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/score-provenance.html
+python3 vendor/proofline/scripts/validate_score_integrity.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/score-integrity.html
+python3 vendor/proofline/scripts/validate_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay.html
+python3 vendor/proofline/scripts/execute_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --receipt-dir vendor/proofline/runs/<run-id>/replay_receipts --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay-dry-run.html
+python3 vendor/proofline/scripts/execute_evaluator_replay.py vendor/proofline/runs/<run-id> --root . --execute --allow-argv0 python3 --timeout-seconds 30 --receipt-dir vendor/proofline/runs/<run-id>/replay_receipts --output vendor/proofline/runs/<run-id>/artifacts/evaluator-replay-execution.html
+python3 vendor/proofline/scripts/trace_strictness_report.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/trace-strictness-report.json
+python3 vendor/proofline/scripts/repair_trace_strictness.py vendor/proofline/runs/<run-id>/artifacts/trace-strictness-report.json --format json --output vendor/proofline/runs/<run-id>/artifacts/trace-repair-plan.json --strict
+python3 vendor/proofline/scripts/query_experience_store.py --root . --runs-dir vendor/proofline/runs --min-severity high --fail-on-high --include-legacy-runs --format json --output vendor/proofline/runs/<run-id>/artifacts/source_provenance.json
+```
+
+## When Not to Use Proofline
+
+- one-line typo fixes
+- trivial local-only changes with no durable evidence
+- throwaway work where no downstream handoff depends on an audit trail
+
+## Verify and Close
+
+```bash
+python3 vendor/proofline/scripts/run_checks.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
+python3 vendor/proofline/scripts/verify_manifest.py vendor/proofline/runs/<run-id>/MANIFEST.json --root .
+python3 vendor/proofline/scripts/closeout_check.py vendor/proofline/runs/<run-id>/MANIFEST.json --root . --output vendor/proofline/runs/<run-id>/artifacts/closeout.html
+```
 
 ## Common Mistakes
 
 | Mistake | Fix |
 | --- | --- |
-| Coding before `TASK.html` and `MANIFEST.json` exist | Create and lint the run contract first. |
-| Listing vague deliverables | Use concrete file paths and exact evidence paths. |
-| Forgetting trace linting on research-grade runs | Run `lint_trace.py` against `TRACE.jsonl`. |
-| Treating trace shape as enough for closeout | Use `lint_trace.py --strict` so duplicate IDs, unsafe paths, and ordering regressions are blocked. |
-| Enforcing strict trace mode across all history at once | Add `trace.strict: true` only to repaired/new runs and use `trace_strictness_report.py` for the migration list. |
-| Rewriting old traces blindly | Generate `repair_trace_strictness.py` reports first and apply only reviewed, bounded repairs. |
-| Treating mechanism metrics as completion proof | Run `trace_metrics.py` for diagnostics, then keep `verify_manifest.py` and closeout evidence authoritative. |
-| Summarizing candidate scores before validating records | Run `validate_candidate.py` for each candidate first. |
-| Treating a source candidate as policy-only | Use `--change-class source` plus `--source-path`, then validate `source_provenance`. |
-| Releasing holdout scores during search | Record split state in `EVALUATION.json`, run `validate_evaluation.py`, then use `release_holdout.py`. |
-| Running diagnostics without acting on priorities | Run `diagnose_experience_store.py` and map high-severity findings to next-step commands before rerunning evidence checks. |
-| Closing out with high diagnostics still present | Use `diagnose_experience_store.py --fail-on-high` and plan the next bounded candidate with `plan_next_candidates.py`. |
-| Manually flipping `phase` or `holdout_set.sealed` | Use `release_holdout.py` so frontier validation, release budget, and release history are checked. |
-| Writing holdout scores into `score.json` | Use `ingest_holdout_scores.py` so search and holdout records stay separate. |
-| Treating score numbers as self-proving | Add evaluator manifests and run `validate_score_provenance.py`. |
-| Treating evaluator artifacts as immutable | Add SHA-256 integrity maps and run `validate_score_integrity.py`. |
-| Treating replay as safe because a command string exists | Add metadata-only replay contracts and run `validate_evaluator_replay.py`. |
-| Executing replay commands because metadata exists | Use `execute_evaluator_replay.py`; keep dry-run as default and require `--execute`, exact `--allow-argv0`, timeout, no-network sandboxing, and replay receipts. |
-| Picking a final winner from search scores | Use `final_comparison.py` after holdout score ingestion. |
-| Treating prior chat memory as the run database | Use `query_experience_store.py`; query manifests, traces, checks, closeout events, and replay receipts from repo evidence. |
-| Treating chat or child-agent output as proof | Record command evidence or source references in the manifest. |
-| Forgetting generated reports | Write `status.html` and `closeout.html` before final verification. |
-| Installing over an existing harness casually | Use installer `--force` only with explicit approval. |
+| Starting Proofline for trivial edits | Use a lightweight edit path unless durability is required. |
+| Using optimization tooling by default | Reserve candidate/evaluation/replay for explicit research tasks. |
+| Treating diagnostics as mandatory for normal core runs | `diagnose_experience_store` is optional and research-oriented by default unless history repair is active. |
+| Running diagnostics without explicit legacy intent | Use `--include-legacy-runs` only when intentionally reviewing historical runs. |

@@ -1,0 +1,220 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "proofline-core-validation",
+  "objective": "Create and validate a minimal Proofline core run proving the default workflow path and repo-gate readiness.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/proofline-core-validation/TRACE.jsonl",
+    "strict": false
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "proofline-core-docs",
+      "requirement": "Core Proofline workflow and optional research-layer docs are aligned to CIPH (Proofline docs, harness docs, skill docs, and templates).",
+      "artifact_paths": [
+        "README.md",
+        "harness/CIPH.md",
+        "skills/proofline/SKILL.md",
+        "templates/TASK.html",
+        "templates/TASK.md",
+        "skills/proofline/assets/proofline/templates/TASK.html",
+        "skills/proofline/assets/proofline/templates/TASK.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-core-validation/artifacts/checks/proofline-doc-contracts.txt"
+      ]
+    },
+    {
+      "id": "diagnostics-semantics",
+      "requirement": "Trace-presence semantics in diagnostics are implemented and tested for default and legacy-run behavior.",
+      "artifact_paths": [
+        "scripts/diagnose_experience_store.py",
+        "skills/proofline/assets/proofline/scripts/diagnose_experience_store.py",
+        "tests/test_diagnose_experience_store.py"
+      ],
+      "evidence_paths": [
+        "runs/proofline-core-validation/artifacts/checks/diagnose-semantics-tests.txt"
+      ]
+    },
+    {
+      "id": "closeout-readout",
+      "requirement": "Run closes out with status and closeout evidence artifacts under the run artifacts directory.",
+      "artifact_paths": [
+        "runs/proofline-core-validation/artifacts/status.html",
+        "runs/proofline-core-validation/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/proofline-core-validation/artifacts/checks/generate-status.txt",
+        "runs/proofline-core-validation/artifacts/checks/render-closeout.txt"
+      ]
+    },
+    {
+      "id": "repo-gate-evidence",
+      "requirement": "Full repository gate can be invoked and passes while this run is valid under repository policy.",
+      "artifact_paths": [
+        "runs/proofline-core-validation/artifacts/checks/repo-gate.txt"
+      ],
+      "evidence_paths": [
+        "runs/proofline-core-validation/artifacts/checks/repo-gate.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "README.md",
+      "description": "Proofline-first workflow and default-path docs.",
+      "required": true
+    },
+    {
+      "path": "harness/CIPH.md",
+      "description": "Core Proofline workflow and optional research commands in CIPH docs.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/SKILL.md",
+      "description": "Installed skill workflow guidance.",
+      "required": true
+    },
+    {
+      "path": "templates/TASK.html",
+      "description": "Core task template with optional research layer separated.",
+      "required": true
+    },
+    {
+      "path": "templates/TASK.md",
+      "description": "Legacy markdown template with core/optional split.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/assets/proofline/templates/TASK.html",
+      "description": "Bundled Proofline HTML task template.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/assets/proofline/templates/TASK.md",
+      "description": "Bundled Proofline markdown task template.",
+      "required": true
+    },
+    {
+      "path": "scripts/diagnose_experience_store.py",
+      "description": "Diagnostics command with legacy-run filtering semantics.",
+      "required": true
+    },
+    {
+      "path": "skills/proofline/assets/proofline/scripts/diagnose_experience_store.py",
+      "description": "Vendored diagnostics command with legacy-run filtering semantics.",
+      "required": true
+    },
+    {
+      "path": "tests/test_diagnose_experience_store.py",
+      "description": "Tests covering default and explicit legacy diagnostics behavior.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-core-validation/artifacts/checks/proofline-doc-contracts.txt",
+      "description": "Evidence that core docs and templates were validated.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-core-validation/artifacts/checks/diagnose-semantics-tests.txt",
+      "description": "Evidence for diagnostics semantics coverage.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-core-validation/artifacts/checks/generate-status.txt",
+      "description": "Evidence for status rendering.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-core-validation/artifacts/checks/render-closeout.txt",
+      "description": "Evidence for closeout rendering.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-core-validation/artifacts/checks/repo-gate.txt",
+      "description": "Repository gate command output evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-core-validation/artifacts/status.html",
+      "description": "Rendered status evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-core-validation/artifacts/closeout.html",
+      "description": "Rendered closeout evidence.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "proofline-doc-contracts",
+      "command": "python3 -m unittest tests.test_init_run tests.test_repair_trace_strictness tests.test_trace_metrics",
+      "required": true,
+      "evidence": "runs/proofline-core-validation/artifacts/checks/proofline-doc-contracts.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "diagnose-semantics-tests",
+      "command": "python3 -m unittest tests.test_diagnose_experience_store",
+      "required": true,
+      "evidence": "runs/proofline-core-validation/artifacts/checks/diagnose-semantics-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "manifest-lint",
+      "command": "python3 scripts/lint_manifest.py runs/proofline-core-validation/MANIFEST.json --root .",
+      "required": true,
+      "evidence": "runs/proofline-core-validation/artifacts/checks/manifest-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/proofline-core-validation/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/proofline-core-validation/artifacts/checks/trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "generate-status",
+      "command": "python3 scripts/run_status.py runs/proofline-core-validation/MANIFEST.json --root . --output runs/proofline-core-validation/artifacts/status.html",
+      "required": true,
+      "evidence": "runs/proofline-core-validation/artifacts/checks/generate-status.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "render-closeout",
+      "command": "python3 scripts/closeout_check.py runs/proofline-core-validation/MANIFEST.json --root . --output runs/proofline-core-validation/artifacts/closeout.html",
+      "required": true,
+      "evidence": "runs/proofline-core-validation/artifacts/checks/render-closeout.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "manifest-verify",
+      "command": "python3 scripts/verify_manifest.py runs/proofline-core-validation/MANIFEST.json --root .",
+      "required": false,
+      "evidence": "runs/proofline-core-validation/artifacts/checks/manifest-verify.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "repo-gate",
+      "command": "python3 scripts/check_repo.py --skip-diff-check",
+      "required": false,
+      "evidence": "runs/proofline-core-validation/artifacts/checks/repo-gate.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Repository gate can only pass if all existing historical runs remain repo-policy compliant.",
+    "Trace ledger for this run currently contains strict-mode optional fields; strictness will be revisited once historical traces are fully standardized."
+  ]
+}

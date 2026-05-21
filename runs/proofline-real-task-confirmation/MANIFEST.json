@@ -1,0 +1,140 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "proofline-real-task-confirmation",
+  "objective": "Confirm the default Proofline core workflow on a real maintenance task and capture a cleanup backlog for historical campaign findings.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/proofline-real-task-confirmation/TRACE.jsonl",
+    "strict": false
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "campaign-backlog",
+      "requirement": "Create a single cleanup backlog artifact for the 5 real-task campaign hits with actionable next maintenance steps.",
+      "artifact_paths": [
+        "runs/proofline-real-task-confirmation/artifacts/cleanup-backlog.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-real-task-confirmation/artifacts/checks/campaign-backlog-check.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "runs/proofline-real-task-confirmation/TASK.html",
+      "description": "Confirmation run task document.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/MANIFEST.json",
+      "description": "Confirmation run manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/TRACE.jsonl",
+      "description": "Confirmation run trace ledger.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/artifacts/cleanup-backlog.md",
+      "description": "Historical issue backlog for 3-5 task validation campaign.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/artifacts/checks/campaign-backlog-check.txt",
+      "description": "Backlog artifact validation evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/artifacts/checks/manifest-lint.txt",
+      "description": "Manifest lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/artifacts/checks/trace-lint.txt",
+      "description": "Trace lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/artifacts/checks/generate-status.txt",
+      "description": "Status render evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/artifacts/checks/render-closeout.txt",
+      "description": "Closeout render evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/artifacts/checks/repo-gate.txt",
+      "description": "Repository gate evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/artifacts/status.html",
+      "description": "Status artifact.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-confirmation/artifacts/closeout.html",
+      "description": "Closeout artifact.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "campaign-backlog-check",
+      "command": "python3 -c \"from pathlib import Path; text=Path('runs/proofline-real-task-confirmation/artifacts/cleanup-backlog.md').read_text(encoding='utf-8'); required=['ciph-v0.10-vendor-layout', 'ciph-v0.11-html-artifacts', 'ciph-v0.12-policy-trace', 'ciph-v0.2-init-run', 'ciph-v0.3-run-checks']; missing=[run for run in required if run not in text]; assert not missing, 'Missing backlog rows: ' + ', '.join(missing); print('PASS backlog coverage')\"",
+      "required": true,
+      "evidence": "runs/proofline-real-task-confirmation/artifacts/checks/campaign-backlog-check.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "manifest-lint",
+      "command": "python3 scripts/lint_manifest.py runs/proofline-real-task-confirmation/MANIFEST.json --root .",
+      "required": true,
+      "evidence": "runs/proofline-real-task-confirmation/artifacts/checks/manifest-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/proofline-real-task-confirmation/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/proofline-real-task-confirmation/artifacts/checks/trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "generate-status",
+      "command": "python3 scripts/run_status.py runs/proofline-real-task-confirmation/MANIFEST.json --root . --output runs/proofline-real-task-confirmation/artifacts/status.html",
+      "required": true,
+      "evidence": "runs/proofline-real-task-confirmation/artifacts/checks/generate-status.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "render-closeout",
+      "command": "python3 scripts/closeout_check.py runs/proofline-real-task-confirmation/MANIFEST.json --root . --output runs/proofline-real-task-confirmation/artifacts/closeout.html",
+      "required": true,
+      "evidence": "runs/proofline-real-task-confirmation/artifacts/checks/render-closeout.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "repo-gate",
+      "command": "python3 scripts/check_repo.py",
+      "required": true,
+      "evidence": "runs/proofline-real-task-confirmation/artifacts/checks/repo-gate.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Backlog execution is non-mutating and stays on the default Proofline proof path; optimizer tooling is intentionally excluded."
+  ]
+}

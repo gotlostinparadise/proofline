@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "trace-lint", "command": "python3 scripts/lint_trace.py runs/proofline-core-validation/TRACE.jsonl --root .", "exit_code": 0, "finished_at_utc": "2026-05-20T23:49:37+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T23:49:37+00:00", "status": "PASS"}
+
+## STDOUT
+
+PASS trace runs/proofline-core-validation/TRACE.jsonl
+
+## STDERR
+
+<empty>

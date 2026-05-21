@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proofline Core Validation Task</title>
+<style>
+body{margin:0;background:#faf9f5;color:#141413;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;padding:44px 28px 88px}
+main{max-width:980px;margin:0 auto}
+h1,h2{font-family:ui-serif,Georgia,serif;font-weight:500}
+h1{font-size:40px;margin:0 0 18px}
+h2{font-size:24px;margin:0 0 12px}
+section{background:#fff;border:1px solid #d1cfc5;border-radius:8px;padding:18px;margin:16px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #d1cfc5;padding:8px;text-align:left;vertical-align:top}
+th{font:11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#66635c;background:#f0eee6}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
+</style>
+</head>
+<body data-proofline-kind="task">
+<main>
+  <h1>Proofline Core Validation Run</h1>
+
+  <section id="objective">
+    <h2>Objective</h2>
+    <p>Create and validate a minimal Proofline core run proving the default workflow path and repo-gate readiness.</p>
+  </section>
+
+  <section id="acceptance-object">
+    <h2>Acceptance Object</h2>
+    <p>Proof of completion is: manifest lint, manifest verification, run checks, rendered status and closeout reports, and a passing repo-gate check.</p>
+  </section>
+
+  <section id="constraints">
+    <h2>Constraints</h2>
+    <ul>
+      <li>No candidate/evaluation/replay workflow is executed in this run.</li>
+      <li>No repository policy changes are made.</li>
+      <li>No secrets are introduced.</li>
+    </ul>
+  </section>
+
+  <section id="deliverables">
+    <h2>Deliverables</h2>
+    <ol>
+      <li><strong>Proofline core-first docs</strong> are aligned in README, harness/CIPH, skill docs, and templates.</li>
+      <li><strong>Diagnostics defaults</strong> are validated as skip-by-default for legacy runs and explicit when requested.</li>
+      <li><strong>Closeout artifacts</strong> are rendered: <code>artifacts/status.html</code> and <code>artifacts/closeout.html</code>.</li>
+      <li><strong>Repository gate</strong> command passes for this run in context with existing run history.</li>
+    </ol>
+  </section>
+
+  <section id="checks">
+    <h2>Required Checks</h2>
+    <pre><code>python3 scripts/run_checks.py runs/proofline-core-validation/MANIFEST.json --root . --include-optional
+python3 scripts/verify_manifest.py runs/proofline-core-validation/MANIFEST.json --root .
+python3 scripts/check_repo.py --skip-diff-check</code></pre>
+  </section>
+
+  <section id="closeout">
+    <h2>Closeout Proof</h2>
+    <ul>
+      <li><code>runs/proofline-core-validation/artifacts/checks/manifest-lint.txt</code></li>
+      <li><code>runs/proofline-core-validation/artifacts/checks/manifest-verify.txt</code></li>
+      <li><code>runs/proofline-core-validation/artifacts/checks/trace-lint.txt</code></li>
+      <li><code>runs/proofline-core-validation/artifacts/checks/generate-status.txt</code></li>
+      <li><code>runs/proofline-core-validation/artifacts/checks/render-closeout.txt</code></li>
+      <li><code>runs/proofline-core-validation/artifacts/checks/repo-gate.txt</code></li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

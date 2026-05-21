@@ -79,7 +79,7 @@ class DiagnoseExperienceStoreTests(unittest.TestCase):
                 root,
                 run_id="gamma",
                 objective="Diagnostics CLI milestone",
-                include_trace=False,
+                include_trace=True,
             )
             json_output = root / "diagnostics.json"
             html_output = root / "diagnostics.html"
@@ -148,6 +148,7 @@ class DiagnoseExperienceStoreTests(unittest.TestCase):
                     str(root),
                     "--runs-dir",
                     str(root / "runs"),
+                    "--include-legacy-runs",
                     "--fail-on-high",
                     "--output",
                     str(output),
@@ -162,6 +163,45 @@ class DiagnoseExperienceStoreTests(unittest.TestCase):
             payload = json.loads(output.read_text(encoding="utf-8"))
             self.assertEqual("BLOCKED", payload["execution_control"]["status"])
             self.assertIn("High-severity diagnostics findings exist", completed.stdout)
+
+    def test_diagnose_excludes_legacy_runs_by_default(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _write_run(root, run_id="legacy", objective="Legacy run", include_trace=False)
+            _write_run(
+                root,
+                run_id="trace",
+                objective="Trace run",
+                include_trace=True,
+                closeout_status="PASS",
+            )
+
+            payload = diagnose_experience_store(root=root, runs_dir=root / "runs", min_severity="low")
+            self.assertEqual(payload["summary"]["total_runs"], 1)
+            run_ids = {finding["run_id"] for finding in payload["findings"]}
+            self.assertIn("trace", run_ids)
+            self.assertNotIn("legacy", run_ids)
+
+    def test_diagnose_include_legacy_runs_reports_missing_trace(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _write_run(root, run_id="legacy", objective="Legacy run", include_trace=False)
+            _write_run(
+                root,
+                run_id="trace",
+                objective="Trace run",
+                include_trace=True,
+                closeout_status="PASS",
+            )
+
+            payload = diagnose_experience_store(
+                root=root,
+                runs_dir=root / "runs",
+                min_severity="high",
+                include_legacy_runs=True,
+            )
+            self.assertEqual(payload["summary"]["total_runs"], 2)
+            self.assertIn("trace-missing", {finding["id"] for finding in payload["findings"]})
 
 
 def _write_run(

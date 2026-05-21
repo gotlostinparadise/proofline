@@ -37,13 +37,22 @@ def diagnose_experience_store(
     root: Path | str = ".",
     runs_dir: Path | str | None = None,
     min_severity: str | None = None,
+    include_legacy_runs: bool = False,
     limit: int | None = None,
 ) -> dict[str, Any]:
     root_path = Path(root)
     runs_path = Path(runs_dir) if runs_dir is not None else root_path / "runs"
     min_level = _normalize_min_severity(min_severity)
 
-    run_records = [_build_run_record(manifest_path, root=root_path) for manifest_path in _manifest_paths(runs_path)]
+    run_records = []
+    for manifest_path in _manifest_paths(runs_path):
+        if not include_legacy_runs and not _run_has_trace(manifest_path, root=root_path):
+            continue
+        try:
+            run_records.append(_build_run_record(manifest_path, root=root_path))
+        except ValueError:
+            run_records.append(_build_invalid_run_record(manifest_path, root=root_path))
+
     all_findings = sorted(
         (finding for run in run_records for finding in _diagnose_run(run, root_path)),
         key=lambda item: (
@@ -69,6 +78,7 @@ def diagnose_experience_store(
             "runs_dir": _display_path(runs_path, root_path),
             "min_severity": min_severity,
             "limit": limit,
+            "include_legacy_runs": include_legacy_runs,
         },
         "summary": {
             "total_runs": len(run_records),
@@ -243,6 +253,32 @@ def _build_run_record(manifest_path: Path, root: Path) -> dict[str, Any]:
         "replay_receipts": replay_receipts,
         "evaluation_candidates": has_evaluation_candidates,
         "delivered": deliverables,
+    }
+
+
+def _build_invalid_run_record(manifest_path: Path, root: Path) -> dict[str, Any]:
+    run_dir = manifest_path.parent
+    return {
+        "run_id": run_dir.name,
+        "manifest_path": _display_path(manifest_path, root),
+        "trace_path": None,
+        "objective": "",
+        "closeout_status": "UNKNOWN",
+        "event_count": 0,
+        "validation_by_name": {},
+        "event_types": [],
+        "checks": [],
+        "required_check_names": [],
+        "required_artifact_paths": [],
+        "deliverable_artifact_paths": [],
+        "deliverable_evidence_paths": [],
+        "required_check_evidence_paths": [],
+        "replay_receipt_paths": [],
+        "stage_starts": [],
+        "stage_completions": [],
+        "replay_receipts": [],
+        "evaluation_candidates": False,
+        "delivered": [],
     }
 
 
@@ -639,7 +675,8 @@ def _closeout_status(events: list[dict[str, Any]]) -> str:
 def _resolve_trace_path(manifest: dict[str, Any], run_dir: Path, root: Path) -> Path | None:
     trace = manifest.get("trace")
     if isinstance(trace, dict) and isinstance(trace.get("path"), str):
-        return root / trace["path"]
+        candidate = root / trace["path"]
+        return candidate if candidate.is_file() else None
     candidate = run_dir / "TRACE.jsonl"
     return candidate if candidate.is_file() else None
 
@@ -658,6 +695,15 @@ def _manifest_paths(runs_path: Path) -> list[Path]:
     if not runs_path.exists():
         return []
     return sorted(path for path in runs_path.glob("*/MANIFEST.json") if path.is_file())
+
+
+def _run_has_trace(manifest_path: Path, root: Path) -> bool:
+    try:
+        manifest = load_manifest(manifest_path)
+    except ValueError:
+        return False
+    trace_path = _resolve_trace_path(manifest, manifest_path.parent, root)
+    return trace_path is not None and trace_path.is_file()
 
 
 def _manifest_paths_from_deliverables(deliverables: list[Any], key: str) -> list[str]:
@@ -695,6 +741,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Diagnose CIPH experience store records.")
     parser.add_argument("--root", type=Path, default=Path("."), help="Repository root")
     parser.add_argument("--runs-dir", type=Path, default=None, help="Runs directory; defaults to <root>/runs")
+    parser.add_argument(
+        "--include-legacy-runs",
+        action="store_true",
+        help="Include historical runs that do not have a TRACE.jsonl file in diagnostics",
+    )
     parser.add_argument("--min-severity", choices=SEVERITY_ORDER, default="low", help="Minimum severity for emitted findings")
     parser.add_argument("--limit", type=int, default=None, help="Maximum findings in output")
     parser.add_argument("--format", choices=["json", "html"], default="json", help="Output format")
@@ -710,6 +761,7 @@ def main(argv: list[str] | None = None) -> int:
         root=args.root,
         runs_dir=args.runs_dir,
         min_severity=args.min_severity,
+        include_legacy_runs=args.include_legacy_runs,
         limit=args.limit,
     )
 

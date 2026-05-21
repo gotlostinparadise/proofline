@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "render-closeout", "command": "python3 scripts/closeout_check.py runs/proofline-core-validation/MANIFEST.json --root . --output runs/proofline-core-validation/artifacts/closeout.html", "exit_code": 0, "finished_at_utc": "2026-05-20T23:49:37+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T23:49:37+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH closeout checklist: runs/proofline-core-validation/artifacts/closeout.html
+
+## STDERR
+
+<empty>

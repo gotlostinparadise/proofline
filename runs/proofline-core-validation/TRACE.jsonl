@@ -1,0 +1,7 @@
+{"schema_version":"ciph.trace.v1","event_id":"proofline-core-verification-start","occurred_at":"2026-05-21T09:00:00Z","event_type":"stage.started","stage":"verification"}
+{"schema_version":"ciph.trace.v1","event_id":"proofline-core-doc-check-start","occurred_at":"2026-05-21T09:01:00Z","event_type":"validation.started","check_name":"proofline-doc-contracts"}
+{"schema_version":"ciph.trace.v1","event_id":"proofline-core-doc-check-complete","occurred_at":"2026-05-21T09:04:00Z","event_type":"validation.completed","check_name":"proofline-doc-contracts","status":"PASS","evidence_path":"runs/proofline-core-validation/artifacts/checks/proofline-doc-contracts.txt"}
+{"schema_version":"ciph.trace.v1","event_id":"proofline-core-diag-check-start","occurred_at":"2026-05-21T09:05:00Z","event_type":"validation.started","check_name":"diagnose-semantics-tests"}
+{"schema_version":"ciph.trace.v1","event_id":"proofline-core-diag-check-complete","occurred_at":"2026-05-21T09:08:00Z","event_type":"validation.completed","check_name":"diagnose-semantics-tests","status":"PASS","evidence_path":"runs/proofline-core-validation/artifacts/checks/diagnose-semantics-tests.txt"}
+{"schema_version":"ciph.trace.v1","event_id":"proofline-core-stage-done","occurred_at":"2026-05-21T09:20:00Z","event_type":"stage.completed","stage":"verification","status":"PASS"}
+{"schema_version":"ciph.trace.v1","event_id":"proofline-core-closeout","occurred_at":"2026-05-21T09:30:00Z","event_type":"closeout.completed","status":"PASS"}

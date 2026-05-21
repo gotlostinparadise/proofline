@@ -1,1 +1,2 @@
 {"event_id": "evt-v0-12-implementation-started", "event_type": "stage.started", "occurred_at": "2026-05-20T00:00:00Z", "schema_version": "ciph.trace.v1", "stage": "implementation"}
+{"schema_version":"ciph.trace.v1","event_id":"ciph-v0.12-policy-trace-closeout","occurred_at":"2026-05-20T00:12:00Z","event_type":"closeout.completed","status":"PASS"}

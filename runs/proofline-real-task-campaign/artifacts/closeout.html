@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIPH Closeout Checklist</title>
+<style>
+:root{--bg:#faf9f5;--paper:#fff;--ink:#141413;--muted:#66635c;--line:#d1cfc5;--soft:#f0eee6;--accent:#b85c3e;--ok:#5f7f49;--bad:#b85c3e;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;--serif:ui-serif,Georgia,serif;}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;padding:48px 28px 96px;}main{max-width:1040px;margin:0 auto}header{margin-bottom:32px}h1{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1.12;margin:0 0 10px}h2{font-family:var(--serif);font-weight:500;font-size:24px;margin:0 0 14px}.eyebrow{font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:24px 0 34px}.summary div,section{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px}.k{font:11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}.v{font-weight:650}section{margin:18px 0}ul{margin:0;padding-left:20px}li{margin:6px 0}code,pre{font-family:var(--mono)}table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}th{font:11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--soft)}.status-pass,.covered{color:var(--ok);font-weight:700}.status-fail,.missing{color:var(--bad);font-weight:700}.muted{color:var(--muted)}
+</style>
+</head>
+<body data-proofline-report="closeout">
+<main>
+<header>
+<div class="eyebrow">Proofline artifact</div>
+<h1>CIPH Closeout Checklist</h1>
+</header>
+<div class="summary"><div><div class="k">Task</div><div class="v">proofline-real-task-campaign</div></div><div><div class="k">Objective</div><div class="v">Run a practical Proofline campaign on 5 real historical tasks and verify concrete issues are surfaced.</div></div><div><div class="k">Manifest</div><div class="v">runs/proofline-real-task-campaign/MANIFEST.json</div></div><div><div class="k">Root</div><div class="v">.</div></div></div>
+<section id="prompt-to-artifact" data-proofline-section="prompt-to-artifact">
+<h2>Prompt-to-Artifact Checklist</h2>
+<ul><li>[COVERED] real-task-campaign: Run diagnostics on 5 real historical tasks and record whether each caught a concrete issue. - Artifacts: runs/proofline-real-task-campaign/TASK.html, runs/proofline-real-task-campaign/artifacts/campaign-summary.md - Evidence: runs/proofline-real-task-campaign/artifacts/checks/campaign-target-validation.txt</li></ul>
+</section>
+<section id="required-checks" data-proofline-section="required-checks">
+<h2>Required Checks</h2>
+<ul><li>[COVERED] campaign-diagnostics - Command: python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --include-legacy-runs --min-severity high --format json --output runs/proofline-real-task-campaign/artifacts/campaign-diagnostics.json - Evidence: runs/proofline-real-task-campaign/artifacts/checks/campaign-diagnostics.txt</li><li>[COVERED] campaign-target-validation - Command: python3 -c &#x27;import json; from pathlib import Path; req=[&quot;ciph-v0.10-vendor-layout&quot;, &quot;ciph-v0.11-html-artifacts&quot;, &quot;ciph-v0.12-policy-trace&quot;, &quot;ciph-v0.2-init-run&quot;, &quot;ciph-v0.3-run-checks&quot;]; d=json.loads(Path(&quot;runs/proofline-real-task-campaign/artifacts/campaign-diagnostics.json&quot;).read_text(encoding=&quot;utf-8&quot;)); findings={run:[f.get(&quot;id&quot;) for f in d.get(&quot;findings&quot;,[]) if f.get(&quot;run_id&quot;) == run] for run in req}; caught=sum(1 for ids in findings.values() if ids); print(&quot;\n&quot;.join([run + &quot;: CAUGHT (&quot; + &quot;, &quot;.join(sorted(set(ids))) + &quot;)&quot; if ids else run + &quot;: MISS&quot; for run,ids in findings.items()])); print(f&quot;\ncampaign-hit-summary: {caught}/{len(req)}&quot;); print(&quot;campaign-acceptance-threshold: 2/5&quot;); print(&quot;campaign-decision: keep optimizer tooling research-only until threshold achieved&quot; if caught &lt; 2 else &quot;campaign-decision: optimizer evidence threshold met&quot;);&#x27; - Evidence: runs/proofline-real-task-campaign/artifacts/checks/campaign-target-validation.txt</li><li>[COVERED] manifest-lint - Command: python3 scripts/lint_manifest.py runs/proofline-real-task-campaign/MANIFEST.json --root . - Evidence: runs/proofline-real-task-campaign/artifacts/checks/campaign-manifest-lint.txt</li><li>[COVERED] trace-lint - Command: python3 scripts/lint_trace.py runs/proofline-real-task-campaign/TRACE.jsonl --root . - Evidence: runs/proofline-real-task-campaign/artifacts/checks/campaign-trace-lint.txt</li><li>[COVERED] generate-status - Command: python3 scripts/run_status.py runs/proofline-real-task-campaign/MANIFEST.json --root . --output runs/proofline-real-task-campaign/artifacts/status.html - Evidence: runs/proofline-real-task-campaign/artifacts/checks/campaign-generate-status.txt</li><li>[COVERED] render-closeout - Command: python3 scripts/closeout_check.py runs/proofline-real-task-campaign/MANIFEST.json --root . --output runs/proofline-real-task-campaign/artifacts/closeout.html - Evidence: runs/proofline-real-task-campaign/artifacts/checks/campaign-render-closeout.txt</li><li>[COVERED] manifest-verify - Command: python3 scripts/verify_manifest.py runs/proofline-real-task-campaign/MANIFEST.json --root . - Evidence: runs/proofline-real-task-campaign/artifacts/checks/campaign-manifest-verify.txt</li><li>[COVERED] repo-gate - Command: python3 scripts/check_repo.py --skip-diff-check - Evidence: runs/proofline-real-task-campaign/artifacts/checks/campaign-repo-gate.txt</li></ul>
+</section>
+<section id="risks" data-proofline-section="risks">
+<h2>Risks</h2>
+<ul><li>Campaign intentionally uses --include-legacy-runs; this can reveal historical debt that is not part of the default live-path gate.</li></ul>
+</section>
+<section id="manifest-validation" data-proofline-section="manifest-validation">
+<h2>Manifest Validation</h2>
+<ul><li>COVERED: manifest validation passed.</li></ul>
+</section>
+</main>
+</body>
+</html>
