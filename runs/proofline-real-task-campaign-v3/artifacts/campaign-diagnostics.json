@@ -1,0 +1,26 @@
+{
+  "execution_control": {
+    "high_severity_blocker_count": 0,
+    "message": "No high-severity diagnostics findings are blocking execution.",
+    "recommended_actions": [],
+    "status": "PASS"
+  },
+  "findings": [],
+  "query": {
+    "include_legacy_runs": false,
+    "limit": null,
+    "min_severity": "high",
+    "runs_dir": "runs"
+  },
+  "recommendations": [],
+  "schema_version": "ciph.experience-diagnostics.v1",
+  "summary": {
+    "high_findings": 0,
+    "low_findings": 0,
+    "medium_findings": 0,
+    "recommendations": 0,
+    "runs_with_findings": 0,
+    "total_findings": 0,
+    "total_runs": 31
+  }
+}

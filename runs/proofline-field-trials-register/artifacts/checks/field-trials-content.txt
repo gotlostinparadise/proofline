@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "field-trials-content", "command": "python3 -c \"from pathlib import Path; text=Path('docs/proofline-field-trials.md').read_text(encoding='utf-8'); required=['Proofline Field Trials','Counting Rules','Final Register','Final Readout','Capsule Implementation Outcome','proofline-real-task-campaign-v3','proofline-capsule-design-field-test','capsule-mvp-implementation']; missing=[item for item in required if item not in text]; assert not missing, 'Missing register content: ' + ', '.join(missing); print('PASS field trials content')\"", "exit_code": 0, "finished_at_utc": "2026-05-21T22:17:13+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T22:17:13+00:00", "status": "PASS"}
+
+## STDOUT
+
+PASS field trials content
+
+## STDERR
+
+<empty>

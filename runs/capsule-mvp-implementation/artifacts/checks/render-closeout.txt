@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "render-closeout", "command": "python3 scripts/closeout_check.py runs/capsule-mvp-implementation/MANIFEST.json --root . --output runs/capsule-mvp-implementation/artifacts/closeout.html", "exit_code": 0, "finished_at_utc": "2026-05-21T22:17:14+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T22:17:14+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH closeout checklist: runs/capsule-mvp-implementation/artifacts/closeout.html
+
+## STDERR
+
+<empty>

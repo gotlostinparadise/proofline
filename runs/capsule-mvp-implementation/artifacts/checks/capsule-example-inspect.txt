@@ -1,0 +1,16 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "capsule-example-inspect", "command": "python3 capsule.py inspect capsules/docs-context/CAPSULE.json", "exit_code": 0, "finished_at_utc": "2026-05-21T22:17:14+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T22:17:14+00:00", "status": "PASS"}
+
+## STDOUT
+
+capsule: docs-context
+files: 3
+bytes: 17557
+warnings: 0
+manifest: capsules/docs-context/CAPSULE.json
+digests: capsules/docs-context/DIGESTS.json
+redactions: capsules/docs-context/REDACTIONS.json
+
+## STDERR
+
+<empty>

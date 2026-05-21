@@ -1,0 +1,169 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "proofline-capsule-mvp-plan-field-test",
+  "objective": "Create a Capsule MVP implementation plan and record whether Proofline catches scope or evidence issues during planning.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/proofline-capsule-mvp-plan-field-test/TRACE.jsonl",
+    "strict": false
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "capsule-mvp-plan",
+      "requirement": "Create a Capsule MVP implementation plan with concrete files, phases, commands, tests, acceptance criteria, and non-goals.",
+      "artifact_paths": [
+        "docs/plans/2026-05-21-capsule-mvp-implementation-plan.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/capsule-plan-content.txt"
+      ]
+    },
+    {
+      "id": "field-test-note",
+      "requirement": "Record whether Proofline caught or prevented a concrete issue during the implementation-plan task.",
+      "artifact_paths": [
+        "runs/proofline-capsule-mvp-plan-field-test/artifacts/proofline-field-test.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/field-test-note-content.txt"
+      ]
+    },
+    {
+      "id": "closeout",
+      "requirement": "Render status and closeout for the field-trial run.",
+      "artifact_paths": [
+        "runs/proofline-capsule-mvp-plan-field-test/artifacts/status.html",
+        "runs/proofline-capsule-mvp-plan-field-test/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/generate-status.txt",
+        "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/render-closeout.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/TASK.html",
+      "description": "Capsule MVP plan field-test task contract.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/MANIFEST.json",
+      "description": "Capsule MVP plan field-test manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/TRACE.jsonl",
+      "description": "Capsule MVP plan field-test trace ledger.",
+      "required": true
+    },
+    {
+      "path": "docs/plans/2026-05-21-capsule-mvp-implementation-plan.md",
+      "description": "Capsule MVP implementation plan.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/artifacts/proofline-field-test.md",
+      "description": "Proofline field-test finding for the Capsule MVP implementation plan.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/capsule-plan-content.txt",
+      "description": "Evidence that the implementation plan covers required planning sections.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/field-test-note-content.txt",
+      "description": "Evidence that the field-test note records a concrete finding.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/manifest-lint.txt",
+      "description": "Manifest lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/trace-lint.txt",
+      "description": "Trace lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/generate-status.txt",
+      "description": "Status render evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/render-closeout.txt",
+      "description": "Closeout render evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/artifacts/status.html",
+      "description": "Rendered status report.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-mvp-plan-field-test/artifacts/closeout.html",
+      "description": "Rendered closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "capsule-plan-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('docs/plans/2026-05-21-capsule-mvp-implementation-plan.md').read_text(encoding='utf-8'); required=['Capsule MVP Implementation Plan','Write Scope','Implementation Phases','Acceptance Criteria','Verification Commands','Non-Goals','Field-Test Boundary']; missing=[item for item in required if item not in text]; assert not missing, 'Missing plan sections: ' + ', '.join(missing); print('PASS capsule plan content')\"",
+      "required": true,
+      "evidence": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/capsule-plan-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "field-test-note-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('runs/proofline-capsule-mvp-plan-field-test/artifacts/proofline-field-test.md').read_text(encoding='utf-8'); required=['Proofline field-test finding','scope-control','pre-approved implementation drift','Concrete catch: yes']; missing=[item for item in required if item not in text]; assert not missing, 'Missing field-test note content: ' + ', '.join(missing); print('PASS field-test note content')\"",
+      "required": true,
+      "evidence": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/field-test-note-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "manifest-lint",
+      "command": "python3 scripts/lint_manifest.py runs/proofline-capsule-mvp-plan-field-test/MANIFEST.json --root .",
+      "required": true,
+      "evidence": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/manifest-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/proofline-capsule-mvp-plan-field-test/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "generate-status",
+      "command": "python3 scripts/run_status.py runs/proofline-capsule-mvp-plan-field-test/MANIFEST.json --root . --output runs/proofline-capsule-mvp-plan-field-test/artifacts/status.html",
+      "required": true,
+      "evidence": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/generate-status.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "render-closeout",
+      "command": "python3 scripts/closeout_check.py runs/proofline-capsule-mvp-plan-field-test/MANIFEST.json --root . --output runs/proofline-capsule-mvp-plan-field-test/artifacts/closeout.html",
+      "required": true,
+      "evidence": "runs/proofline-capsule-mvp-plan-field-test/artifacts/checks/render-closeout.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Broad approval can push the task from planning into implementation before the plan is reviewed.",
+    "Capsule can drift into Proofline if the implementation plan includes task proof, review, or effect authorization features.",
+    "The worktree contains unrelated dirty files; this run only owns the Capsule MVP plan field-test artifacts."
+  ]
+}

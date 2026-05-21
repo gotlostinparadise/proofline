@@ -1,5 +1,5 @@
 CIPH-CHECK-EVIDENCE v1
-{"check_name": "proofline-doc-contracts", "command": "python3 -m unittest tests.test_init_run tests.test_repair_trace_strictness tests.test_trace_metrics", "exit_code": 0, "finished_at_utc": "2026-05-20T23:49:37+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-20T23:49:36+00:00", "status": "PASS"}
+{"check_name": "proofline-doc-contracts", "command": "python3 -m unittest tests.test_init_run tests.test_repair_trace_strictness tests.test_trace_metrics", "exit_code": 0, "finished_at_utc": "2026-05-21T08:02:43+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T08:02:43+00:00", "status": "PASS"}
 
 ## STDOUT
 
@@ -9,6 +9,6 @@ CIPH-CHECK-EVIDENCE v1
 
 ................
 ----------------------------------------------------------------------
-Ran 16 tests in 0.216s
+Ran 16 tests in 0.210s
 
 OK

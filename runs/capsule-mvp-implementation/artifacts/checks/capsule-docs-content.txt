@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "capsule-docs-content", "command": "python3 -c \"from pathlib import Path; text=Path('docs/capsule.md').read_text(encoding='utf-8'); required=['Capsule','create','inspect','verify','--id docs-context','Proofline']; missing=[item for item in required if item not in text]; assert not missing, 'Missing docs content: ' + ', '.join(missing); print('PASS capsule docs content')\"", "exit_code": 0, "finished_at_utc": "2026-05-21T22:17:14+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T22:17:14+00:00", "status": "PASS"}
+
+## STDOUT
+
+PASS capsule docs content
+
+## STDERR
+
+<empty>

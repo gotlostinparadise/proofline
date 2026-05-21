@@ -256,6 +256,58 @@ class CloseoutCheckTests(unittest.TestCase):
             self.assertIn("CIPH Closeout Checklist", html)
             self.assertIn("Build &lt;strong&gt;structured&lt;/strong&gt; HTML.", html)
 
+    def test_optional_checks_marked_as_optional_in_closeout(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = {
+                "schema_version": "ciph.manifest.v1",
+                "task_id": "sample",
+                "objective": "Validate optional checks are non-blocking.",
+                "deliverables": [
+                    {
+                        "id": "run",
+                        "requirement": "Run required and optional checks.",
+                        "artifact_paths": ["index.html"],
+                        "evidence_paths": ["runs/sample/artifacts/required.txt"],
+                    }
+                ],
+                "artifacts": [
+                    {
+                        "path": "index.html",
+                        "description": "Run artifact.",
+                        "required": True,
+                    }
+                ],
+                "checks": [
+                    {
+                        "name": "required-check",
+                        "command": "python3 -m unittest",
+                        "required": True,
+                        "evidence": "runs/sample/artifacts/required.txt",
+                    },
+                    {
+                        "name": "optional-check",
+                        "command": "python3 -m unittest",
+                        "required": False,
+                        "evidence": "runs/sample/artifacts/optional.txt",
+                    },
+                ],
+                "risks": [],
+            }
+            manifest_path = root / "MANIFEST.json"
+            artifact_path = root / "index.html"
+            evidence_path = root / "runs" / "sample" / "artifacts" / "required.txt"
+            evidence_path.parent.mkdir(parents=True)
+            artifact_path.write_text("<!doctype html><title>Sample</title>", encoding="utf-8")
+            evidence_path.write_text("PASS", encoding="utf-8")
+            manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+
+            output = render_closeout(manifest_path, root)
+
+            self.assertIn("[COVERED] required-check", output)
+            self.assertIn("[OPTIONAL] optional-check", output)
+            self.assertNotIn("[MISSING] optional-check", output)
+
 
 if __name__ == "__main__":
     unittest.main()

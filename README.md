@@ -50,11 +50,26 @@ runs/proofline-core-task/
 
 Use this gate as the default health signal for all Proofline work.
 
-Current boundary (as of 2026-05-21):
+Required checks in a run manifest are hard-coverage requirements. Checks marked `"required": false` are optional research signals and are treated as optional in closeout/readout.
 
-- `proofline-real-task-campaign` ran 5 real historical tasks and caught 0 high-severity misses against a practical threshold of 2/5.
+Current boundary (as of 2026-05-22):
+
+- `proofline-real-task-campaign-v3` ran 5 real recent tasks and caught 0 high-severity misses against a practical threshold of 2/5.
+- Field trials produced enough concrete core Proofline catches to keep the minimal core workflow.
 - Default stance remains minimal Proofline core only.
 - Candidate/evaluation/replay commands are explicitly research-layer and non-default.
+
+## Capsule
+
+Capsule is a dependency-free context packaging sibling for Proofline. Proofline proves task work; Capsule proves the input context boundary.
+
+```bash
+python3 capsule.py create --root . --id docs-context --include README.md --include docs/proofline-field-trials.md
+python3 capsule.py inspect capsules/docs-context/CAPSULE.json
+python3 capsule.py verify capsules/docs-context/CAPSULE.json
+```
+
+See `docs/capsule.md` for details.
 
 ## When Not to Use Proofline
 
@@ -97,6 +112,8 @@ python3 scripts/plan_next_candidates.py runs/<run-id>/artifacts/experience-diagn
 
 > `diagnose_experience_store` defaults to skipping legacy historical runs with no trace; use `--include-legacy-runs` only for historical clean-up.
 
+Use `diagnose_experience_store --fail-on-high` only for explicit research/history repair runs, not as a default core closeout gate.
+
 ## Files
 
 - `harness/CIPH.md`: high-level Proofline lifecycle and contracts.
@@ -113,6 +130,8 @@ python3 scripts/plan_next_candidates.py runs/<run-id>/artifacts/experience-diagn
 - `scripts/closeout_check.py`: writes the closeout artifact.
 - `scripts/check_repo.py`: default repository health gate.
 - `skills/proofline/SKILL.md`: Proofline user-facing skill guidance.
+- `capsule.py`: dependency-free context package CLI.
+- `docs/capsule.md`: Capsule usage and boundary docs.
 
 ## Trace, Replay, and Experience Commands
 

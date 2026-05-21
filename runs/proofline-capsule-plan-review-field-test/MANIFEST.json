@@ -1,0 +1,188 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "proofline-capsule-plan-review-field-test",
+  "objective": "Review and harden the Capsule MVP implementation plan, then record whether Proofline catches weak planning evidence before implementation.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/proofline-capsule-plan-review-field-test/TRACE.jsonl",
+    "strict": false
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "capsule-plan-review",
+      "requirement": "Review the Capsule MVP implementation plan and record a concrete hardening finding.",
+      "artifact_paths": [
+        "runs/proofline-capsule-plan-review-field-test/artifacts/plan-review.md",
+        "docs/plans/2026-05-21-capsule-mvp-implementation-plan.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-capsule-plan-review-field-test/artifacts/checks/plan-review-content.txt",
+        "runs/proofline-capsule-plan-review-field-test/artifacts/checks/hardened-plan-content.txt"
+      ]
+    },
+    {
+      "id": "field-test-note",
+      "requirement": "Record whether Proofline caught or prevented a concrete issue during the review task.",
+      "artifact_paths": [
+        "runs/proofline-capsule-plan-review-field-test/artifacts/proofline-field-test.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-capsule-plan-review-field-test/artifacts/checks/field-test-note-content.txt"
+      ]
+    },
+    {
+      "id": "closeout",
+      "requirement": "Render status and closeout for the field-trial run.",
+      "artifact_paths": [
+        "runs/proofline-capsule-plan-review-field-test/artifacts/status.html",
+        "runs/proofline-capsule-plan-review-field-test/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/proofline-capsule-plan-review-field-test/artifacts/checks/generate-status.txt",
+        "runs/proofline-capsule-plan-review-field-test/artifacts/checks/render-closeout.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/TASK.html",
+      "description": "Capsule plan review field-test task contract.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/MANIFEST.json",
+      "description": "Capsule plan review field-test manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/TRACE.jsonl",
+      "description": "Capsule plan review field-test trace ledger.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/plan-review.md",
+      "description": "Review finding for the Capsule MVP implementation plan.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/proofline-field-test.md",
+      "description": "Proofline field-test note for the review pass.",
+      "required": true
+    },
+    {
+      "path": "docs/plans/2026-05-21-capsule-mvp-implementation-plan.md",
+      "description": "Hardened Capsule MVP implementation plan.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/plan-review-content.txt",
+      "description": "Evidence that the review artifact records the planning issue.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/hardened-plan-content.txt",
+      "description": "Evidence that the plan now documents deterministic ids.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/field-test-note-content.txt",
+      "description": "Evidence that the field-test note records the catch.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/manifest-lint.txt",
+      "description": "Manifest lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/trace-lint.txt",
+      "description": "Trace lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/generate-status.txt",
+      "description": "Status render evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/render-closeout.txt",
+      "description": "Closeout render evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/status.html",
+      "description": "Rendered status report.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-plan-review-field-test/artifacts/closeout.html",
+      "description": "Rendered closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "plan-review-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('runs/proofline-capsule-plan-review-field-test/artifacts/plan-review.md').read_text(encoding='utf-8'); required=['Finding','deterministic id','--id','Risk','Fix']; missing=[item for item in required if item not in text]; assert not missing, 'Missing review content: ' + ', '.join(missing); print('PASS plan review content')\"",
+      "required": true,
+      "evidence": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/plan-review-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "hardened-plan-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('docs/plans/2026-05-21-capsule-mvp-implementation-plan.md').read_text(encoding='utf-8'); required=['--id docs-context','deterministic ids','capsules/docs-context/CAPSULE.json']; missing=[item for item in required if item not in text]; assert not missing, 'Missing hardened plan content: ' + ', '.join(missing); print('PASS hardened plan content')\"",
+      "required": true,
+      "evidence": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/hardened-plan-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "field-test-note-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('runs/proofline-capsule-plan-review-field-test/artifacts/proofline-field-test.md').read_text(encoding='utf-8'); required=['Proofline field-test finding','Concrete catch: yes','weak-evidence','deterministic id']; missing=[item for item in required if item not in text]; assert not missing, 'Missing field-test note content: ' + ', '.join(missing); print('PASS field-test note content')\"",
+      "required": true,
+      "evidence": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/field-test-note-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "manifest-lint",
+      "command": "python3 scripts/lint_manifest.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root .",
+      "required": true,
+      "evidence": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/manifest-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/proofline-capsule-plan-review-field-test/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "generate-status",
+      "command": "python3 scripts/run_status.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/status.html",
+      "required": true,
+      "evidence": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/generate-status.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "render-closeout",
+      "command": "python3 scripts/closeout_check.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/closeout.html",
+      "required": true,
+      "evidence": "runs/proofline-capsule-plan-review-field-test/artifacts/checks/render-closeout.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "A plan review catch should not be counted unless the plan is actually hardened.",
+    "The review pass must not implement Capsule.",
+    "The worktree contains unrelated dirty files; this run only owns review artifacts and the plan hardening edit."
+  ]
+}

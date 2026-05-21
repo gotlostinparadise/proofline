@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "generate-status", "command": "python3 scripts/run_status.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/status.html", "exit_code": 0, "finished_at_utc": "2026-05-21T08:59:48+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T08:59:48+00:00", "status": "PASS"}
+
+## STDOUT
+
+Wrote CIPH run status: runs/proofline-capsule-plan-review-field-test/artifacts/status.html
+
+## STDERR
+
+<empty>

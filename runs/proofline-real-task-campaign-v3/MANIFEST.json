@@ -1,0 +1,147 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "proofline-real-task-campaign-v3",
+  "objective": "Run a fresh 5-task practical Proofline campaign on real recent tasks and report catch-rate against a 2/5 threshold.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/proofline-real-task-campaign-v3/TRACE.jsonl",
+    "strict": false
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "real-task-campaign-v3",
+      "requirement": "Run diagnostics over 5 real recent tasks and record whether each catches a concrete issue.",
+      "artifact_paths": [
+        "runs/proofline-real-task-campaign-v3/TASK.html",
+        "runs/proofline-real-task-campaign-v3/artifacts/campaign-summary.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-target-validation.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "runs/proofline-real-task-campaign-v3/TASK.html",
+      "description": "Campaign task description and task matrix.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/MANIFEST.json",
+      "description": "Campaign run manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/TRACE.jsonl",
+      "description": "Campaign trace ledger.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/artifacts/campaign-summary.md",
+      "description": "Campaign task-hit matrix.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/artifacts/campaign-diagnostics.json",
+      "description": "Raw diagnostics output including selected-task findings.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-diagnostics.txt",
+      "description": "Diagnostics check evidence wrapper.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-target-validation.txt",
+      "description": "Per-task proofline-hit validation output.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-manifest-lint.txt",
+      "description": "Manifest lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-trace-lint.txt",
+      "description": "Trace lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-generate-status.txt",
+      "description": "Status evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-render-closeout.txt",
+      "description": "Closeout evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/artifacts/status.html",
+      "description": "Status report.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-real-task-campaign-v3/artifacts/closeout.html",
+      "description": "Closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "campaign-diagnostics",
+      "command": "python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --min-severity high --format json --output runs/proofline-real-task-campaign-v3/artifacts/campaign-diagnostics.json",
+      "required": true,
+      "evidence": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-diagnostics.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "campaign-target-validation",
+      "command": "python3 -c \"import json; from pathlib import Path; req=['ciph-v0.22-replay-result-attestation', 'ciph-v0.21-local-replay-executor', 'ciph-v0.20-evaluator-replay-readiness', 'ciph-v0.19-score-integrity', 'ciph-v0.18-mechanism-metrics']; d=json.loads(Path('runs/proofline-real-task-campaign-v3/artifacts/campaign-diagnostics.json').read_text(encoding='utf-8')); findings={run:[f.get('id') for f in d.get('findings',[]) if f.get('run_id')==run] for run in req}; caught=sum(1 for ids in findings.values() if ids); print(chr(10).join([run + ': CAUGHT (' + ', '.join(sorted(set(ids))) + ')' if ids else run + ': MISS' for run, ids in findings.items()])); print(); print('campaign-hit-summary: ' + str(caught) + '/' + str(len(req))); print('campaign-acceptance-threshold: 2/5'); print('campaign-decision: unfreeze optimizer tooling' if caught >= 2 else 'campaign-decision: keep optimizer tooling research-only')\"",
+      "required": true,
+      "evidence": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-target-validation.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "campaign-manifest-lint",
+      "command": "python3 scripts/lint_manifest.py runs/proofline-real-task-campaign-v3/MANIFEST.json --root .",
+      "required": true,
+      "evidence": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-manifest-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "campaign-trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/proofline-real-task-campaign-v3/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "campaign-generate-status",
+      "command": "python3 scripts/run_status.py runs/proofline-real-task-campaign-v3/MANIFEST.json --root . --output runs/proofline-real-task-campaign-v3/artifacts/status.html",
+      "required": true,
+      "evidence": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-generate-status.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "campaign-render-closeout",
+      "command": "python3 scripts/closeout_check.py runs/proofline-real-task-campaign-v3/MANIFEST.json --root . --output runs/proofline-real-task-campaign-v3/artifacts/closeout.html",
+      "required": true,
+      "evidence": "runs/proofline-real-task-campaign-v3/artifacts/checks/campaign-render-closeout.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Campaign is a practical-viability sample and does not include optimizer layer by default.",
+    "No candidate/evaluation/replay commands are invoked in this run."
+  ]
+}

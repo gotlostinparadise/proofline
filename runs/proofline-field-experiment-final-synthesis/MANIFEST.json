@@ -1,0 +1,188 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "proofline-field-experiment-final-synthesis",
+  "objective": "Finalize the Proofline field experiment with a clear evidence-backed decision and completion audit.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/proofline-field-experiment-final-synthesis/TRACE.jsonl",
+    "strict": false
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "final-decision",
+      "requirement": "Finalize the field experiment with a decision artifact and updated register covering five trials.",
+      "artifact_paths": [
+        "docs/proofline-field-trials.md",
+        "runs/proofline-field-experiment-final-synthesis/artifacts/final-decision.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-field-experiment-final-synthesis/artifacts/checks/final-register-content.txt",
+        "runs/proofline-field-experiment-final-synthesis/artifacts/checks/final-decision-content.txt"
+      ]
+    },
+    {
+      "id": "field-test-note",
+      "requirement": "Record the final synthesis field-test finding about unclear handoff/result communication.",
+      "artifact_paths": [
+        "runs/proofline-field-experiment-final-synthesis/artifacts/proofline-field-test.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-field-experiment-final-synthesis/artifacts/checks/field-test-note-content.txt"
+      ]
+    },
+    {
+      "id": "closeout",
+      "requirement": "Render status and closeout for the final synthesis run.",
+      "artifact_paths": [
+        "runs/proofline-field-experiment-final-synthesis/artifacts/status.html",
+        "runs/proofline-field-experiment-final-synthesis/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/proofline-field-experiment-final-synthesis/artifacts/checks/generate-status.txt",
+        "runs/proofline-field-experiment-final-synthesis/artifacts/checks/render-closeout.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/TASK.html",
+      "description": "Final synthesis task contract.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/MANIFEST.json",
+      "description": "Final synthesis manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/TRACE.jsonl",
+      "description": "Final synthesis trace ledger.",
+      "required": true
+    },
+    {
+      "path": "docs/proofline-field-trials.md",
+      "description": "Final field-trials register.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/final-decision.md",
+      "description": "Final Proofline field experiment decision.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/proofline-field-test.md",
+      "description": "Final synthesis field-test finding.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/final-register-content.txt",
+      "description": "Evidence that the final register covers five trials and decisions.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/final-decision-content.txt",
+      "description": "Evidence that the final decision artifact is complete.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/field-test-note-content.txt",
+      "description": "Evidence that the final synthesis field-test note records the catch.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/manifest-lint.txt",
+      "description": "Manifest lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/trace-lint.txt",
+      "description": "Trace lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/generate-status.txt",
+      "description": "Status render evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/render-closeout.txt",
+      "description": "Closeout render evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/status.html",
+      "description": "Rendered status report.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-experiment-final-synthesis/artifacts/closeout.html",
+      "description": "Rendered closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "final-register-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('docs/proofline-field-trials.md').read_text(encoding='utf-8'); required=['Final Register','proofline-real-task-campaign-v3','proofline-capsule-design-field-test','proofline-capsule-mvp-plan-field-test','proofline-capsule-plan-review-field-test','proofline-field-experiment-final-synthesis','capsule-mvp-implementation','Final Readout','Capsule Implementation Outcome','Stop Rule Outcome','Optimizer tooling did not produce practical field wins']; missing=[item for item in required if item not in text]; assert not missing, 'Missing final register content: ' + ', '.join(missing); print('PASS final register content')\"",
+      "required": true,
+      "evidence": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/final-register-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "final-decision-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('runs/proofline-field-experiment-final-synthesis/artifacts/final-decision.md').read_text(encoding='utf-8'); required=['Final decision','Keep Proofline core','Keep optimizer tooling research-only','5/6','Capsule MVP implementation is complete']; missing=[item for item in required if item not in text]; assert not missing, 'Missing final decision content: ' + ', '.join(missing); print('PASS final decision content')\"",
+      "required": true,
+      "evidence": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/final-decision-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "field-test-note-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('runs/proofline-field-experiment-final-synthesis/artifacts/proofline-field-test.md').read_text(encoding='utf-8'); required=['Proofline field-test finding','Concrete catch: yes','unclear-handoff','I do not understand the results']; missing=[item for item in required if item not in text]; assert not missing, 'Missing field-test note content: ' + ', '.join(missing); print('PASS field-test note content')\"",
+      "required": true,
+      "evidence": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/field-test-note-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "manifest-lint",
+      "command": "python3 scripts/lint_manifest.py runs/proofline-field-experiment-final-synthesis/MANIFEST.json --root .",
+      "required": true,
+      "evidence": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/manifest-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/proofline-field-experiment-final-synthesis/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "generate-status",
+      "command": "python3 scripts/run_status.py runs/proofline-field-experiment-final-synthesis/MANIFEST.json --root . --output runs/proofline-field-experiment-final-synthesis/artifacts/status.html",
+      "required": true,
+      "evidence": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/generate-status.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "render-closeout",
+      "command": "python3 scripts/closeout_check.py runs/proofline-field-experiment-final-synthesis/MANIFEST.json --root . --output runs/proofline-field-experiment-final-synthesis/artifacts/closeout.html",
+      "required": true,
+      "evidence": "runs/proofline-field-experiment-final-synthesis/artifacts/checks/render-closeout.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Final synthesis must distinguish core Proofline evidence from optimizer-layer evidence.",
+    "Final synthesis must be understandable without reading the whole chat.",
+    "The worktree contains unrelated dirty files; this run only owns final synthesis artifacts and register updates."
+  ]
+}

@@ -1,0 +1,10 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "plan-review-content", "command": "python3 -c \"from pathlib import Path; text=Path('runs/proofline-capsule-plan-review-field-test/artifacts/plan-review.md').read_text(encoding='utf-8'); required=['Finding','deterministic id','--id','Risk','Fix']; missing=[item for item in required if item not in text]; assert not missing, 'Missing review content: ' + ', '.join(missing); print('PASS plan review content')\"", "exit_code": 0, "finished_at_utc": "2026-05-21T08:59:48+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T08:59:48+00:00", "status": "PASS"}
+
+## STDOUT
+
+PASS plan review content
+
+## STDERR
+
+<empty>

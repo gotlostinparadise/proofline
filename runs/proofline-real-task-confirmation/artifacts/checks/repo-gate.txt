@@ -1,5 +1,5 @@
 CIPH-CHECK-EVIDENCE v1
-{"check_name": "repo-gate", "command": "python3 scripts/check_repo.py", "exit_code": 0, "finished_at_utc": "2026-05-21T07:36:16+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T07:36:13+00:00", "status": "PASS"}
+{"check_name": "repo-gate", "command": "python3 scripts/check_repo.py", "exit_code": 0, "finished_at_utc": "2026-05-21T08:02:41+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T08:02:38+00:00", "status": "PASS"}
 
 ## STDOUT
 
@@ -91,6 +91,9 @@ PASS closeout runs/proofline-core-validation/MANIFEST.json
 PASS lint runs/proofline-real-task-campaign/MANIFEST.json
 PASS verify runs/proofline-real-task-campaign/MANIFEST.json
 PASS closeout runs/proofline-real-task-campaign/MANIFEST.json
+PASS lint runs/proofline-real-task-campaign-v2/MANIFEST.json
+PASS verify runs/proofline-real-task-campaign-v2/MANIFEST.json
+PASS closeout runs/proofline-real-task-campaign-v2/MANIFEST.json
 PASS lint runs/proofline-real-task-confirmation/MANIFEST.json
 PASS verify runs/proofline-real-task-confirmation/MANIFEST.json
 PASS closeout runs/proofline-real-task-confirmation/MANIFEST.json

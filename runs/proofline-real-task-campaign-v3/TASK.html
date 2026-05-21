@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proofline Real-Task Campaign v3</title>
+<style>
+body{margin:0;background:#faf9f5;color:#141413;font-family:system-ui,sans-serif;line-height:1.55;padding:44px 28px 88px}
+main{max-width:980px;margin:0 auto}
+h1,h2{font-family:ui-serif,Georgia,serif;font-weight:500}
+h1{font-size:40px;margin:0 0 18px}
+h2{font-size:24px;margin:0 0 12px}
+section{background:#fff;border:1px solid #d1cfc5;border-radius:8px;padding:18px;margin:16px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #d1cfc5;padding:8px;text-align:left;vertical-align:top}
+</style>
+</head>
+<body data-proofline-kind="task">
+<main>
+  <h1>Proofline Real-Task Campaign v3</h1>
+
+  <section>
+    <h2>Objective</h2>
+    <p>Run a fresh 5-task practical campaign on fresh 5 alternative real runs and measure whether Proofline core surfaces concrete issues above the 2/5 threshold without optimizer layer.</p>
+  </section>
+
+  <section>
+    <h2>Acceptance Object</h2>
+    <ul>
+      <li>Run <code>scripts/run_checks.py</code> for this manifest and capture check evidence.</li>
+      <li>Capture per-task hit/miss summary in campaign artifacts.</li>
+      <li>Record explicit decision whether optimizer tooling remains research-only.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Campaign Run Set</h2>
+    <table>
+      <thead><tr><th>Run</th><th>Selection Rationale</th></tr></thead>
+      <tbody>
+
+      <tr><td>ciph-v0.22-replay-result-attestation</td><td>Recent real repo run</td></tr>
+      <tr><td>ciph-v0.21-local-replay-executor</td><td>Recent real repo run</td></tr>
+      <tr><td>ciph-v0.20-evaluator-replay-readiness</td><td>Recent real repo run</td></tr>
+      <tr><td>ciph-v0.19-score-integrity</td><td>Recent real repo run</td></tr>
+      <tr><td>ciph-v0.18-mechanism-metrics</td><td>Recent real repo run</td></tr>
+    </tbody>
+    </table>
+  </section>
+</main>
+</body>
+</html>

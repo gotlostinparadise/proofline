@@ -1,0 +1,155 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "proofline-field-trials-register",
+  "objective": "Create a durable Proofline field-trials register that consolidates real-task evidence and identifies the next field-test task.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/proofline-field-trials-register/TRACE.jsonl",
+    "strict": false
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "field-trials-register",
+      "requirement": "Create a durable register of Proofline field trials with source evidence, concrete catch classification, and next-task recommendation.",
+      "artifact_paths": [
+        "docs/proofline-field-trials.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-field-trials-register/artifacts/checks/field-trials-content.txt",
+        "runs/proofline-field-trials-register/artifacts/checks/field-trials-source-paths.txt"
+      ]
+    },
+    {
+      "id": "register-closeout",
+      "requirement": "Render status and closeout for the register run.",
+      "artifact_paths": [
+        "runs/proofline-field-trials-register/artifacts/status.html",
+        "runs/proofline-field-trials-register/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/proofline-field-trials-register/artifacts/checks/generate-status.txt",
+        "runs/proofline-field-trials-register/artifacts/checks/render-closeout.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "runs/proofline-field-trials-register/TASK.html",
+      "description": "Field-trials register task contract.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-trials-register/MANIFEST.json",
+      "description": "Field-trials register manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-trials-register/TRACE.jsonl",
+      "description": "Field-trials register trace ledger.",
+      "required": true
+    },
+    {
+      "path": "docs/proofline-field-trials.md",
+      "description": "Proofline field-trials register.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-trials-register/artifacts/checks/field-trials-content.txt",
+      "description": "Evidence that the register contains required decision sections.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-trials-register/artifacts/checks/field-trials-source-paths.txt",
+      "description": "Evidence that source evidence paths named by the register exist.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-trials-register/artifacts/checks/manifest-lint.txt",
+      "description": "Manifest lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-trials-register/artifacts/checks/trace-lint.txt",
+      "description": "Trace lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-trials-register/artifacts/checks/generate-status.txt",
+      "description": "Status generation evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-trials-register/artifacts/checks/render-closeout.txt",
+      "description": "Closeout rendering evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-trials-register/artifacts/status.html",
+      "description": "Rendered status report.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-field-trials-register/artifacts/closeout.html",
+      "description": "Rendered closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "field-trials-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('docs/proofline-field-trials.md').read_text(encoding='utf-8'); required=['Proofline Field Trials','Counting Rules','Final Register','Final Readout','Capsule Implementation Outcome','proofline-real-task-campaign-v3','proofline-capsule-design-field-test','capsule-mvp-implementation']; missing=[item for item in required if item not in text]; assert not missing, 'Missing register content: ' + ', '.join(missing); print('PASS field trials content')\"",
+      "required": true,
+      "evidence": "runs/proofline-field-trials-register/artifacts/checks/field-trials-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "field-trials-source-paths",
+      "command": "python3 -c \"from pathlib import Path; paths=['runs/proofline-real-task-campaign-v3/artifacts/campaign-summary.md','runs/proofline-capsule-design-field-test/artifacts/proofline-field-test.md','runs/proofline-capsule-design-field-test/artifacts/checks/trace-lint.txt','docs/plans/2026-05-21-capsule-context-package-design.md']; missing=[path for path in paths if not Path(path).exists()]; assert not missing, 'Missing source paths: ' + ', '.join(missing); print('PASS field trials source paths')\"",
+      "required": true,
+      "evidence": "runs/proofline-field-trials-register/artifacts/checks/field-trials-source-paths.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "manifest-lint",
+      "command": "python3 scripts/lint_manifest.py runs/proofline-field-trials-register/MANIFEST.json --root .",
+      "required": true,
+      "evidence": "runs/proofline-field-trials-register/artifacts/checks/manifest-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/proofline-field-trials-register/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/proofline-field-trials-register/artifacts/checks/trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "generate-status",
+      "command": "python3 scripts/run_status.py runs/proofline-field-trials-register/MANIFEST.json --root . --output runs/proofline-field-trials-register/artifacts/status.html",
+      "required": true,
+      "evidence": "runs/proofline-field-trials-register/artifacts/checks/generate-status.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "render-closeout",
+      "command": "python3 scripts/closeout_check.py runs/proofline-field-trials-register/MANIFEST.json --root . --output runs/proofline-field-trials-register/artifacts/closeout.html",
+      "required": true,
+      "evidence": "runs/proofline-field-trials-register/artifacts/checks/render-closeout.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Do not count chat-only insight as a Proofline catch unless it has repo evidence.",
+    "Do not promote optimizer tooling based on core Proofline field-test wins.",
+    "The worktree contains unrelated dirty changes; this run only owns the register artifacts."
+  ]
+}

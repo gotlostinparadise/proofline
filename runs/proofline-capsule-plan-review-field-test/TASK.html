@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capsule Plan Review Field Test</title>
+<style>
+body{margin:0;background:#faf9f5;color:#141413;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;padding:44px 28px 88px}
+main{max-width:980px;margin:0 auto}
+h1,h2{font-family:ui-serif,Georgia,serif;font-weight:500}
+h1{font-size:40px;margin:0 0 18px}
+h2{font-size:24px;margin:0 0 12px}
+section{background:#fff;border:1px solid #d1cfc5;border-radius:8px;padding:18px;margin:16px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #d1cfc5;padding:8px;text-align:left;vertical-align:top}
+th{font:11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#66635c;background:#f0eee6}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{white-space:pre-wrap;background:#f0eee6;padding:14px;border-radius:8px}
+</style>
+</head>
+<body data-proofline-kind="task">
+<main>
+<h1>Capsule Plan Review Field Test</h1>
+
+<section id="objective" data-proofline-section="objective">
+  <h2>Objective</h2>
+  <p>Review and harden the Capsule MVP implementation plan, then record whether Proofline catches weak planning evidence before implementation.</p>
+</section>
+
+<section id="acceptance-object" data-proofline-section="acceptance-object">
+  <h2>Acceptance Object</h2>
+  <p>The work is acceptable when the Capsule MVP implementation plan is reviewed, a concrete hardening issue is recorded, the plan is corrected, and the run renders status and closeout evidence.</p>
+</section>
+
+<section id="constraints" data-proofline-section="constraints">
+  <h2>Constraints</h2>
+  <ul>
+    <li>This run reviews and hardens the plan; it must not implement Capsule.</li>
+    <li>Count the catch only if the implementation plan is actually hardened.</li>
+    <li>Do not use optimizer, candidate, evaluation, or replay tooling.</li>
+    <li>Do not expose secrets or environment values in artifacts.</li>
+  </ul>
+</section>
+
+<section id="core-workflow" data-proofline-section="core-workflow">
+  <h2>Core Proofline Workflow</h2>
+  <p>Use this path for real scoped work.</p>
+  <ol>
+    <li>Add explicit requirements to this task and <code>MANIFEST.json</code> deliverables.</li>
+    <li>Add required checks and evidence paths in <code>MANIFEST.json</code>.</li>
+    <li>Execute checks and write evidence with:
+      <pre><code>python3 scripts/run_checks.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root .</code></pre>
+    </li>
+    <li>Validate manifest contracts:
+      <pre><code>python3 scripts/lint_manifest.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root .
+python3 scripts/verify_manifest.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root .</code></pre>
+    </li>
+    <li>Render closeout artifacts:
+      <pre><code>python3 scripts/run_status.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/status.html
+python3 scripts/closeout_check.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/closeout.html</code></pre>
+    </li>
+    <li>Run repository gate when the work is complete:
+      <pre><code>python3 scripts/check_repo.py</code></pre>
+    </li>
+  </ol>
+</section>
+
+<section id="policy-modules" data-proofline-section="policy-modules">
+  <h2>Policy Modules</h2>
+  <p>List any active harness policy modules from <code>harness/policies/</code>. Policy modules describe strategy; deterministic scripts still own exact validation and scoring.</p>
+</section>
+
+<section id="trace-ledger" data-proofline-section="trace-ledger">
+  <h2>Trace Ledger</h2>
+  <p>Proofline core runs use <code>runs/proofline-capsule-plan-review-field-test/TRACE.jsonl</code> for raw events. Validate it with <code>scripts/lint_trace.py</code> before closeout.</p>
+</section>
+
+<section id="mechanism-metrics" data-proofline-section="mechanism-metrics">
+  <h2>Mechanism Metrics</h2>
+  <p>Research runs can derive mechanism metrics with <code>scripts/trace_metrics.py</code>. Use them to inspect harness behavior; keep manifest validation and closeout evidence as the source of completion truth.</p>
+</section>
+
+<section id="deliverables" data-proofline-section="deliverables">
+  <h2>Deliverables</h2>
+  <table>
+    <thead><tr><th>ID</th><th>Requirement</th><th>Artifact paths</th><th>Evidence paths</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>capsule-plan-review</td>
+        <td>Review the Capsule MVP implementation plan and record a concrete hardening finding.</td>
+        <td><code>runs/proofline-capsule-plan-review-field-test/artifacts/plan-review.md</code>, <code>docs/plans/2026-05-21-capsule-mvp-implementation-plan.md</code></td>
+        <td><code>runs/proofline-capsule-plan-review-field-test/artifacts/checks/plan-review-content.txt</code>, <code>runs/proofline-capsule-plan-review-field-test/artifacts/checks/hardened-plan-content.txt</code></td>
+      </tr>
+      <tr>
+        <td>field-test-note</td>
+        <td>Record whether Proofline caught or prevented a concrete issue during the review task.</td>
+        <td><code>runs/proofline-capsule-plan-review-field-test/artifacts/proofline-field-test.md</code></td>
+        <td><code>runs/proofline-capsule-plan-review-field-test/artifacts/checks/field-test-note-content.txt</code></td>
+      </tr>
+      <tr>
+        <td>closeout</td>
+        <td>Render status and closeout for the field-trial run.</td>
+        <td><code>runs/proofline-capsule-plan-review-field-test/artifacts/status.html</code>, <code>runs/proofline-capsule-plan-review-field-test/artifacts/closeout.html</code></td>
+        <td><code>runs/proofline-capsule-plan-review-field-test/artifacts/checks/generate-status.txt</code>, <code>runs/proofline-capsule-plan-review-field-test/artifacts/checks/render-closeout.txt</code></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="when-not-to-use-proofline" data-proofline-section="when-not-to-use-proofline">
+  <h2>When Not to Use Proofline</h2>
+  <ul>
+    <li>One-line typo fixes.</li>
+    <li>Trivial local-only edits with no durable handoff.</li>
+    <li>Throwaway experimentation with no evidence dependency.</li>
+  </ul>
+</section>
+
+<section id="research-layer" data-proofline-section="research-layer">
+  <h2>Research Layer (Optional)</h2>
+  <p>Use candidate/evaluation/replay tooling only for explicit research passes.</p>
+  <pre><code>python3 scripts/init_candidate.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json &lt;candidate-id&gt; --changed-module &lt;module&gt;
+python3 scripts/init_candidate.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json &lt;candidate-id&gt; --change-class source --changed-module &lt;module&gt; --source-path runs/proofline-capsule-plan-review-field-test/candidates/&lt;candidate-id&gt;/source/README.md
+python3 scripts/validate_candidate.py runs/proofline-capsule-plan-review-field-test/candidates/&lt;candidate-id&gt; --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/candidate-validation.html
+python3 scripts/candidate_summary.py runs/proofline-capsule-plan-review-field-test --output runs/proofline-capsule-plan-review-field-test/artifacts/candidate-summary.html
+python3 scripts/validate_evaluation.py runs/proofline-capsule-plan-review-field-test --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/evaluation-report.html
+python3 scripts/final_comparison.py runs/proofline-capsule-plan-review-field-test --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/final-comparison.html
+python3 scripts/validate_score_provenance.py runs/proofline-capsule-plan-review-field-test --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/score-provenance.html
+python3 scripts/validate_score_integrity.py runs/proofline-capsule-plan-review-field-test --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/score-integrity.html
+python3 scripts/validate_evaluator_replay.py runs/proofline-capsule-plan-review-field-test --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/evaluator-replay.html
+python3 scripts/execute_evaluator_replay.py runs/proofline-capsule-plan-review-field-test --root . --receipt-dir runs/proofline-capsule-plan-review-field-test/replay_receipts --output runs/proofline-capsule-plan-review-field-test/artifacts/evaluator-replay-execution.html</code></pre>
+  <pre><code>python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --min-severity medium --format json --output runs/proofline-capsule-plan-review-field-test/artifacts/experience-diagnostics.json
+python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --min-severity high --format html --output runs/proofline-capsule-plan-review-field-test/artifacts/experience-diagnostics.html
+python3 scripts/diagnose_experience_store.py --root . --runs-dir runs --min-severity high --include-legacy-runs</code></pre>
+</section>
+
+<section id="risks" data-proofline-section="risks">
+  <h2>Risks And Blockers</h2>
+  <ul>
+    <li>A plan review catch should not be counted unless the plan is actually hardened.</li>
+    <li>The review pass must not implement Capsule.</li>
+    <li>The worktree contains unrelated dirty files; this run only owns review artifacts and the plan hardening edit.</li>
+  </ul>
+</section>
+
+<section id="closeout-commands" data-proofline-section="closeout-commands">
+  <h2>Closeout Commands</h2>
+  <pre><code>python3 scripts/lint_manifest.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root .
+python3 scripts/lint_trace.py runs/proofline-capsule-plan-review-field-test/TRACE.jsonl --root .
+python3 scripts/run_checks.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root .
+python3 scripts/verify_manifest.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root .
+python3 scripts/trace_metrics.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/mechanism-metrics.html
+python3 scripts/run_status.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/status.html
+python3 scripts/closeout_check.py runs/proofline-capsule-plan-review-field-test/MANIFEST.json --root . --output runs/proofline-capsule-plan-review-field-test/artifacts/closeout.html
+python3 scripts/check_repo.py</code></pre>
+</section>
+</main>
+</body>
+</html>

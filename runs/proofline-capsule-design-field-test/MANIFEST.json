@@ -1,0 +1,169 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "proofline-capsule-design-field-test",
+  "objective": "Design Capsule as a dependency-free context packaging sibling for Proofline and evaluate Proofline as the container for field planning work.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/proofline-capsule-design-field-test/TRACE.jsonl",
+    "strict": true
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "capsule-design",
+      "requirement": "Capture the Capsule product boundary, MVP, non-goals, and relationship to Proofline.",
+      "artifact_paths": [
+        "docs/plans/2026-05-21-capsule-context-package-design.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-capsule-design-field-test/artifacts/checks/capsule-design-content.txt"
+      ]
+    },
+    {
+      "id": "proofline-field-test",
+      "requirement": "Record whether Proofline helped control the field task or merely added ceremony.",
+      "artifact_paths": [
+        "runs/proofline-capsule-design-field-test/artifacts/proofline-field-test.md"
+      ],
+      "evidence_paths": [
+        "runs/proofline-capsule-design-field-test/artifacts/checks/field-test-note-content.txt"
+      ]
+    },
+    {
+      "id": "closeout",
+      "requirement": "Render Proofline status and closeout artifacts from the manifest.",
+      "artifact_paths": [
+        "runs/proofline-capsule-design-field-test/artifacts/status.html",
+        "runs/proofline-capsule-design-field-test/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/proofline-capsule-design-field-test/artifacts/checks/generate-status.txt",
+        "runs/proofline-capsule-design-field-test/artifacts/checks/render-closeout.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "runs/proofline-capsule-design-field-test/TASK.html",
+      "description": "Run task contract.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/MANIFEST.json",
+      "description": "Run manifest.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/TRACE.jsonl",
+      "description": "Run trace ledger.",
+      "required": true
+    },
+    {
+      "path": "docs/plans/2026-05-21-capsule-context-package-design.md",
+      "description": "Capsule design artifact.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/artifacts/proofline-field-test.md",
+      "description": "Proofline field-test observation for the Capsule design task.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/artifacts/checks/capsule-design-content.txt",
+      "description": "Evidence that the Capsule design covers required sections.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/artifacts/checks/field-test-note-content.txt",
+      "description": "Evidence that the Proofline field-test note captures a concrete observation.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/artifacts/checks/manifest-lint.txt",
+      "description": "Manifest lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/artifacts/checks/trace-lint.txt",
+      "description": "Trace lint evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/artifacts/checks/generate-status.txt",
+      "description": "Status generation evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/artifacts/checks/render-closeout.txt",
+      "description": "Closeout render evidence.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/artifacts/status.html",
+      "description": "Rendered status report.",
+      "required": true
+    },
+    {
+      "path": "runs/proofline-capsule-design-field-test/artifacts/closeout.html",
+      "description": "Rendered closeout report.",
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "capsule-design-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('docs/plans/2026-05-21-capsule-context-package-design.md').read_text(encoding='utf-8'); required=['Capsule Thesis','Proofline Relationship','MVP','Non-Goals','Success Test']; missing=[item for item in required if item not in text]; assert not missing, 'Missing design sections: ' + ', '.join(missing); print('PASS capsule design sections')\"",
+      "required": true,
+      "evidence": "runs/proofline-capsule-design-field-test/artifacts/checks/capsule-design-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "field-test-note-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('runs/proofline-capsule-design-field-test/artifacts/proofline-field-test.md').read_text(encoding='utf-8'); required=['Proofline field-test finding','scope-control','no optimizer']; missing=[item for item in required if item not in text]; assert not missing, 'Missing field-test note content: ' + ', '.join(missing); print('PASS field-test note content')\"",
+      "required": true,
+      "evidence": "runs/proofline-capsule-design-field-test/artifacts/checks/field-test-note-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "manifest-lint",
+      "command": "python3 scripts/lint_manifest.py runs/proofline-capsule-design-field-test/MANIFEST.json --root .",
+      "required": true,
+      "evidence": "runs/proofline-capsule-design-field-test/artifacts/checks/manifest-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/proofline-capsule-design-field-test/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/proofline-capsule-design-field-test/artifacts/checks/trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "generate-status",
+      "command": "python3 scripts/run_status.py runs/proofline-capsule-design-field-test/MANIFEST.json --root . --output runs/proofline-capsule-design-field-test/artifacts/status.html",
+      "required": true,
+      "evidence": "runs/proofline-capsule-design-field-test/artifacts/checks/generate-status.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "render-closeout",
+      "command": "python3 scripts/closeout_check.py runs/proofline-capsule-design-field-test/MANIFEST.json --root . --output runs/proofline-capsule-design-field-test/artifacts/closeout.html",
+      "required": true,
+      "evidence": "runs/proofline-capsule-design-field-test/artifacts/checks/render-closeout.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Capsule can drift into Proofline if the boundary is not kept to input context packaging.",
+    "Proofline can become ceremony if field-test notes do not identify concrete control value.",
+    "The repository has existing unrelated dirty files; this run should not claim ownership of them."
+  ]
+}

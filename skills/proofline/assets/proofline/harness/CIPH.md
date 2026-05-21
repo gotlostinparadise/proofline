@@ -42,9 +42,11 @@ python3 scripts/closeout_check.py runs/<run-id>/MANIFEST.json --root . --output 
 python3 scripts/check_repo.py
 ```
 
+Only checks marked `"required": true` are hard-gating closeout obligations by default.
+
 Current campaign posture (2026-05-21):
 
-- 5-task real-world campaign produced **0/5** high-severity catches (target threshold: 2/5).
+- `proofline-real-task-campaign-v3` produced **0/5** high-severity catches against a 2/5 practical threshold.
 - Keep candidate/evaluation/replay workflows as optional research-only tooling until the threshold is met.
 
 ## When Not to Use Proofline
@@ -86,6 +88,8 @@ python3 scripts/plan_next_candidates.py runs/<run-id>/artifacts/experience-diagn
 ```
 
 `--include-legacy-runs` should be used explicitly for history review and repair work; it is not part of the default core path.
+
+`diagnose_experience_store --fail-on-high` is reserved for explicit cleanup/research runs.
 
 ## Command Reference
 

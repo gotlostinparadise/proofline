@@ -1,0 +1,15 @@
+Initial focused test run before `capsule.py` existed.
+
+Command:
+
+```bash
+python3 -m unittest tests.test_capsule
+```
+
+Expected result:
+
+- status: FAIL
+- reason: `/home/bm/Work/Projects/AGENTS/Harness/capsule.py` did not exist yet
+- failures observed: 5
+
+This is the required TDD red state before implementation.

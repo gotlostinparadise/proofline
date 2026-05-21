@@ -44,7 +44,7 @@ python3 scripts/check_repo.py
 
 Current campaign posture (2026-05-21):
 
-- 5-task real-world campaign produced **0/5** high-severity catches (target threshold: 2/5).
+- `proofline-real-task-campaign-v3` produced **0/5** high-severity catches against a 2/5 practical threshold.
 - Keep candidate/evaluation/replay workflows as optional research-only tooling until the threshold is met.
 
 ## When Not to Use Proofline
@@ -52,6 +52,8 @@ Current campaign posture (2026-05-21):
 - one-line typo fixes
 - trivial/local edits that do not change persistent behavior
 - throwaway experimentation where durable evidence is not needed
+
+Required checks are hard gating checks; optional research checks are excluded from default closeout failure.
 
 ## Research Layer (Optional)
 

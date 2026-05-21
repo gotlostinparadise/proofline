@@ -34,6 +34,17 @@ class CheckRepoTests(unittest.TestCase):
             self.assertFalse(result.ok)
             self.assertIn("FAIL closeout runs/sample/MANIFEST.json has missing coverage", result.failures)
 
+    def test_check_repo_ignores_missing_optional_check_coverage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _write_test_file(root, passing=True)
+            _write_clean_run(root, "sample", include_optional_check=True)
+
+            result = check_repo(root, include_diff_check=False)
+
+            self.assertTrue(result.ok, result.failures)
+            self.assertIn("PASS closeout runs/sample/MANIFEST.json", result.messages)
+
     def test_check_repo_reports_unit_test_failures(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -123,6 +134,7 @@ def _write_clean_run(
     run_id: str,
     create_artifact: bool = True,
     runs_dir: Path = Path("runs"),
+    include_optional_check: bool = False,
 ) -> None:
     run_dir = root / runs_dir / run_id
     check_dir = run_dir / "artifacts" / "checks"
@@ -137,6 +149,26 @@ def _write_clean_run(
         '\n## STDOUT\n\nOK\n\n## STDERR\n\n<empty>',
         encoding="utf-8",
     )
+    checks = [
+        {
+            "name": "unit-tests",
+            "command": "python3 -m unittest discover",
+            "required": True,
+            "evidence": f"{runs_dir.as_posix()}/{run_id}/artifacts/checks/unit-tests.txt",
+            "evidence_producer": "run_checks",
+        }
+    ]
+    if include_optional_check:
+        checks.append(
+            {
+                "name": "optional-check",
+                "command": "python3 -m unittest discover",
+                "required": False,
+                "evidence": f"{runs_dir.as_posix()}/{run_id}/artifacts/checks/optional-check.txt",
+                "evidence_producer": "run_checks",
+            }
+        )
+
     manifest = {
         "schema_version": "ciph.manifest.v1",
         "task_id": run_id,
@@ -156,15 +188,7 @@ def _write_clean_run(
                 "required": True,
             }
         ],
-        "checks": [
-            {
-                "name": "unit-tests",
-                "command": "python3 -m unittest discover",
-                "required": True,
-                "evidence": f"{runs_dir.as_posix()}/{run_id}/artifacts/checks/unit-tests.txt",
-                "evidence_producer": "run_checks",
-            }
-        ],
+        "checks": checks,
         "risks": [],
     }
     run_dir.joinpath("MANIFEST.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")

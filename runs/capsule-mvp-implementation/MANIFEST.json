@@ -1,0 +1,175 @@
+{
+  "schema_version": "ciph.manifest.v1",
+  "task_id": "capsule-mvp-implementation",
+  "objective": "Implement the dependency-free Capsule MVP with create, inspect, verify, docs, tests, and field-test evidence.",
+  "trace": {
+    "schema_version": "ciph.trace.v1",
+    "path": "runs/capsule-mvp-implementation/TRACE.jsonl",
+    "strict": false
+  },
+  "policy_modules": [
+    "harness/policies/state.md",
+    "harness/policies/context.md",
+    "harness/policies/verification.md",
+    "harness/policies/recovery.md",
+    "harness/policies/delegation.md",
+    "harness/policies/candidate-search.md",
+    "harness/policies/stopping.md"
+  ],
+  "deliverables": [
+    {
+      "id": "capsule-mvp",
+      "requirement": "Implement dependency-free Capsule create, inspect, and verify commands with deterministic --id support, digests, redactions, warnings, and HTML report output.",
+      "artifact_paths": [
+        "capsule.py",
+        "tests/test_capsule.py"
+      ],
+      "evidence_paths": [
+        "runs/capsule-mvp-implementation/artifacts/checks/capsule-focused-tests.txt"
+      ]
+    },
+    {
+      "id": "docs-and-example",
+      "requirement": "Document Capsule and create a repo-local example capsule using --id docs-context.",
+      "artifact_paths": [
+        "docs/capsule.md",
+        "capsules/docs-context/CAPSULE.json",
+        "capsules/docs-context/FILES.txt",
+        "capsules/docs-context/DIGESTS.json",
+        "capsules/docs-context/REDACTIONS.json",
+        "capsules/docs-context/capsule.html"
+      ],
+      "evidence_paths": [
+        "runs/capsule-mvp-implementation/artifacts/checks/capsule-docs-content.txt",
+        "runs/capsule-mvp-implementation/artifacts/checks/capsule-example-create.txt",
+        "runs/capsule-mvp-implementation/artifacts/checks/capsule-example-inspect.txt",
+        "runs/capsule-mvp-implementation/artifacts/checks/capsule-example-verify.txt"
+      ]
+    },
+    {
+      "id": "field-test-note",
+      "requirement": "Record whether Proofline caught a concrete issue during Capsule implementation.",
+      "artifact_paths": [
+        "runs/capsule-mvp-implementation/artifacts/proofline-field-test.md"
+      ],
+      "evidence_paths": [
+        "runs/capsule-mvp-implementation/artifacts/checks/field-test-note-content.txt"
+      ]
+    },
+    {
+      "id": "closeout",
+      "requirement": "Render status and closeout for the Capsule implementation run.",
+      "artifact_paths": [
+        "runs/capsule-mvp-implementation/artifacts/status.html",
+        "runs/capsule-mvp-implementation/artifacts/closeout.html"
+      ],
+      "evidence_paths": [
+        "runs/capsule-mvp-implementation/artifacts/checks/generate-status.txt",
+        "runs/capsule-mvp-implementation/artifacts/checks/render-closeout.txt"
+      ]
+    }
+  ],
+  "artifacts": [
+    {"path": "runs/capsule-mvp-implementation/TASK.html", "description": "Capsule implementation task contract.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/MANIFEST.json", "description": "Capsule implementation manifest.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/TRACE.jsonl", "description": "Capsule implementation trace ledger.", "required": true},
+    {"path": "capsule.py", "description": "Dependency-free Capsule CLI.", "required": true},
+    {"path": "tests/test_capsule.py", "description": "Focused Capsule unit tests.", "required": true},
+    {"path": "docs/capsule.md", "description": "Capsule user documentation.", "required": true},
+    {"path": "capsules/docs-context/CAPSULE.json", "description": "Example capsule manifest.", "required": true},
+    {"path": "capsules/docs-context/FILES.txt", "description": "Example capsule file list.", "required": true},
+    {"path": "capsules/docs-context/DIGESTS.json", "description": "Example capsule digest map.", "required": true},
+    {"path": "capsules/docs-context/REDACTIONS.json", "description": "Example capsule redaction/risk records.", "required": true},
+    {"path": "capsules/docs-context/capsule.html", "description": "Example capsule HTML report.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/proofline-field-test.md", "description": "Capsule implementation field-test finding.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/checks/capsule-focused-tests.txt", "description": "Focused test evidence.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/checks/capsule-docs-content.txt", "description": "Docs content evidence.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/checks/capsule-example-create.txt", "description": "Example create evidence.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/checks/capsule-example-inspect.txt", "description": "Example inspect evidence.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/checks/capsule-example-verify.txt", "description": "Example verify evidence.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/checks/field-test-note-content.txt", "description": "Field-test note evidence.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/checks/manifest-lint.txt", "description": "Manifest lint evidence.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/checks/trace-lint.txt", "description": "Trace lint evidence.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/checks/generate-status.txt", "description": "Status render evidence.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/checks/render-closeout.txt", "description": "Closeout render evidence.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/status.html", "description": "Rendered status report.", "required": true},
+    {"path": "runs/capsule-mvp-implementation/artifacts/closeout.html", "description": "Rendered closeout report.", "required": true}
+  ],
+  "checks": [
+    {
+      "name": "capsule-focused-tests",
+      "command": "python3 -m unittest tests.test_capsule",
+      "required": true,
+      "evidence": "runs/capsule-mvp-implementation/artifacts/checks/capsule-focused-tests.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "capsule-docs-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('docs/capsule.md').read_text(encoding='utf-8'); required=['Capsule','create','inspect','verify','--id docs-context','Proofline']; missing=[item for item in required if item not in text]; assert not missing, 'Missing docs content: ' + ', '.join(missing); print('PASS capsule docs content')\"",
+      "required": true,
+      "evidence": "runs/capsule-mvp-implementation/artifacts/checks/capsule-docs-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "capsule-example-create",
+      "command": "python3 capsule.py create --root . --id docs-context --include README.md --include docs/proofline-field-trials.md --include docs/plans/2026-05-21-capsule-mvp-implementation-plan.md",
+      "required": true,
+      "evidence": "runs/capsule-mvp-implementation/artifacts/checks/capsule-example-create.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "capsule-example-inspect",
+      "command": "python3 capsule.py inspect capsules/docs-context/CAPSULE.json",
+      "required": true,
+      "evidence": "runs/capsule-mvp-implementation/artifacts/checks/capsule-example-inspect.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "capsule-example-verify",
+      "command": "python3 capsule.py verify capsules/docs-context/CAPSULE.json",
+      "required": true,
+      "evidence": "runs/capsule-mvp-implementation/artifacts/checks/capsule-example-verify.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "field-test-note-content",
+      "command": "python3 -c \"from pathlib import Path; text=Path('runs/capsule-mvp-implementation/artifacts/proofline-field-test.md').read_text(encoding='utf-8'); required=['Proofline field-test finding','Concrete catch: yes','secret-risk','create-before-inspect']; missing=[item for item in required if item not in text]; assert not missing, 'Missing field-test note content: ' + ', '.join(missing); print('PASS field-test note content')\"",
+      "required": true,
+      "evidence": "runs/capsule-mvp-implementation/artifacts/checks/field-test-note-content.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "manifest-lint",
+      "command": "python3 scripts/lint_manifest.py runs/capsule-mvp-implementation/MANIFEST.json --root .",
+      "required": true,
+      "evidence": "runs/capsule-mvp-implementation/artifacts/checks/manifest-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "trace-lint",
+      "command": "python3 scripts/lint_trace.py runs/capsule-mvp-implementation/TRACE.jsonl --root .",
+      "required": true,
+      "evidence": "runs/capsule-mvp-implementation/artifacts/checks/trace-lint.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "generate-status",
+      "command": "python3 scripts/run_status.py runs/capsule-mvp-implementation/MANIFEST.json --root . --output runs/capsule-mvp-implementation/artifacts/status.html",
+      "required": true,
+      "evidence": "runs/capsule-mvp-implementation/artifacts/checks/generate-status.txt",
+      "evidence_producer": "run_checks"
+    },
+    {
+      "name": "render-closeout",
+      "command": "python3 scripts/closeout_check.py runs/capsule-mvp-implementation/MANIFEST.json --root . --output runs/capsule-mvp-implementation/artifacts/closeout.html",
+      "required": true,
+      "evidence": "runs/capsule-mvp-implementation/artifacts/checks/render-closeout.txt",
+      "evidence_producer": "run_checks"
+    }
+  ],
+  "risks": [
+    "Secret-like warning records must not print matched secret values.",
+    "The example capsule must be generated before inspect and verify checks.",
+    "Capsule must remain a context packaging tool and not take over Proofline task proof."
+  ]
+}

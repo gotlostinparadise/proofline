@@ -1,0 +1,18 @@
+CIPH-CHECK-EVIDENCE v1
+{"check_name": "campaign-target-validation", "command": "python3 -c \"import json; from pathlib import Path; req=['ciph-v0.22-replay-result-attestation', 'ciph-v0.21-local-replay-executor', 'ciph-v0.20-evaluator-replay-readiness', 'ciph-v0.19-score-integrity', 'ciph-v0.18-mechanism-metrics']; d=json.loads(Path('runs/proofline-real-task-campaign-v3/artifacts/campaign-diagnostics.json').read_text(encoding='utf-8')); findings={run:[f.get('id') for f in d.get('findings',[]) if f.get('run_id')==run] for run in req}; caught=sum(1 for ids in findings.values() if ids); print(chr(10).join([run + ': CAUGHT (' + ', '.join(sorted(set(ids))) + ')' if ids else run + ': MISS' for run, ids in findings.items()])); print(); print('campaign-hit-summary: ' + str(caught) + '/' + str(len(req))); print('campaign-acceptance-threshold: 2/5'); print('campaign-decision: unfreeze optimizer tooling' if caught >= 2 else 'campaign-decision: keep optimizer tooling research-only')\"", "exit_code": 0, "finished_at_utc": "2026-05-21T08:10:42+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T08:10:42+00:00", "status": "PASS"}
+
+## STDOUT
+
+ciph-v0.22-replay-result-attestation: MISS
+ciph-v0.21-local-replay-executor: MISS
+ciph-v0.20-evaluator-replay-readiness: MISS
+ciph-v0.19-score-integrity: MISS
+ciph-v0.18-mechanism-metrics: MISS
+
+campaign-hit-summary: 0/5
+campaign-acceptance-threshold: 2/5
+campaign-decision: keep optimizer tooling research-only
+
+## STDERR
+
+<empty>

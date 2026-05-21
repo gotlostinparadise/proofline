@@ -1,0 +1,20 @@
+{
+  "files": {
+    "README.md": {
+      "byte_count": 8178,
+      "line_count": 162,
+      "sha256": "077c8b8fc3e5790b806d5c8536d09808df43463a1fe906bced9e6d516ac9ac0e"
+    },
+    "docs/plans/2026-05-21-capsule-mvp-implementation-plan.md": {
+      "byte_count": 4325,
+      "line_count": 126,
+      "sha256": "178ab84461b8c4aa43e6fcb98f0ea1dea84f3ba948fde55079c2bbc19bbd065c"
+    },
+    "docs/proofline-field-trials.md": {
+      "byte_count": 5054,
+      "line_count": 99,
+      "sha256": "31b84b8e3c1e59dc3afd178415efa59733478112b3fa1f56ba2715efdaac8ebe"
+    }
+  },
+  "schema_version": "capsule.v1"
+}

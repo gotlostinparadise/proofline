@@ -1,5 +1,5 @@
 CIPH-CHECK-EVIDENCE v1
-{"check_name": "render-closeout", "command": "python3 scripts/closeout_check.py runs/proofline-real-task-confirmation/MANIFEST.json --root . --output runs/proofline-real-task-confirmation/artifacts/closeout.html", "exit_code": 0, "finished_at_utc": "2026-05-21T07:36:13+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T07:36:13+00:00", "status": "PASS"}
+{"check_name": "render-closeout", "command": "python3 scripts/closeout_check.py runs/proofline-real-task-confirmation/MANIFEST.json --root . --output runs/proofline-real-task-confirmation/artifacts/closeout.html", "exit_code": 0, "finished_at_utc": "2026-05-21T08:02:38+00:00", "generated_by": "scripts/run_checks.py", "started_at_utc": "2026-05-21T08:02:38+00:00", "status": "PASS"}
 
 ## STDOUT
 

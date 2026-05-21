@@ -49,7 +49,7 @@ def render_closeout(manifest_path: Path | str, root: Path | str | None = None) -
             continue
         name = check.get("name", "<unnamed>")
         evidence = check.get("evidence", "")
-        status = "COVERED" if evidence and path_exists(root_path, evidence) else "MISSING"
+        status = _check_status(check, root_path)
         lines.append(f"- [{status}] {name}")
         lines.append(f"  - Command: {check.get('command', '<missing>')}")
         lines.append(f"  - Evidence: {evidence or '<missing>'}")
@@ -102,7 +102,7 @@ def render_closeout_html(manifest_path: Path | str, root: Path | str | None = No
             continue
         name = check.get("name", "<unnamed>")
         evidence = check.get("evidence", "")
-        status = "COVERED" if evidence and path_exists(root_path, evidence) else "MISSING"
+        status = _check_status(check, root_path)
         check_items.append(f"[{status}] {name} - Command: {check.get('command', '<missing>')} - Evidence: {evidence or '<missing>'}")
 
     risks = manifest.get("risks", [])
@@ -178,6 +178,17 @@ def _string_list(value: Any) -> list[str]:
     if not isinstance(value, list):
         return []
     return [item for item in value if isinstance(item, str)]
+
+
+def _check_status(check: dict[str, Any], root: Path) -> str:
+    required = check.get("required", False) is True
+    evidence = check.get("evidence", "")
+    has_evidence = isinstance(evidence, str) and evidence and path_exists(root, evidence)
+    if has_evidence:
+        return "COVERED"
+    if required:
+        return "MISSING"
+    return "OPTIONAL"
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -13,7 +13,7 @@ For core work, use `TASK` + `MANIFEST` + checks, then closeout evidence. Do not 
 
 Current proofline boundary (2026-05-21):
 
-- `proofline-real-task-campaign` completed 5 real tasks with `0/5` high-severity catches against a practical threshold of `2/5`.
+- `proofline-real-task-campaign-v3` completed 5 recent real tasks with `0/5` high-severity catches against a practical threshold of `2/5`.
 - Keep candidate/evaluation/replay as research-only tooling unless a milestone explicitly requires optimization.
 
 ## Decision
@@ -66,6 +66,8 @@ python3 vendor/proofline/scripts/trace_metrics.py vendor/proofline/runs/<run-id>
 ```bash
 python3 vendor/proofline/scripts/check_repo.py --root . --runs-dir vendor/proofline/runs
 ```
+
+Only checks marked `"required": true` are hard closeout gates by default. Optional checks are for research/history analysis and should not block a core path finish.
 
 ## Research Layer (Optional)
 
@@ -120,3 +122,4 @@ python3 vendor/proofline/scripts/closeout_check.py vendor/proofline/runs/<run-id
 | Using optimization tooling by default | Reserve candidate/evaluation/replay for explicit research tasks. |
 | Treating diagnostics as mandatory for normal core runs | `diagnose_experience_store` is optional and research-oriented by default unless history repair is active. |
 | Running diagnostics without explicit legacy intent | Use `--include-legacy-runs` only when intentionally reviewing historical runs. |
+| Failing high-severity diagnostics as default gate control | Use `--fail-on-high` only in explicit cleanup or research runs. |
